@@ -4,64 +4,64 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Object.h"
-#include <memory>
+#include "Size.h"
 #include <iostream>
 
 
-bool Object::Parse(const pugi::xml_node& objectNode)
+Size::Size(unsigned int width, unsigned int height)
+	: m_Width(width), m_Height(height)
+{}
+
+
+bool Size::Parse(
+	const pugi::xml_node& node,
+	const std::string& widthName,
+	const std::string& heightName)
 {
-	////
-	const auto& nameAttr(objectNode.attribute("name"));
-	if (nameAttr.empty())
+	const auto& widthAttr(node.attribute(widthName.c_str()));
+	if (widthAttr.empty())
 	{
-		std::cerr << "WARNING: Object does not have a name attribute\n";
-		return false;
-	}
-	const std::string name(nameAttr.empty() ? std::string() : nameAttr.as_string());
-
-
-	////
-	const auto& typeAttr(objectNode.attribute("type"));
-	if (typeAttr.empty())
-	{
-		std::cerr << "Object group does not have a type attribute\n";
-		return false;
-	}
-	const std::string type(typeAttr.as_string());
-	if (type.empty())
-	{
-		std::cerr << "Object group has an empty type attribute\n";
-
+		std::cerr << "Missing " << widthName << " attribute\n";
 		return false;
 	}
 
-	////
-	const auto& xPosAttr(objectNode.attribute("x"));
-	if (xPosAttr.empty())
+	const auto& heightAttr(node.attribute(heightName.c_str()));
+	if (heightAttr.empty())
 	{
-		std::cerr << "Object group does not have a x position attribute\n";
+		std::cerr << "Missing " << heightName << " attribute\n";
 		return false;
 	}
-	const auto xPos(xPosAttr.as_int());
 
-
-	////
-	const auto& yPosAttr(objectNode.attribute("y"));
-	if (yPosAttr.empty())
-	{
-		std::cerr << "Object group does not have a y position attribute\n";
-		return false;
-	}
-	const auto yPos(yPosAttr.as_int());
-
-
-	m_Name = move(name);
-	m_Type = move(type);
-	m_XPos = xPos;
-	m_YPos = yPos;
+	m_Width = widthAttr.as_int();
+	m_Height = heightAttr.as_int();
 
 	return true;
+}
+
+
+bool Size::Parse(const pugi::xml_node& node)
+{
+	return Parse(node, "width", "height");
+}
+
+
+
+
+Size::value_type Size::GetWidth() const
+{
+	return m_Width;
+}
+
+
+Size::value_type Size::GetHeight() const
+{
+	return m_Height;
+}
+
+
+Size::value_type Size::GetCount() const
+{
+	return m_Width * m_Height;
 }
 
 

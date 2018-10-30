@@ -1,6 +1,6 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
@@ -9,14 +9,57 @@
 #include <iostream>
 
 
-bool Map::Load(std::string filename, unsigned int emptyId)
+
+std::string Map::GetFilename() const
+{
+	return m_Filename;
+}
+
+
+std::string Map::GetName() const
+{
+	auto name(m_PropertyBag.find("Name"));
+	if (!name.has_value())
+	{
+		name = "<UNNAMED>";
+	}
+	else if (name->empty())
+	{
+		name = "<EMPTY>";
+	}
+
+	return *name;
+}
+
+
+Size Map::GetSize() const
+{
+	return m_MapSize;
+}
+
+
+std::optional<PropertyBag::value_type> Map::QueryProperty(const std::string& name) const
+{
+	return m_PropertyBag.find(name);
+}
+
+
+Map::layer_object_range Map::GetLayers() const
+{
+	return layer_object_range(m_Layers.begin(), m_Layers.end());
+}
+
+
+
+
+bool Map::Load(std::string filepath)
 {
 	pugi::xml_document docx;
 
-	auto result(docx.load_file(filename.c_str()));
+	auto result(docx.load_file(filepath.c_str()));
 	if (!result)
 	{
-		std::cerr << "Unable to open `" << filename << "`\n";
+		std::cerr << "Unable to open `" << filepath << "`\n";
 		return false;
 	}
 
@@ -28,58 +71,73 @@ bool Map::Load(std::string filename, unsigned int emptyId)
 		return false;
 	}
 
-	const auto& widthAttr(mapNode.attribute("width"));
-	if (widthAttr.empty())
-	{
-		std::cerr << "Layer does not have a width attribute\n";
-		return false;
-	}
+	return Parse(mapNode, filepath);
+}
 
-	const auto& heightAttr(mapNode.attribute("height"));
-	if (heightAttr.empty())
-	{
-		std::cerr << "Layer does not have a height attribute\n";
-		return false;
-	}
 
-	const auto& properties(mapNode.child("properties"));
-	if (properties.empty())
-	{
-		std::cerr << "Layer does not have any custom properties defined.\n";
-		return false;
-	}
 
-	PropertyBag propertyBag;
-	if (!propertyBag.Load(properties))
+
+bool Map::Parse(const pugi::xml_node& mapNode, const std::string& filepath)
+{
+	const auto mapSize(ParseMapSize(mapNode));
+	if (!mapSize.has_value())
 	{
 		return false;
 	}
 
-	auto nameProp(propertyBag.get("Name"));
-	if (!nameProp.has_value())
+	const auto tileSize(ParseTileSize(mapNode));
+	if (!tileSize.has_value())
 	{
-		nameProp = "<UNNAMED>";
+		return false;
 	}
-	else if (nameProp->empty())
+
+	const auto orientation(ParseOrientation(mapNode));
+	if(!orientation.has_value())
 	{
-		nameProp = "<EMPTY>";
+		return false;
+	}
+
+	const auto renderOrder(ParseRenderOrder(mapNode));
+	if(!renderOrder.has_value())
+	{
+		return false;
+	}
+
+	std::optional<Stagger> stagger;
+	if (*orientation == Orientation::Staggered || *orientation == Orientation::Hexagonal)
+	{
+		stagger = ParseStagger(mapNode);
+		if (!stagger.has_value())
+		{
+			return false;
+		}
 	}
 
 	layer_container_type layers;
-	objectgroup_container_type objectGroups;
-	if (!LoadBodyNode(mapNode, emptyId, layers, objectGroups))
+	PropertyBag propertyBag;
+	tileset_container_type tilesetReferences;
+
+	if (!ParseChildren(mapNode, layers, tilesetReferences, propertyBag))
 	{
 		return false;
 	}
 
+	auto absoluteFilePath(EnsureAbsolutePath(filepath));
+	auto absoluteDirectory(GetDirectoryFromFilePath(absoluteFilePath));
+	auto filename(GetFilenameFromPath(filepath, true));
 
-	m_Name = move(*nameProp);
+	//	Done so we set everything and return success!
+	m_Filepath = move(absoluteFilePath);
 	m_Filename = move(filename);
-	m_Width = widthAttr.as_int();	//	FIXME: Convert before assigning
-	m_Height = heightAttr.as_int();	//	FIXME: Convert before assigning
+	m_Directory = move(absoluteDirectory);
+	m_MapSize = *mapSize;
+	m_TileSize = *tileSize;
+	m_Orientation = *orientation;
+	m_RenderOrder = *renderOrder;
+	m_StaggerConfig = std::move(*stagger);
 	m_PropertyBag = std::move(propertyBag);
-	m_TilesetLayers = move(layers);
-	m_ObjectGroups = move(objectGroups);
+	m_Layers = move(layers);
+	m_Tilesets = move(tilesetReferences);
 
 	return true;
 }
@@ -87,46 +145,65 @@ bool Map::Load(std::string filename, unsigned int emptyId)
 
 
 
-bool Map::LoadBodyNode(
-	const pugi::xml_node& rootNode,
-	unsigned int emptyId,
+bool Map::ParseChildren(
+	const pugi::xml_node& mapNode,
 	layer_container_type& layersOut,
-	objectgroup_container_type& objectGroupsOut) const
+	tileset_container_type& tilesetRefsOut,
+	PropertyBag& propertyBagOut) const
 {
 	layer_container_type layers;
-	objectgroup_container_type objectGroups;
+	PropertyBag propertyBag;
+	tileset_container_type tilesetReferences;
 
-	for (const auto& child : rootNode.children())
+	for (const auto& child : mapNode.children())
 	{
 		const std::string childName(child.name());
 
 		if (childName == "properties")
 		{
-			//	DO nothing
+			if (!propertyBag.Parse(child))
+			{
+				return false;
+			}
 		}
 		else if (childName == "tileset")
 		{
-			//	DO nothing
+			TilesetDescriptor tilesetRef;
+			if (!tilesetRef.Parse(child))
+			{
+				return false;
+			}
+
+			tilesetReferences.emplace_back(tilesetRef);
+		}
+		else if (childName == "imagelayer")
+		{
+			std::cerr << "WARNING: Image layers not supported. Layer ignored.\n";
 		}
 		else if (childName == "layer")
 		{
-			auto layer(LoadLayerNode(child, emptyId));
+			auto layer(ParseTilesetLayerNode(child));
 			if (!layer)
 			{
 				return false;
 			}
 
-			layers.push_back(std::move(layer));
+			layers.emplace_back(std::move(layer));
+		}
+		else if (childName == "group")
+		{
+			std::cerr << "Groups not supported.\n";
+			return false;
 		}
 		else if (childName == "objectgroup")
 		{
-			auto objectGroup(LoadObjectGroupNode(child));
+			auto objectGroup(ParseObjectGroupNode(child));
 			if (!objectGroup)
 			{
 				return false;
 			}
 
-			objectGroups.push_back(move(objectGroup));
+			layers.emplace_back(move(objectGroup));
 		}
 		else
 		{
@@ -141,15 +218,10 @@ bool Map::LoadBodyNode(
 		return false;
 	}
 
-	if (layers.size() > 1)
-	{
-		std::cerr << "Multiple layers not supported\n";
-		return false;
-	}
-
 
 	layersOut = move(layers);
-	objectGroupsOut = move(objectGroups);
+	propertyBagOut = std::move(propertyBag);
+	tilesetRefsOut = move(tilesetReferences);
 
 
 	return true;
@@ -158,10 +230,128 @@ bool Map::LoadBodyNode(
 
 
 
-std::unique_ptr<MapLayer> Map::LoadLayerNode(const pugi::xml_node& layerNode, unsigned int emptyId) const
+std::optional<Stagger> Map::ParseStagger(const pugi::xml_node& mapNode) const
 {
-	auto layer(std::make_unique<MapLayer>());
-	if (!layer->Load(layerNode, emptyId))
+	Stagger stagger;
+
+	if (!stagger.Parse(mapNode))
+	{
+		return std::optional<Stagger>();
+	}
+
+	return std::move(stagger);
+}
+
+
+
+
+std::optional<Size> Map::ParseMapSize(const pugi::xml_node& mapNode) const
+{
+	Size size;
+	if (!size.Parse(mapNode))
+	{
+		return std::optional<Size>();
+	}
+
+	return size;
+}
+
+
+std::optional<Size> Map::ParseTileSize(const pugi::xml_node& mapNode) const
+{
+	Size size;
+	if (!size.Parse(mapNode, "tilewidth", "tileheight"))
+	{
+		return std::optional<Size>();
+	}
+
+	return size;
+}
+
+
+
+
+std::optional<Map::Orientation> Map::ParseOrientation(const pugi::xml_node& mapNode) const
+{
+	const auto orintationAttr(mapNode.attribute("orientation"));
+	if (orintationAttr.empty())
+	{
+		std::cerr << "Missing map orientation attribute.";
+		return std::optional<Map::Orientation>();
+	}
+
+	std::string orientationStr(orintationAttr.as_string());
+	if (orientationStr == "orthogonal")
+	{
+		return Orientation::Orthogonal;
+	}
+	else if (orientationStr == "isometric")
+	{
+		return Orientation::Isometric;
+	}
+	else if (orientationStr == "staggered")
+	{
+		return Orientation::Staggered;
+	}
+	else if (orientationStr == "hexagonal")
+	{
+		return Orientation::Hexagonal;
+	}
+
+	std::cerr << orientationStr << " format maps aren't supported.";
+	
+	return std::optional<Map::Orientation>();
+}
+
+
+
+
+std::optional<Map::RenderOrder> Map::ParseRenderOrder(const pugi::xml_node& mapNode) const
+{
+	//	Note:	This attribute is optional for older version of map files
+	RenderOrder renderOrder(RenderOrder::RightDown);
+
+	const auto renderOrderAttr(mapNode.attribute("renderorder"));
+	if (renderOrderAttr.empty())
+	{
+		std::cerr << "WARNING: Render order attribute missing from map. Defaulting to Right-Down\n";
+	}
+	else
+	{
+		const std::string renderOrderStr(renderOrderAttr.as_string());
+		if (renderOrderStr == "right-down")
+		{
+			renderOrder = RenderOrder::RightDown;
+		}
+		else if (renderOrderStr == "right-up")
+		{
+			renderOrder = RenderOrder::RightUp;
+		}
+		else if (renderOrderStr == "left-down")
+		{
+			renderOrder = RenderOrder::LeftDown;
+		}
+		else if (renderOrderStr == "left-up")
+		{
+			renderOrder = RenderOrder::LeftUp;
+		}
+		else
+		{
+			std::cerr << renderOrderStr + ": invalid render order. Map not loaded.\n";
+			return std::optional<Map::RenderOrder>();
+		}
+	}
+
+	return renderOrder;
+}
+
+
+
+
+std::unique_ptr<TilesetLayer> Map::ParseTilesetLayerNode(const pugi::xml_node& layerNode) const
+{
+	auto layer(std::make_unique<TilesetLayer>());
+	if (!layer->Parse(layerNode))
 	{
 		return nullptr;
 	}
@@ -170,10 +360,12 @@ std::unique_ptr<MapLayer> Map::LoadLayerNode(const pugi::xml_node& layerNode, un
 }
 
 
-std::unique_ptr<ObjectGroup> Map::LoadObjectGroupNode(const pugi::xml_node& objectGroupNode) const
+
+
+std::unique_ptr<ObjectGroupLayer> Map::ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const
 {
-	auto objectGroup(std::make_unique<ObjectGroup>());
-	if (!objectGroup->Load(objectGroupNode))
+	auto objectGroup(std::make_unique<ObjectGroupLayer>());
+	if (!objectGroup->Parse(objectGroupNode))
 	{
 		return nullptr;
 	}

@@ -147,23 +147,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Layer.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapConverter.cpp" />
-    <ClCompile Include="MapLayer.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="ObjectGroup.cpp" />
+    <ClCompile Include="ObjectGroupLayer.cpp" />
     <ClCompile Include="PropertyBag.cpp" />
     <ClCompile Include="pugixml.cpp" />
+    <ClCompile Include="Size.cpp" />
+    <ClCompile Include="Stagger.cpp" />
+    <ClCompile Include="TilesetDescriptor.cpp" />
+    <ClCompile Include="TilesetLayer.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Layer.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="MapLayer.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="ObjectGroup.h" />
+    <ClInclude Include="ObjectGroupLayer.h" />
     <ClInclude Include="PropertyBag.h" />
     <ClInclude Include="pugiconfig.hpp" />
     <ClInclude Include="pugixml.hpp" />
+    <ClInclude Include="Size.h" />
+    <ClInclude Include="Stagger.h" />
+    <ClInclude Include="TilesetDescriptor.h" />
+    <ClInclude Include="TilesetLayer.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,36 +1,27 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "MapLayer.h"
+#include "TilesetLayer.h"
 #include "Utils.h"
 #include <iostream>
 
 
-bool MapLayer::Load(const pugi::xml_node& layer, unsigned int emptyId)
+bool TilesetLayer::Parse(const pugi::xml_node& layer)
 {
-	const auto& nameAttr(layer.attribute("name"));
-	if (nameAttr.empty())
+	if (!Layer::Parse(layer))
 	{
-		std::cerr << "Layer does not have a name attribute\n";
 		return false;
 	}
 
-	const auto& widthAttr(layer.attribute("width"));
-	if (widthAttr.empty())
+	Size size;
+	if (!size.Parse(layer))
 	{
-		std::cerr << "Layer does not have a width attribute\n";
 		return false;
 	}
 
-	const auto& heightAttr(layer.attribute("height"));
-	if (heightAttr.empty())
-	{
-		std::cerr << "Layer does not have a height attribute\n";
-		return false;
-	}
 
 	const auto& layerData(layer.child("data"));
 	if (layerData.empty())
@@ -55,12 +46,7 @@ bool MapLayer::Load(const pugi::xml_node& layer, unsigned int emptyId)
 			return false;
 		}
 
-		return LoadCSV(
-			nameAttr.as_string(),
-			widthAttr.as_int(),
-			heightAttr.as_int(),
-			layerData.first_child().value(),
-			emptyId);
+		return ParseCSV(size, layerData.first_child().value());
 	}
 
 	std::cerr << "Unknown encoding `" << layerDataEncoding << "`\n";
@@ -71,37 +57,17 @@ bool MapLayer::Load(const pugi::xml_node& layer, unsigned int emptyId)
 
 
 
-bool MapLayer::LoadCSV(
-	std::string name,
-	unsigned int width,
-	unsigned int height,
-	const std::string& data,
-	unsigned int emptyId)
+bool TilesetLayer::ParseCSV(Size size, const std::string& data)
 {
-	auto values(ConvertToInteger(TokenizeString(data, ",")));
+	auto values(ConvertToInteger(SplitString(data, ",")));
 
-	if (width * height != values.size())
+	if (size.GetCount() != values.size())
 	{
 		std::cerr << "Size mismatch. Width * Height does not match size of data\n";
 		return false;
 	}
 
-	for (auto& id : values)
-	{
-		if (id == 0)
-		{
-			id = emptyId;
-		}
-		else
-		{
-			--id;
-		}
-	}
-
-
-	m_Name = move(name);
-	m_Width = width;
-	m_Height = height;
+	m_Size = size;
 	m_Data = move(values);
 
 	return true;

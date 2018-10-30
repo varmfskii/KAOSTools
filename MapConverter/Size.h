@@ -4,65 +4,36 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Object.h"
-#include <memory>
-#include <iostream>
+#pragma once
+#include "pugixml.hpp"
+#include <cstdint>
 
 
-bool Object::Parse(const pugi::xml_node& objectNode)
+struct Size
 {
-	////
-	const auto& nameAttr(objectNode.attribute("name"));
-	if (nameAttr.empty())
-	{
-		std::cerr << "WARNING: Object does not have a name attribute\n";
-		return false;
-	}
-	const std::string name(nameAttr.empty() ? std::string() : nameAttr.as_string());
+	using value_type = uint64_t;
+
+	Size() = default;
+	Size(unsigned int width, unsigned int height);
 
 
-	////
-	const auto& typeAttr(objectNode.attribute("type"));
-	if (typeAttr.empty())
-	{
-		std::cerr << "Object group does not have a type attribute\n";
-		return false;
-	}
-	const std::string type(typeAttr.as_string());
-	if (type.empty())
-	{
-		std::cerr << "Object group has an empty type attribute\n";
-
-		return false;
-	}
-
-	////
-	const auto& xPosAttr(objectNode.attribute("x"));
-	if (xPosAttr.empty())
-	{
-		std::cerr << "Object group does not have a x position attribute\n";
-		return false;
-	}
-	const auto xPos(xPosAttr.as_int());
+	bool Parse(const pugi::xml_node& node);
+	bool Parse(
+		const pugi::xml_node& node,
+		const std::string& widthName,
+		const std::string& heightName);
 
 
-	////
-	const auto& yPosAttr(objectNode.attribute("y"));
-	if (yPosAttr.empty())
-	{
-		std::cerr << "Object group does not have a y position attribute\n";
-		return false;
-	}
-	const auto yPos(yPosAttr.as_int());
+	value_type GetWidth() const;
+	value_type GetHeight() const;
+	value_type GetCount() const;
 
 
-	m_Name = move(name);
-	m_Type = move(type);
-	m_XPos = xPos;
-	m_YPos = yPos;
+private:
 
-	return true;
-}
+	value_type m_Width = 0;
+	value_type m_Height = 0;
+};
 
 
 

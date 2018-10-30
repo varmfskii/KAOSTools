@@ -4,67 +4,21 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Object.h"
-#include <memory>
-#include <iostream>
+#pragma once
+#include "pugixml.hpp"
+#include <string>
 
 
-bool Object::Parse(const pugi::xml_node& objectNode)
+class TilesetDescriptor
 {
-	////
-	const auto& nameAttr(objectNode.attribute("name"));
-	if (nameAttr.empty())
-	{
-		std::cerr << "WARNING: Object does not have a name attribute\n";
-		return false;
-	}
-	const std::string name(nameAttr.empty() ? std::string() : nameAttr.as_string());
+public:
+	bool Parse(const pugi::xml_node& node);
 
+private:
 
-	////
-	const auto& typeAttr(objectNode.attribute("type"));
-	if (typeAttr.empty())
-	{
-		std::cerr << "Object group does not have a type attribute\n";
-		return false;
-	}
-	const std::string type(typeAttr.as_string());
-	if (type.empty())
-	{
-		std::cerr << "Object group has an empty type attribute\n";
-
-		return false;
-	}
-
-	////
-	const auto& xPosAttr(objectNode.attribute("x"));
-	if (xPosAttr.empty())
-	{
-		std::cerr << "Object group does not have a x position attribute\n";
-		return false;
-	}
-	const auto xPos(xPosAttr.as_int());
-
-
-	////
-	const auto& yPosAttr(objectNode.attribute("y"));
-	if (yPosAttr.empty())
-	{
-		std::cerr << "Object group does not have a y position attribute\n";
-		return false;
-	}
-	const auto yPos(yPosAttr.as_int());
-
-
-	m_Name = move(name);
-	m_Type = move(type);
-	m_XPos = xPos;
-	m_YPos = yPos;
-
-	return true;
-}
-
-
+	uint64_t	m_Gid;
+	std::string	m_Source;
+};
 
 
 //	Copyright (c) 2018 Chet Simpson

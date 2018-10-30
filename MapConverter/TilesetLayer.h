@@ -1,16 +1,17 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include "Layer.h"
+#include "Size.h"
 #include <string>
 #include <vector>
 
 
-class MapLayer
+class TilesetLayer : public Layer
 {
 public:
 
@@ -20,26 +21,18 @@ public:
 
 public:
 
-	MapLayer() = default;
-	MapLayer(const MapLayer&) = delete;
-	MapLayer(MapLayer&&) = delete;
-
-	bool Load(const pugi::xml_node& layer, unsigned int emptyId);
+	TilesetLayer() = default;
+	TilesetLayer(const TilesetLayer&) = delete;
+	TilesetLayer(TilesetLayer&&) = delete;
 
 
-	std::string GetName() const
+
+	bool Parse(const pugi::xml_node& layer) override;
+
+
+	Size GetSize() const
 	{
-		return m_Name;
-	}
-
-	unsigned int GetWidth() const
-	{
-		return m_Width;
-	}
-
-	unsigned int GetHeight() const
-	{
-		return m_Height;
+		return m_Size;
 	}
 
 
@@ -56,19 +49,12 @@ public:
 
 protected:
 
-	bool LoadCSV(
-		std::string name,
-		unsigned int width,
-		unsigned int height,
-		const std::string& data,
-		unsigned int emptyId);
+	bool ParseCSV(Size size, const std::string& data);
 
 
 private:
 
-	std::string		m_Name;
-	unsigned int	m_Width;
-	unsigned int	m_Height;
+	Size			m_Size;
 	container_type	m_Data;
 };
 

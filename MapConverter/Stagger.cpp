@@ -4,64 +4,65 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Object.h"
-#include <memory>
+#include "Stagger.h"
 #include <iostream>
 
 
-bool Object::Parse(const pugi::xml_node& objectNode)
+bool Stagger::Parse(const pugi::xml_node& node)
 {
-	////
-	const auto& nameAttr(objectNode.attribute("name"));
-	if (nameAttr.empty())
+	const auto axisAttr(node.attribute("staggeraxis"));
+	if (axisAttr.empty())
 	{
-		std::cerr << "WARNING: Object does not have a name attribute\n";
-		return false;
-	}
-	const std::string name(nameAttr.empty() ? std::string() : nameAttr.as_string());
-
-
-	////
-	const auto& typeAttr(objectNode.attribute("type"));
-	if (typeAttr.empty())
-	{
-		std::cerr << "Object group does not have a type attribute\n";
-		return false;
-	}
-	const std::string type(typeAttr.as_string());
-	if (type.empty())
-	{
-		std::cerr << "Object group has an empty type attribute\n";
-
+		std::cerr << "Map missing staggeraxis attribute\n";
 		return false;
 	}
 
-	////
-	const auto& xPosAttr(objectNode.attribute("x"));
-	if (xPosAttr.empty())
+	const std::string axisStr(axisAttr.as_string());
+	auto axis(Axis::None);
+	if (axisStr == "x")
 	{
-		std::cerr << "Object group does not have a x position attribute\n";
+		axis = Axis::X;
+	}
+	else if (axisStr == "y")
+	{
+		axis = Axis::Y;
+	}
+
+	if (axis == Axis::None)
+	{
+		std::cerr << "Map uses unsupported stagger axis attribute\n";
 		return false;
 	}
-	const auto xPos(xPosAttr.as_int());
 
-
-	////
-	const auto& yPosAttr(objectNode.attribute("y"));
-	if (yPosAttr.empty())
+	const auto indexAttr(node.attribute("staggerindex"));
+	auto index(Index::None);
+	if (indexAttr.empty())
 	{
-		std::cerr << "Object group does not have a y position attribute\n";
+		std::cerr << "Map missing staggerindex attribute\n";
 		return false;
 	}
-	const auto yPos(yPosAttr.as_int());
 
+	const std::string indexStr(indexAttr.as_string());
+	if (indexStr == "odd")
+	{
+		index = Index::Odd;
+	}
+	else if (indexStr == "even")
+	{
+		index = Index::Even;
+	}
 
-	m_Name = move(name);
-	m_Type = move(type);
-	m_XPos = xPos;
-	m_YPos = yPos;
+	if (index == Index::None)
+	{
+		std::cerr << "Map uses unsupported stagger index attribute\n";
+		return false;
+	}
+
+	m_Axis = axis;
+	m_Index = index;
 
 	return true;
+
 }
 
 

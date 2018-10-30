@@ -4,62 +4,43 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Object.h"
-#include <memory>
+#include "TilesetDescriptor.h"
 #include <iostream>
 
 
-bool Object::Parse(const pugi::xml_node& objectNode)
+bool TilesetDescriptor::Parse(const pugi::xml_node& node)
 {
-	////
-	const auto& nameAttr(objectNode.attribute("name"));
-	if (nameAttr.empty())
+	const auto gidAttr(node.attribute("firstgid"));
+	if (gidAttr.empty())
 	{
-		std::cerr << "WARNING: Object does not have a name attribute\n";
-		return false;
-	}
-	const std::string name(nameAttr.empty() ? std::string() : nameAttr.as_string());
-
-
-	////
-	const auto& typeAttr(objectNode.attribute("type"));
-	if (typeAttr.empty())
-	{
-		std::cerr << "Object group does not have a type attribute\n";
-		return false;
-	}
-	const std::string type(typeAttr.as_string());
-	if (type.empty())
-	{
-		std::cerr << "Object group has an empty type attribute\n";
-
+		std::cerr << "Missing firstgid attribute\n";
 		return false;
 	}
 
-	////
-	const auto& xPosAttr(objectNode.attribute("x"));
-	if (xPosAttr.empty())
+	const auto gid(gidAttr.as_int());
+	if(gid <= 0)
 	{
-		std::cerr << "Object group does not have a x position attribute\n";
+		std::cerr << "Invalid first GID in tileset\n";
 		return false;
 	}
-	const auto xPos(xPosAttr.as_int());
 
 
-	////
-	const auto& yPosAttr(objectNode.attribute("y"));
-	if (yPosAttr.empty())
+	const auto sourceAttr(node.attribute("source"));
+	if (sourceAttr.empty())
 	{
-		std::cerr << "Object group does not have a y position attribute\n";
+		std::cerr << "Missing firstgid attribute\n";
 		return false;
 	}
-	const auto yPos(yPosAttr.as_int());
 
+	const std::string source(sourceAttr.as_string());
+	if (source.empty())
+	{
+		std::cerr << "source attribute is empty\n";
+		return false;
+	}
 
-	m_Name = move(name);
-	m_Type = move(type);
-	m_XPos = xPos;
-	m_YPos = yPos;
+	m_Gid = gid;
+	m_Source = move(source);
 
 	return true;
 }

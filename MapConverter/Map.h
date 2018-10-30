@@ -1,13 +1,16 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "MapLayer.h"
-#include "ObjectGroup.h"
+#include "TilesetLayer.h"
+#include "ObjectGroupLayer.h"
+#include "Stagger.h"
 #include "PropertyBag.h"
+#include "TilesetDescriptor.h"
+#include "Size.h"
 #include "pugixml.hpp"
 #include <string>
 #include <vector>
@@ -18,79 +21,80 @@ class Map
 {
 public:
 
-	using layer_container_type = std::vector<std::unique_ptr<MapLayer>>;
+	enum class Orientation
+	{
+		None,
+		Orthogonal,
+		Isometric,
+		Staggered,
+		Hexagonal
+	};
+
+	enum class RenderOrder
+	{
+		None,
+		RightDown,
+		RightUp,
+		LeftDown,
+		LeftUp
+	};
+
+
+	using layer_container_type = std::vector<std::unique_ptr<Layer>>;	//	FIXME: Should just be Layer
 	using layer_const_iterator = layer_container_type::const_iterator;
 	using layer_object_range = pugi::xml_object_range<layer_const_iterator>;
-	using objectgroup_container_type = std::vector<std::unique_ptr<ObjectGroup>>;
-	using objectgroup_const_iterator = objectgroup_container_type::const_iterator;
-	using objectgroup_range = pugi::xml_object_range<objectgroup_const_iterator>;
-
+	using tileset_container_type = std::vector<TilesetDescriptor>;
 
 public:
 
 	Map() = default;
-	Map(const Map&) = default;
+	Map(const Map&) = delete;
 	Map(Map&&) = default;
 
-	bool Load(std::string filename, unsigned int emptyId);
+
+	bool Load(std::string filepath);
 
 
-	std::string GetFilename() const
-	{
-		return m_Filename;
-	}
-
-	std::string GetName() const
-	{
-		return m_Name;
-	}
-
-	unsigned int GetWidth() const
-	{
-		return m_Width;
-	}
-
-	unsigned int GetHeight() const
-	{
-		return m_Height;
-	}
-
-	layer_object_range GetLayers() const
-	{
-		return layer_object_range(m_TilesetLayers.begin(), m_TilesetLayers.end());
-	}
-
-	objectgroup_range GetObjectGroups() const
-	{
-		return objectgroup_range(m_ObjectGroups.begin(), m_ObjectGroups.end());
-	}
+	std::string GetFilename() const;
+	std::string GetName() const;	//	FIXME: probably shouldn't be here!
+	Size GetSize() const;
+	std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
+	layer_object_range GetLayers() const;
 
 
 protected:
 
-	bool LoadBodyNode(
+	bool Parse(const pugi::xml_node& mapNode, const std::string& filepath);
+
+	bool ParseChildren(
 		const pugi::xml_node& rootNode,
-		unsigned int emptyId,
 		layer_container_type& layers,
-		objectgroup_container_type& objectGroups) const;
+		tileset_container_type& tilesetRefsOut,
+		PropertyBag& propertyBag) const;
 
+	std::optional<Size> ParseMapSize(const pugi::xml_node& mapNode) const;
+	std::optional<Size> ParseTileSize(const pugi::xml_node& mapNode) const;
+	std::optional<Orientation> ParseOrientation(const pugi::xml_node& mapNode) const;
+	std::optional<RenderOrder> ParseRenderOrder(const pugi::xml_node& mapNode) const;
+	std::optional<Stagger> ParseStagger(const pugi::xml_node& node) const;
+	std::unique_ptr<TilesetLayer> ParseTilesetLayerNode(const pugi::xml_node& layerNode) const;
 
-	std::unique_ptr<MapLayer> LoadLayerNode(
-		const pugi::xml_node& layerNode,
-		unsigned int emptyId) const;
-
-	std::unique_ptr<ObjectGroup> LoadObjectGroupNode(const pugi::xml_node& objectGroupNode) const;
+	std::unique_ptr<ObjectGroupLayer> ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const;
 
 
 private:
 
+	std::string					m_Filepath;
 	std::string					m_Filename;
-	std::string					m_Name;
-	unsigned int				m_Width;
-	unsigned int				m_Height;
+	std::string					m_Directory;
+	Size						m_MapSize;
+	Size						m_TileSize;
+	Orientation					m_Orientation = Orientation::None;
+	RenderOrder					m_RenderOrder = RenderOrder::None;
+	Stagger						m_StaggerConfig;
 	PropertyBag					m_PropertyBag;
-	layer_container_type		m_TilesetLayers;
-	objectgroup_container_type	m_ObjectGroups;
+	layer_container_type		m_Layers;
+	tileset_container_type		m_Tilesets;
 };
 
 

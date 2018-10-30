@@ -1,20 +1,18 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "ObjectGroup.h"
+#include "ObjectGroupLayer.h"
 #include <memory>
 #include <iostream>
 
 
-bool ObjectGroup::Load(const pugi::xml_node& objectGroupNode)
+bool ObjectGroupLayer::Parse(const pugi::xml_node& objectGroupNode)
 {
-	const auto& nameAttr(objectGroupNode.attribute("name"));
-	if (nameAttr.empty())
+	if (!Layer::Parse(objectGroupNode))
 	{
-		std::cerr << "Object group does not have a name attribute\n";
 		return false;
 	}
 
@@ -22,15 +20,14 @@ bool ObjectGroup::Load(const pugi::xml_node& objectGroupNode)
 	for (const auto& objectNode : objectGroupNode.children("object"))
 	{
 		auto object(std::make_unique<Object>());
-		if (!object->Load(objectNode))
+		if (!object->Parse(objectNode))
 		{
 			return false;
 		}
 
-		objects.push_back(std::move(object));
+		objects.emplace_back(std::move(object));
 	}
 
-	m_Name = nameAttr.as_string();
 	m_Objects = move(objects);
 
 	return true;

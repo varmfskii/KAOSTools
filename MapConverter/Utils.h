@@ -1,6 +1,6 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
@@ -9,13 +9,14 @@
 #include <string>
 
 
-std::vector<std::string> TokenizeString(const std::string& text, const std::string& delim);
+std::vector<std::string> SplitString(const std::string& text, const std::string& delim);
 std::vector<unsigned int> ConvertToInteger(const std::vector<std::string>& values);
 std::string TrimString(std::string str);
 std::string MakePath(const std::string& path, const std::string& filename);
-std::string GetFilenameFromPath(std::string path);
-
-
+std::string GetFilenameFromPath(std::string path, bool includeExtension);
+std::string EnsureAbsolutePath(const std::string& relativePath);
+std::string GetDirectoryFromFilePath(std::string path);
+std::string GetAbsolutePathFromFilePath(const std::string& filePath);
 
 
 //	Copyright (c) 2018 Chet Simpson

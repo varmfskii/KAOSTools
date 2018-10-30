@@ -1,16 +1,17 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
 #include "Object.h"
+#include "Layer.h"
 #include <vector>
 #include <memory>
 
 
-class ObjectGroup
+class ObjectGroupLayer : public Layer
 {
 public:
 
@@ -20,19 +21,13 @@ public:
 
 public:
 
-	ObjectGroup() = default;
-	ObjectGroup(const ObjectGroup&) = delete;
-	ObjectGroup(ObjectGroup&&) = delete;
+	ObjectGroupLayer() = default;
+	ObjectGroupLayer(const ObjectGroupLayer&) = delete;
+	ObjectGroupLayer(ObjectGroupLayer&&) = delete;
 
-	bool Load(const pugi::xml_node& objectGroupNode);
+	bool Parse(const pugi::xml_node& objectGroupNode) override;
 
-
-	std::string GetName() const
-	{
-		return m_Name;
-	}
-
-
+	
 	container_type::size_type size() const
 	{
 		return m_Objects.size();
@@ -54,7 +49,6 @@ public:
 
 private:
 
-	std::string		m_Name;
 	container_type	m_Objects;
 };
 

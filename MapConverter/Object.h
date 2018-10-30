@@ -1,6 +1,6 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
@@ -13,12 +13,7 @@ class Object
 {
 public:
 
-	Object() = default;
-	Object(const Object&) = delete;
-	Object(Object&&) = delete;
-
-	
-	bool Load(const pugi::xml_node& objectNode);
+	bool Parse(const pugi::xml_node& objectNode);
 
 
 	std::string GetName() const
@@ -46,8 +41,8 @@ private:
 
 	std::string		m_Name;
 	std::string		m_Type;
-	int				m_XPos;
-	int				m_YPos;
+	int				m_XPos = 0;
+	int				m_YPos = 0;
 };
 
 

@@ -1,6 +1,6 @@
 //	Tiled Map Converter for KAOS on the Color Computer III
 //	------------------------------------------------------
-//	Copyright (C) 2006-2018, by Chet Simpson
+//	Copyright (C) 2018, by Chet Simpson
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
@@ -9,7 +9,7 @@
 #include <iostream>
 
 
-bool PropertyBag::Load(const pugi::xml_node& rootNode)
+bool PropertyBag::Parse(const pugi::xml_node& rootNode)
 {
 	container_type properties;
 	const auto& children(rootNode.children("property"));
