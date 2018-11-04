@@ -5,40 +5,16 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include <string>
 
 
-struct Stagger
+class Color
 {
 public:
 
-	enum class Axis
-	{
-		None,
-		X,
-		Y
-	};
-
-	enum class Index
-	{
-		None,
-		Even,
-		Odd
-	};
-
-
-public:
-
-	bool Parse(const pugi::xml_node& mapNode);
-
-	Axis GetAxis() const;
-	Index GetIndex() const;
-
-
-private:
-
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
+	//	FIXME: Needs implementation
+	explicit Color(const std::string&)
+	{}
 };
 
 

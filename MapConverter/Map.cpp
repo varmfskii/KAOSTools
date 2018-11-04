@@ -10,53 +10,107 @@
 
 
 
+std::string Map::GetFilePath() const
+{
+	return m_Filepath;
+}
+
+
 std::string Map::GetFilename() const
 {
 	return m_Filename;
 }
 
 
+std::string Map::GetDirectory() const
+{
+	return m_Directory;
+}
+
+
 std::string Map::GetName() const
 {
-	auto name(m_PropertyBag.find("Name"));
-	if (!name.has_value())
+	auto nameProperty(m_Properties.find("Name"));
+	std::string name;
+	if (!nameProperty.has_value())
 	{
 		name = "<UNNAMED>";
 	}
-	else if (name->empty())
+	else
+	{
+		if (!nameProperty->QueryValue(name))
+		{
+			std::cerr << "Unable to query value for name property.\n";
+			return false;
+		}
+	}
+
+	if (name.empty())
 	{
 		name = "<EMPTY>";
 	}
 
-	return *name;
+	return name;
 }
 
 
-Size Map::GetSize() const
+Size Map::GetDimensions() const
 {
-	return m_MapSize;
+	return m_MapDimensions;
 }
+
+
+Size Map::GetTileDimensions() const
+{
+	return m_TileDimensions;
+}
+
+
+Map::Orientation Map::GetOrientation() const
+{
+	return m_Orientation;
+}
+
+
+Map::RenderOrder Map::GetRenderOrder() const
+{
+	return m_RenderOrder;
+}
+
+
+Stagger Map::GetStagger() const
+{
+	return m_StaggerConfig;
+}
+
+
 
 
 std::optional<PropertyBag::value_type> Map::QueryProperty(const std::string& name) const
 {
-	return m_PropertyBag.find(name);
+	return m_Properties.find(name);
 }
 
 
-Map::layer_object_range Map::GetLayers() const
+std::vector<std::shared_ptr<const Layer>> Map::GetLayers() const
 {
-	return layer_object_range(m_Layers.begin(), m_Layers.end());
+	return std::vector<std::shared_ptr<const Layer>>(m_Layers.begin(), m_Layers.end());
+}
+
+
+std::vector<TilesetDescriptor> Map::GetTilesets() const
+{
+	return m_Tilesets;
 }
 
 
 
 
-bool Map::Load(std::string filepath)
+bool Map::Load(const std::string& filepath)
 {
-	pugi::xml_document docx;
+	pugi::xml_document doc;
 
-	auto result(docx.load_file(filepath.c_str()));
+	auto result(doc.load_file(filepath.c_str()));
 	if (!result)
 	{
 		std::cerr << "Unable to open `" << filepath << "`\n";
@@ -64,7 +118,7 @@ bool Map::Load(std::string filepath)
 	}
 
 
-	auto mapNode(docx.child("map"));
+	auto mapNode(doc.child("map"));
 	if (mapNode.empty())
 	{
 		std::cerr << "File does not appear to contain a map\n";
@@ -79,14 +133,14 @@ bool Map::Load(std::string filepath)
 
 bool Map::Parse(const pugi::xml_node& mapNode, const std::string& filepath)
 {
-	const auto mapSize(ParseMapSize(mapNode));
-	if (!mapSize.has_value())
+	const auto mapDimensions(ParseMapDimensions(mapNode));
+	if (!mapDimensions.has_value())
 	{
 		return false;
 	}
 
-	const auto tileSize(ParseTileSize(mapNode));
-	if (!tileSize.has_value())
+	const auto tileDimensions(ParseTileDimensions(mapNode));
+	if (!tileDimensions.has_value())
 	{
 		return false;
 	}
@@ -130,12 +184,12 @@ bool Map::Parse(const pugi::xml_node& mapNode, const std::string& filepath)
 	m_Filepath = move(absoluteFilePath);
 	m_Filename = move(filename);
 	m_Directory = move(absoluteDirectory);
-	m_MapSize = *mapSize;
-	m_TileSize = *tileSize;
+	m_MapDimensions = *mapDimensions;
+	m_TileDimensions = *tileDimensions;
 	m_Orientation = *orientation;
 	m_RenderOrder = *renderOrder;
 	m_StaggerConfig = std::move(*stagger);
-	m_PropertyBag = std::move(propertyBag);
+	m_Properties = std::move(propertyBag);
 	m_Layers = move(layers);
 	m_Tilesets = move(tilesetReferences);
 
@@ -207,7 +261,7 @@ bool Map::ParseChildren(
 		}
 		else
 		{
-			std::cerr << "WARNING: Unknown node `" << childName << "` encountered in map file\n";
+			std::cerr << "WARNING: Unsupported element `" << childName << "` encountered while parsing Map.\n";
 		}
 
 	}
@@ -245,27 +299,27 @@ std::optional<Stagger> Map::ParseStagger(const pugi::xml_node& mapNode) const
 
 
 
-std::optional<Size> Map::ParseMapSize(const pugi::xml_node& mapNode) const
+std::optional<Size> Map::ParseMapDimensions(const pugi::xml_node& mapNode) const
 {
-	Size size;
-	if (!size.Parse(mapNode))
+	Size dimensions;
+	if (!dimensions.Parse(mapNode))
 	{
 		return std::optional<Size>();
 	}
 
-	return size;
+	return dimensions;
 }
 
 
-std::optional<Size> Map::ParseTileSize(const pugi::xml_node& mapNode) const
+std::optional<Size> Map::ParseTileDimensions(const pugi::xml_node& mapNode) const
 {
-	Size size;
-	if (!size.Parse(mapNode, "tilewidth", "tileheight"))
+	Size dimensions;
+	if (!dimensions.Parse(mapNode, "tilewidth", "tileheight"))
 	{
 		return std::optional<Size>();
 	}
 
-	return size;
+	return dimensions;
 }
 
 
@@ -348,9 +402,9 @@ std::optional<Map::RenderOrder> Map::ParseRenderOrder(const pugi::xml_node& mapN
 
 
 
-std::unique_ptr<TilesetLayer> Map::ParseTilesetLayerNode(const pugi::xml_node& layerNode) const
+std::shared_ptr<TilesetLayer> Map::ParseTilesetLayerNode(const pugi::xml_node& layerNode) const
 {
-	auto layer(std::make_unique<TilesetLayer>());
+	auto layer(std::make_shared<TilesetLayer>());
 	if (!layer->Parse(layerNode))
 	{
 		return nullptr;
@@ -362,9 +416,9 @@ std::unique_ptr<TilesetLayer> Map::ParseTilesetLayerNode(const pugi::xml_node& l
 
 
 
-std::unique_ptr<ObjectGroupLayer> Map::ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const
+std::shared_ptr<ObjectGroupLayer> Map::ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const
 {
-	auto objectGroup(std::make_unique<ObjectGroupLayer>());
+	auto objectGroup(std::make_shared<ObjectGroupLayer>());
 	if (!objectGroup->Parse(objectGroupNode))
 	{
 		return nullptr;

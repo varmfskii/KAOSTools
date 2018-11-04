@@ -5,40 +5,64 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include "Tile.h"
+#include "TilesetImage.h"
+#include "PropertyBag.h"
+#include "Size.h"
+#include <string>
+#include <map>
 
 
-struct Stagger
+class Tileset
 {
 public:
 
-	enum class Axis
-	{
-		None,
-		X,
-		Y
-	};
-
-	enum class Index
-	{
-		None,
-		Even,
-		Odd
-	};
+	using tile_collection_type = std::map<size_t, Tile>;
 
 
 public:
 
-	bool Parse(const pugi::xml_node& mapNode);
+	bool Load(std::string filepath);
 
-	Axis GetAxis() const;
-	Index GetIndex() const;
+	bool Parse(const pugi::xml_node& node, std::string filepath);
+
+	std::string GetFilePath() const;
+	std::string GetFilename() const;
+	std::string GetDirectory() const;
+	std::string GetName() const;
+	Size GetTileDimensions() const;
+	size_t GetTileCount() const;
+	size_t GetColumns() const;
+	size_t GetMargin() const;
+	size_t GetSpacing() const;
+	TilesetImage GetImage() const;
+	tile_collection_type GetTilesetDefinitions() const;
+	std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
+
+
+protected:
+
+	bool ParseChildren(
+		const pugi::xml_node& rootNode,
+		tile_collection_type& tileDefinitionsOut,
+		TilesetImage& tilesetImageOut,
+		PropertyBag& propertyBagOut) const;
 
 
 private:
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
+	std::string				m_Filepath;
+	std::string				m_Filename;
+	std::string				m_Directory;
+	std::string				m_Name;
+	Size					m_TileDimensions;
+	size_t					m_TileCount = 0;
+	size_t					m_Columns = 0;
+	size_t					m_Margin = 0;
+	size_t					m_Spacing = 0;
+	TilesetImage			m_TilesetImage;
+	tile_collection_type	m_TileDefinitions;
+	PropertyBag				m_Properties;
 };
 
 

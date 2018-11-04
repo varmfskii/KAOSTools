@@ -4,42 +4,74 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "pugixml.hpp"
+#include "NamedProperty.h"
+#include "Utils.h"
+#include <iostream>
 
 
-struct Stagger
+bool NamedProperty::Parse(const pugi::xml_node& node)
 {
-public:
-
-	enum class Axis
+	const auto& nameAttr(node.attribute("name"));
+	if (nameAttr.empty())
 	{
-		None,
-		X,
-		Y
-	};
+		std::cerr << "Property does not have a name attribute\n";
+		return false;
+	}
 
-	enum class Index
+	string_type type(node.attribute("type").as_string());
+	if (type.empty())
 	{
-		None,
-		Even,
-		Odd
-	};
+		type = "string";
+	}
+
+	const auto& valueAttr(node.attribute("value"));
+	if (valueAttr.empty())
+	{
+		std::cerr << "Property does not have a value attribute\n";
+		return false;
+	}
+	
+	
+	value_type value;
+	if (type == "bool")
+	{
+		value = bool_type(valueAttr.as_bool());
+	}
+	else if (type == "int")
+	{
+		value = int_type(valueAttr.as_int());
+	}
+	else if (type == "float")
+	{
+		value = float_type(valueAttr.as_float());
+	}
+	else if (type == "string")
+	{
+		value = string_type(valueAttr.as_string());
+	}
+	else if (type == "color")
+	{
+		value = color_type(valueAttr.as_string());
+	}
+	else
+	{
+		std::cerr << "Unknown type `" << type << "` for property value type attribute\n";
+		return false;
+	}
+
+	m_Name = nameAttr.as_string();
+	m_Value = move(value);
+
+	return true;
+}
 
 
-public:
-
-	bool Parse(const pugi::xml_node& mapNode);
-
-	Axis GetAxis() const;
-	Index GetIndex() const;
 
 
-private:
-
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
-};
+std::string NamedProperty::GetName() const
+{
+	return m_Name;
+}
 
 
 

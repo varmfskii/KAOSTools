@@ -5,40 +5,26 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include "PropertyBag.h"
+#include "Size.h"
+#include <string>
+#include <map>
 
 
-struct Stagger
+class TilesetImage
 {
 public:
 
-	enum class Axis
-	{
-		None,
-		X,
-		Y
-	};
+	bool Parse(const pugi::xml_node& node);
 
-	enum class Index
-	{
-		None,
-		Even,
-		Odd
-	};
-
-
-public:
-
-	bool Parse(const pugi::xml_node& mapNode);
-
-	Axis GetAxis() const;
-	Index GetIndex() const;
+	std::string GetSource() const;
+	Size GetDimensions() const;
 
 
 private:
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
+	std::string	m_Source;
+	Size		m_Dimensions;
 };
 
 

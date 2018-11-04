@@ -11,6 +11,7 @@
 #include <memory>
 
 
+//	FIXME: We need an ObjectGroup as a member
 class ObjectGroupLayer : public Layer
 {
 public:
@@ -28,23 +29,9 @@ public:
 	bool Parse(const pugi::xml_node& objectGroupNode) override;
 
 	
-	container_type::size_type size() const
-	{
-		return m_Objects.size();
-	}
-
-
-	const_iterator begin() const
-	{
-		return m_Objects.cbegin();
-	}
-
-
-	const_iterator end() const
-	{
-		return m_Objects.cend();
-	}
-
+	container_type::size_type size() const;
+	const_iterator begin() const;
+	const_iterator end() const;
 
 
 private:

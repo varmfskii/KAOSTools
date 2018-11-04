@@ -16,25 +16,10 @@ public:
 	bool Parse(const pugi::xml_node& objectNode);
 
 
-	std::string GetName() const
-	{
-		return m_Name;
-	}
-
-	std::string GetType() const
-	{
-		return m_Type;
-	}
-
-	int GetXPos() const
-	{
-		return m_XPos;
-	}
-
-	int GetYPos() const
-	{
-		return m_YPos;
-	}
+	std::string GetName() const;
+	std::string GetType() const;
+	int GetXPos() const;
+	int GetYPos() const;
 
 
 private:

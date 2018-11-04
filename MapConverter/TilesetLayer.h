@@ -26,35 +26,22 @@ public:
 	TilesetLayer(TilesetLayer&&) = delete;
 
 
-
 	bool Parse(const pugi::xml_node& layer) override;
 
 
-	Size GetSize() const
-	{
-		return m_Size;
-	}
-
-
-	const_iterator begin() const
-	{
-		return m_Data.cbegin();
-	}
-
-	const_iterator end() const
-	{
-		return m_Data.cend();
-	}
+	Size GetDimensions() const;
+	const_iterator begin() const;
+	const_iterator end() const;
 
 
 protected:
 
-	bool ParseCSV(Size size, const std::string& data);
+	bool ParseCSV(Size dimensions, const std::string& data);
 
 
 private:
 
-	Size			m_Size;
+	Size			m_Dimensions;
 	container_type	m_Data;
 };
 

@@ -40,10 +40,10 @@ public:
 	};
 
 
-	using layer_container_type = std::vector<std::unique_ptr<Layer>>;	//	FIXME: Should just be Layer
+	using layer_container_type = std::vector<std::shared_ptr<Layer>>;
 	using layer_const_iterator = layer_container_type::const_iterator;
-	using layer_object_range = pugi::xml_object_range<layer_const_iterator>;
 	using tileset_container_type = std::vector<TilesetDescriptor>;
+
 
 public:
 
@@ -52,14 +52,22 @@ public:
 	Map(Map&&) = default;
 
 
-	bool Load(std::string filepath);
+	bool Load(const std::string& filepath);
 
 
+	std::string GetFilePath() const;
 	std::string GetFilename() const;
-	std::string GetName() const;	//	FIXME: probably shouldn't be here!
-	Size GetSize() const;
+	std::string GetDirectory() const;
+	std::string GetName() const;
+	Size GetDimensions() const;
+	Size GetTileDimensions() const;
+	Orientation GetOrientation() const;
+	RenderOrder GetRenderOrder() const;
+	Stagger GetStagger() const;
+
+	std::vector<std::shared_ptr<const Layer>> GetLayers() const;
+	std::vector<TilesetDescriptor> GetTilesets() const;
 	std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
-	layer_object_range GetLayers() const;
 
 
 protected:
@@ -72,29 +80,28 @@ protected:
 		tileset_container_type& tilesetRefsOut,
 		PropertyBag& propertyBag) const;
 
-	std::optional<Size> ParseMapSize(const pugi::xml_node& mapNode) const;
-	std::optional<Size> ParseTileSize(const pugi::xml_node& mapNode) const;
+	std::optional<Size> ParseMapDimensions(const pugi::xml_node& mapNode) const;
+	std::optional<Size> ParseTileDimensions(const pugi::xml_node& mapNode) const;
 	std::optional<Orientation> ParseOrientation(const pugi::xml_node& mapNode) const;
 	std::optional<RenderOrder> ParseRenderOrder(const pugi::xml_node& mapNode) const;
 	std::optional<Stagger> ParseStagger(const pugi::xml_node& node) const;
-	std::unique_ptr<TilesetLayer> ParseTilesetLayerNode(const pugi::xml_node& layerNode) const;
-
-	std::unique_ptr<ObjectGroupLayer> ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const;
+	std::shared_ptr<TilesetLayer> ParseTilesetLayerNode(const pugi::xml_node& layerNode) const;
+	std::shared_ptr<ObjectGroupLayer> ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const;
 
 
 private:
 
-	std::string					m_Filepath;
-	std::string					m_Filename;
-	std::string					m_Directory;
-	Size						m_MapSize;
-	Size						m_TileSize;
-	Orientation					m_Orientation = Orientation::None;
-	RenderOrder					m_RenderOrder = RenderOrder::None;
-	Stagger						m_StaggerConfig;
-	PropertyBag					m_PropertyBag;
-	layer_container_type		m_Layers;
-	tileset_container_type		m_Tilesets;
+	std::string				m_Filepath;
+	std::string				m_Filename;
+	std::string				m_Directory;
+	Size					m_MapDimensions;
+	Size					m_TileDimensions;
+	Orientation				m_Orientation = Orientation::None;
+	RenderOrder				m_RenderOrder = RenderOrder::None;
+	Stagger					m_StaggerConfig;
+	PropertyBag				m_Properties;
+	layer_container_type	m_Layers;
+	tileset_container_type	m_Tilesets;
 };
 
 

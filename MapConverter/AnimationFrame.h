@@ -5,40 +5,31 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include "PropertyBag.h"
+#include "Size.h"
+#include <string>
+#include <map>
 
 
-struct Stagger
+class AnimationFrame
 {
 public:
 
-	enum class Axis
-	{
-		None,
-		X,
-		Y
-	};
-
-	enum class Index
-	{
-		None,
-		Even,
-		Odd
-	};
-
+	using id_type = unsigned int;
+	using duration_type = unsigned int;
 
 public:
 
-	bool Parse(const pugi::xml_node& mapNode);
+	bool Parse(const pugi::xml_node& node);
 
-	Axis GetAxis() const;
-	Index GetIndex() const;
+	id_type GetTileId() const;
+	duration_type GetDuration() const;
 
 
 private:
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
+	id_type			m_TileId;
+	duration_type	m_Duration;
 };
 
 

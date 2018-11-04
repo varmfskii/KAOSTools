@@ -4,42 +4,54 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "pugixml.hpp"
+#include "Tileset.h"
+#include <iostream>
 
 
-struct Stagger
+bool TilesetImage::Parse(const pugi::xml_node& node)
 {
-public:
-
-	enum class Axis
+	const auto& sourceAttr(node.attribute("source"));
+	if (sourceAttr.empty())
 	{
-		None,
-		X,
-		Y
-	};
+		std::cerr << "Tileset Image does not have a source attribute\n";
+		return false;
+	}
 
-	enum class Index
+	const auto& widthAttr(node.attribute("width"));
+	if (widthAttr.empty())
 	{
-		None,
-		Even,
-		Odd
-	};
+		std::cerr << "Tileset Image does not have a width attribute\n";
+		return false;
+	}
+
+	const auto& heightAttr(node.attribute("height"));
+	if (heightAttr.empty())
+	{
+		std::cerr << "Tileset Image does not have a height attribute\n";
+		return false;
+	}
+
+	std::string source(sourceAttr.as_string());
+
+	m_Source = move(source);
+	m_Dimensions = Size(widthAttr.as_uint(), heightAttr.as_uint());
+
+	return true;
+}
 
 
-public:
-
-	bool Parse(const pugi::xml_node& mapNode);
-
-	Axis GetAxis() const;
-	Index GetIndex() const;
 
 
-private:
+std::string TilesetImage::GetSource() const
+{
+	return m_Source;
+}
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
-};
+
+Size TilesetImage::GetDimensions() const
+{
+	return  m_Dimensions;
+}
 
 
 

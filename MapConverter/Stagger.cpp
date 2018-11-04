@@ -68,6 +68,20 @@ bool Stagger::Parse(const pugi::xml_node& node)
 
 
 
+Stagger::Axis Stagger::GetAxis() const
+{
+	return m_Axis;
+}
+
+
+Stagger::Index Stagger::GetIndex() const
+{
+	return m_Index;
+}
+
+
+
+
 //	Copyright (c) 2018 Chet Simpson
 //	
 //	Permission is hereby granted, free of charge, to any person

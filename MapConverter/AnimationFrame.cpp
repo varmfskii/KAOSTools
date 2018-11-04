@@ -4,42 +4,46 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "pugixml.hpp"
+#include "AnimationFrame.h"
+#include <iostream>
 
 
-struct Stagger
+bool AnimationFrame::Parse(const pugi::xml_node& node)
 {
-public:
-
-	enum class Axis
+	const auto& idAttr(node.attribute("tileid"));
+	if (idAttr.empty())
 	{
-		None,
-		X,
-		Y
-	};
+		std::cerr << "Tile animation does not have a tileid attribute\n";
+		return false;
+	}
 
-	enum class Index
+	const auto& durationAttr(node.attribute("duration"));
+	if (durationAttr.empty())
 	{
-		None,
-		Even,
-		Odd
-	};
+		std::cerr << "Tile animation does not have a duration attribute\n";
+		return false;
+	}
 
 
-public:
+	m_TileId = idAttr.as_uint();
+	m_Duration = durationAttr.as_uint();
 
-	bool Parse(const pugi::xml_node& mapNode);
-
-	Axis GetAxis() const;
-	Index GetIndex() const;
+	return true;
+}
 
 
-private:
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
-};
+
+AnimationFrame::id_type AnimationFrame::GetTileId() const
+{
+	return m_TileId;
+}
+
+
+AnimationFrame::duration_type AnimationFrame::GetDuration() const
+{
+	return m_Duration;
+}
 
 
 

@@ -16,8 +16,8 @@ bool TilesetLayer::Parse(const pugi::xml_node& layer)
 		return false;
 	}
 
-	Size size;
-	if (!size.Parse(layer))
+	Size dimensions;
+	if (!dimensions.Parse(layer))
 	{
 		return false;
 	}
@@ -46,7 +46,7 @@ bool TilesetLayer::Parse(const pugi::xml_node& layer)
 			return false;
 		}
 
-		return ParseCSV(size, layerData.first_child().value());
+		return ParseCSV(dimensions, layerData.first_child().value());
 	}
 
 	std::cerr << "Unknown encoding `" << layerDataEncoding << "`\n";
@@ -57,20 +57,40 @@ bool TilesetLayer::Parse(const pugi::xml_node& layer)
 
 
 
-bool TilesetLayer::ParseCSV(Size size, const std::string& data)
+bool TilesetLayer::ParseCSV(Size dimensions, const std::string& data)
 {
 	auto values(ConvertToInteger(SplitString(data, ",")));
 
-	if (size.GetCount() != values.size())
+	if (dimensions.GetCount() != values.size())
 	{
 		std::cerr << "Size mismatch. Width * Height does not match size of data\n";
 		return false;
 	}
 
-	m_Size = size;
+	m_Dimensions = dimensions;
 	m_Data = move(values);
 
 	return true;
+}
+
+
+
+
+Size TilesetLayer::GetDimensions() const
+{
+	return m_Dimensions;
+}
+
+
+TilesetLayer::const_iterator TilesetLayer::begin() const
+{
+	return m_Data.cbegin();
+}
+
+
+TilesetLayer::const_iterator TilesetLayer::end() const
+{
+	return m_Data.cend();
 }
 
 

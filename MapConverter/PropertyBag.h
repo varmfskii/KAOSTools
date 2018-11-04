@@ -5,10 +5,9 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include "NamedProperty.h"
 #include <string>
 #include <vector>
-#include <variant>
 #include <optional>
 #include <map>
 
@@ -17,7 +16,7 @@ class PropertyBag
 {
 public:
 
-	using value_type = std::string;
+	using value_type = NamedProperty;
 	using container_type = std::map<std::string, value_type>;
 	using const_iterator = container_type::const_iterator;
 

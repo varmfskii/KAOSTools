@@ -36,6 +36,26 @@ bool ObjectGroupLayer::Parse(const pugi::xml_node& objectGroupNode)
 
 
 
+ObjectGroupLayer::container_type::size_type ObjectGroupLayer::size() const
+{
+	return m_Objects.size();
+}
+
+
+ObjectGroupLayer::const_iterator ObjectGroupLayer::begin() const
+{
+	return m_Objects.cbegin();
+}
+
+
+ObjectGroupLayer::const_iterator ObjectGroupLayer::end() const
+{
+	return m_Objects.cend();
+}
+
+
+
+
 //	Copyright (c) 2018 Chet Simpson
 //	
 //	Permission is hereby granted, free of charge, to any person

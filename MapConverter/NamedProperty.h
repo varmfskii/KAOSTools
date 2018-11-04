@@ -5,40 +5,50 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
+#include "Color.h"
 #include "pugixml.hpp"
+#include <string>
+#include <variant>
 
 
-struct Stagger
+class NamedProperty
 {
 public:
 
-	enum class Axis
-	{
-		None,
-		X,
-		Y
-	};
-
-	enum class Index
-	{
-		None,
-		Even,
-		Odd
-	};
+	using bool_type = bool;
+	using int_type = int64_t;
+	using float_type = float_t;
+	using color_type = Color;
+	using string_type = std::string;
+	using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
 
 
 public:
 
-	bool Parse(const pugi::xml_node& mapNode);
+	bool Parse(const pugi::xml_node& node);
 
-	Axis GetAxis() const;
-	Index GetIndex() const;
+
+	std::string GetName() const;
+
+	template<class Type_>
+	bool QueryValue(Type_ &valueOut) const
+	{
+		auto value(std::get_if<Type_>(&m_Value));
+		if (!value)
+		{
+			return false;
+		}
+
+		valueOut = *value;
+
+		return true;
+	}
 
 
 private:
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
+	std::string	m_Name;
+	value_type	m_Value;
 };
 
 

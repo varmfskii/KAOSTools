@@ -67,6 +67,29 @@ bool Object::Parse(const pugi::xml_node& objectNode)
 
 
 
+std::string Object::GetName() const
+{
+	return m_Name;
+}
+
+std::string Object::GetType() const
+{
+	return m_Type;
+}
+
+int Object::GetXPos() const
+{
+	return m_XPos;
+}
+
+int Object::GetYPos() const
+{
+	return m_YPos;
+}
+
+
+
+
 //	Copyright (c) 2018 Chet Simpson
 //	
 //	Permission is hereby granted, free of charge, to any person

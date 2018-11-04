@@ -6,6 +6,8 @@
 //	of this file.
 #include "Utils.h"
 #include <iostream>
+#define WIN32_LEAN_AND_MEAN
+#include <shlwapi.h>
 
 
 std::string TrimString(std::string str)
@@ -119,6 +121,12 @@ std::string GetDirectoryFromFilePath(std::string path)
 std::string GetAbsolutePathFromFilePath(const std::string& filePath)
 {
 	return GetDirectoryFromFilePath(EnsureAbsolutePath(filePath));
+}
+
+
+bool IsAbsolutePath(const std::string& path)
+{
+	return !::PathIsRelativeA(path.c_str());
 }
 
 

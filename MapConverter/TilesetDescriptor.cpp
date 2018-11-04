@@ -48,6 +48,20 @@ bool TilesetDescriptor::Parse(const pugi::xml_node& node)
 
 
 
+size_t TilesetDescriptor::GetGid() const
+{
+	return m_Gid;
+}
+
+
+std::string TilesetDescriptor::GetSource() const
+{
+	return m_Source;
+}
+
+
+
+
 //	Copyright (c) 2018 Chet Simpson
 //	
 //	Permission is hereby granted, free of charge, to any person

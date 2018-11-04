@@ -5,40 +5,52 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "pugixml.hpp"
+#include "AnimationFrame.h"
+#include "PropertyBag.h"
+#include "Size.h"
+#include <string>
+#include <map>
 
 
-struct Stagger
+
+class Tile
 {
 public:
 
-	enum class Axis
-	{
-		None,
-		X,
-		Y
-	};
-
-	enum class Index
-	{
-		None,
-		Even,
-		Odd
-	};
+	using id_type = unsigned int;
+	using frame_container = std::vector<AnimationFrame>;
 
 
 public:
 
-	bool Parse(const pugi::xml_node& mapNode);
+	bool Parse(const pugi::xml_node& node);
 
-	Axis GetAxis() const;
-	Index GetIndex() const;
+	id_type GetId() const;
+	std::string GetType() const;
+	float_t GetProbability() const;
+	frame_container GetAnimationFrames() const;
+	std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
+
+
+protected:
+
+	bool ParseChildren(
+		const pugi::xml_node& rootNode,
+		frame_container& animationFramesOut,
+		PropertyBag& propertyBagOut) const;
+
+	bool ParseAnimation(
+		const pugi::xml_node& rootNode,
+		frame_container& animationFramesOut) const;
 
 
 private:
 
-	Axis	m_Axis = Axis::None;
-	Index	m_Index = Index::None;
+	id_type			m_Id;
+	std::string		m_Type;
+	float_t			m_Probability;
+	frame_container	m_AnimationFrames;
+	PropertyBag		m_Properties;
 };
 
 

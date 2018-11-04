@@ -15,21 +15,13 @@ bool PropertyBag::Parse(const pugi::xml_node& rootNode)
 	const auto& children(rootNode.children("property"));
 	for (const auto& child : children)
 	{
-		const auto& nameAttr(child.attribute("name"));
-		if (nameAttr.empty())
+		NamedProperty property;
+		if (!property.Parse(child))
 		{
-			std::cerr << "Property does not have a name attribute\n";
 			return false;
 		}
 
-		const auto& valueAttr(child.attribute("value"));
-		if (valueAttr.empty())
-		{
-			std::cerr << "Property does not have a value attribute\n";
-			return false;
-		}
-
-		properties[nameAttr.as_string()] = valueAttr.as_string();
+		properties[property.GetName()] = std::move(property);
 	}
 
 	m_Properties = move(properties);
