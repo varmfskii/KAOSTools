@@ -31,3 +31,11 @@
 *.out
 *.app
 /.vs
+/MapConverter/MapConverter.vcxproj.user
+/x64
+/3rdParty/FlicLib/x64
+/3rdParty/LoadPNGLib/x64
+/KAOSCommon/x64
+/MapConverter/x64
+/3rdParty/PugiXML/x64
+/TiledLib/x64
