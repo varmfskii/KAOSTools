@@ -76,6 +76,7 @@ protected:
 
 	bool ParseChildren(
 		const pugi::xml_node& rootNode,
+		const std::string& mapDirectory,
 		layer_container_type& layers,
 		tileset_container_type& tilesetRefsOut,
 		PropertyBag& propertyBag) const;

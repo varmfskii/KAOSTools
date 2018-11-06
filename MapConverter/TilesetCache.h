@@ -4,65 +4,29 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "TilesetDescriptor.h"
-#include "Utils.h"
-#include <iostream>
+#pragma once
+#include "Tileset.h"
+#include <string>
+#include <map>
+#include <memory>
 
 
-bool TilesetDescriptor::Parse(const pugi::xml_node& node, const std::string& mapDirectory)
+class TilesetCache
 {
-	const auto gidAttr(node.attribute("firstgid"));
-	if (gidAttr.empty())
-	{
-		std::cerr << "Missing firstgid attribute\n";
-		return false;
-	}
+public:
 
-	const auto gid(gidAttr.as_int());
-	if(gid <= 0)
-	{
-		std::cerr << "Invalid first GID in tileset\n";
-		return false;
-	}
+	using value_type = std::shared_ptr<const Tileset>;
+	using collection_type = std::map<std::string, value_type>;
 
 
-	const auto sourceAttr(node.attribute("source"));
-	if (sourceAttr.empty())
-	{
-		std::cerr << "Missing firstgid attribute\n";
-		return false;
-	}
+public:
 
-	std::string source(sourceAttr.as_string());
-	if (source.empty())
-	{
-		std::cerr << "source attribute is empty\n";
-		return false;
-	}
-	if (!IsAbsolutePath(source))
-	{
-		source = EnsureAbsolutePath(mapDirectory + source);
-	}
+	std::optional<value_type> Load(const std::string& filepath);
 
-	m_Gid = gid;
-	m_Source = move(source);
+private:
 
-	return true;
-}
-
-
-
-
-size_t TilesetDescriptor::GetGid() const
-{
-	return m_Gid;
-}
-
-
-std::string TilesetDescriptor::GetSource() const
-{
-	return m_Source;
-}
+	collection_type	m_Cache;
+};
 
 
 

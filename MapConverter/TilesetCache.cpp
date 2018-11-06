@@ -4,64 +4,36 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "TilesetDescriptor.h"
+#include "TilesetCache.h"
 #include "Utils.h"
 #include <iostream>
 
 
-bool TilesetDescriptor::Parse(const pugi::xml_node& node, const std::string& mapDirectory)
+std::optional<TilesetCache::value_type> TilesetCache::Load(const std::string& filepath)
 {
-	const auto gidAttr(node.attribute("firstgid"));
-	if (gidAttr.empty())
+	//	FIXME: We should "clean" the path
+	if (!IsAbsolutePath(filepath))
 	{
-		std::cerr << "Missing firstgid attribute\n";
-		return false;
-	}
-
-	const auto gid(gidAttr.as_int());
-	if(gid <= 0)
-	{
-		std::cerr << "Invalid first GID in tileset\n";
-		return false;
+		std::cerr << "Retrieving a cached tileset requires an absolute path\n";
+		return nullptr;
 	}
 
 
-	const auto sourceAttr(node.attribute("source"));
-	if (sourceAttr.empty())
+	auto cachedTileset(m_Cache.find(filepath));
+	if (cachedTileset != m_Cache.end())
 	{
-		std::cerr << "Missing firstgid attribute\n";
-		return false;
+		return cachedTileset->second;
 	}
 
-	std::string source(sourceAttr.as_string());
-	if (source.empty())
+	auto tileset(std::make_shared<Tileset>());
+	if (!tileset->Load(filepath))
 	{
-		std::cerr << "source attribute is empty\n";
-		return false;
-	}
-	if (!IsAbsolutePath(source))
-	{
-		source = EnsureAbsolutePath(mapDirectory + source);
+		tileset.reset();
 	}
 
-	m_Gid = gid;
-	m_Source = move(source);
+	m_Cache.emplace(filepath, tileset);
 
-	return true;
-}
-
-
-
-
-size_t TilesetDescriptor::GetGid() const
-{
-	return m_Gid;
-}
-
-
-std::string TilesetDescriptor::GetSource() const
-{
-	return m_Source;
+	return tileset;
 }
 
 

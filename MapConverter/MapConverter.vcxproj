@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="AnimationFrame.cpp" />
     <ClCompile Include="Layer.cpp" />
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapConverter.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Stagger.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Tileset.cpp" />
+    <ClCompile Include="TilesetCache.cpp" />
     <ClCompile Include="TilesetDescriptor.cpp" />
     <ClCompile Include="TilesetImage.cpp" />
     <ClCompile Include="TilesetLayer.cpp" />
@@ -174,6 +176,7 @@
     <ClInclude Include="AnimationFrame.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Layer.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="NamedProperty.h" />
     <ClInclude Include="Object.h" />
@@ -185,6 +188,7 @@
     <ClInclude Include="Stagger.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Tileset.h" />
+    <ClInclude Include="TilesetCache.h" />
     <ClInclude Include="TilesetDescriptor.h" />
     <ClInclude Include="TilesetImage.h" />
     <ClInclude Include="TilesetLayer.h" />

@@ -13,7 +13,7 @@ class TilesetDescriptor
 {
 public:
 
-	bool Parse(const pugi::xml_node& node);
+	bool Parse(const pugi::xml_node& node, const std::string& mapDirectory);
 
 	size_t GetGid() const;
 	std::string GetSource() const;

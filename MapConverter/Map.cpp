@@ -167,18 +167,18 @@ bool Map::Parse(const pugi::xml_node& mapNode, const std::string& filepath)
 		}
 	}
 
+	auto absoluteFilePath(EnsureAbsolutePath(filepath));
+	auto absoluteDirectory(GetDirectoryFromFilePath(absoluteFilePath));
+	auto filename(GetFilenameFromPath(filepath, true));
+
 	layer_container_type layers;
 	PropertyBag propertyBag;
 	tileset_container_type tilesetReferences;
 
-	if (!ParseChildren(mapNode, layers, tilesetReferences, propertyBag))
+	if (!ParseChildren(mapNode, absoluteDirectory, layers, tilesetReferences, propertyBag))
 	{
 		return false;
 	}
-
-	auto absoluteFilePath(EnsureAbsolutePath(filepath));
-	auto absoluteDirectory(GetDirectoryFromFilePath(absoluteFilePath));
-	auto filename(GetFilenameFromPath(filepath, true));
 
 	//	Done so we set everything and return success!
 	m_Filepath = move(absoluteFilePath);
@@ -201,6 +201,7 @@ bool Map::Parse(const pugi::xml_node& mapNode, const std::string& filepath)
 
 bool Map::ParseChildren(
 	const pugi::xml_node& mapNode,
+	const std::string& mapDirectory,
 	layer_container_type& layersOut,
 	tileset_container_type& tilesetRefsOut,
 	PropertyBag& propertyBagOut) const
@@ -223,7 +224,7 @@ bool Map::ParseChildren(
 		else if (childName == "tileset")
 		{
 			TilesetDescriptor tilesetRef;
-			if (!tilesetRef.Parse(child))
+			if (!tilesetRef.Parse(child, mapDirectory))
 			{
 				return false;
 			}
