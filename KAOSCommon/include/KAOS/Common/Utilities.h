@@ -7,6 +7,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <optional>
 
 
 namespace KAOS { namespace Common
@@ -16,12 +17,18 @@ namespace KAOS { namespace Common
 	std::vector<unsigned int> ConvertToInteger(const std::vector<std::string>& values);
 	std::string TrimString(std::string str);
 	std::string MakePath(const std::string& path, const std::string& filename);
+	std::string ConvertToForwardSlashes(std::string filePath);
 	std::string GetFilenameFromPath(std::string path, bool includeExtension);
 	bool IsAbsolutePath(const std::string& path);
 	std::string EnsureAbsolutePath(const std::string& relativePath);
 	std::string GetDirectoryFromFilePath(std::string path);
 	std::string GetAbsolutePathFromFilePath(const std::string& filePath);
-
+	std::optional<std::string> GetRelativePathFromFilePath(
+		const std::string& fromPath,
+		bool fromIsDirectory,
+		const std::string& toPath,
+		bool toIsDirectory);
+	bool CreateDirectory(const std::string& path);
 }}
 
 

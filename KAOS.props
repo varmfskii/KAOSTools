@@ -8,6 +8,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)KAOSCommon/include;$(SolutionDir)TiledLib/include;$(SolutionDir)3rdParty/PugiXML/include;$(SolutionDir)3rdParty/loadpnglib/include;$(SolutionDir)3rdParty/FlicLib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

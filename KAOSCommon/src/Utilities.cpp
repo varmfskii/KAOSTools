@@ -6,6 +6,7 @@
 //	of this file.
 #include <KAOS/Common/Utilities.h>
 #include <iostream>
+#include <algorithm>
 #define WIN32_LEAN_AND_MEAN
 #include <shlwapi.h>
 
@@ -87,6 +88,18 @@ namespace KAOS { namespace Common
 	}
 
 
+	std::string ConvertToForwardSlashes(std::string filePath)
+	{
+		std::transform(
+			filePath.begin(),
+			filePath.end(),
+			filePath.begin(),
+			[](char p) -> char { return p == '\\' ? '/' : p; });
+
+		return filePath;
+	}
+
+
 	std::string GetFilenameFromPath(std::string path, bool includeExtension)
 	{
 		const size_t last_slash_idx = path.find_last_of("\\/");
@@ -127,6 +140,25 @@ namespace KAOS { namespace Common
 	}
 
 
+	std::optional<std::string> GetRelativePathFromFilePath(
+		const std::string& fromPath,
+		bool fromIsDirectory,
+		const std::string& filePath,
+		bool toIsDirectory)
+	{
+		char buffer[_MAX_PATH + 1];
+		const auto fromAttrib(fromIsDirectory ? FILE_ATTRIBUTE_DIRECTORY : 0);
+		const auto toAttrib(toIsDirectory ? FILE_ATTRIBUTE_DIRECTORY : 0);
+		const auto absoluteFromPath(EnsureAbsolutePath(fromPath));
+		const auto absoluteToPath(EnsureAbsolutePath(filePath));
+		if (!PathRelativePathToA(buffer, absoluteFromPath.c_str(), fromAttrib, absoluteToPath.c_str(), toAttrib))
+		{
+			return nullptr;
+		}
+
+		return buffer;
+	}
+
 	bool IsAbsolutePath(const std::string& path)
 	{
 		return !::PathIsRelativeA(path.c_str());
@@ -143,6 +175,13 @@ namespace KAOS { namespace Common
 
 		return buffer;
 	}
+
+#undef CreateDirectory
+	bool CreateDirectory(const std::string& path)
+	{
+		return ::CreateDirectoryA(path.c_str(), nullptr) != FALSE;
+	}
+
 
 }}
 

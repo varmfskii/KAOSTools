@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A8F8A5C2-1551-4FBE-BCC1-4AD7B72B7908}</ProjectGuid>
+    <ProjectGuid>{A2378C61-AE4B-4688-96F1-080B0D1B2F1F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>MapConverter</RootNamespace>
+    <RootNamespace>SpriteConverter</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -101,7 +101,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -114,7 +114,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -131,7 +131,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -148,17 +148,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MapConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\3rdParty\PugiXML\PugiXML.vcxproj">
-      <Project>{6c53a1f6-cdb5-4339-83f2-5ab7f50e4d86}</Project>
+    <ProjectReference Include="..\3RdParty\FlicLib\FlicLib.vcxproj">
+      <Project>{3eb58906-dab4-4cd0-bf87-8f1cd55f9163}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\LoadPNGLib\LoadPNGLib.vcxproj">
+      <Project>{fbfbdf81-d7a3-4fe9-a187-9d994acaf970}</Project>
     </ProjectReference>
     <ProjectReference Include="..\KAOSCommon\KAOSCommon.vcxproj">
       <Project>{7a96b75b-5ac1-41bf-be65-4f99ca67bb2a}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\TiledLib\TiledLib.vcxproj">
-      <Project>{9be83644-31d0-4d87-ac06-38a7830855d1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
