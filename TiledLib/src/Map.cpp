@@ -6,6 +6,7 @@
 //	of this file.
 #include <Tiled/Map.h>
 #include <KAOS/Common/Utilities.h>
+#include <KAOS/Imaging/ImageUtils.h>
 #include <iostream>
 
 
@@ -169,6 +170,9 @@ namespace KAOS { namespace Tiled
 			}
 		}
 
+		const auto backgroundColor(ParseBackgroundColor(mapNode));
+
+
 		auto absoluteFilePath(Common::EnsureAbsolutePath(filepath));
 		auto absoluteDirectory(Common::GetDirectoryFromFilePath(absoluteFilePath));
 		auto filename(Common::GetFilenameFromPath(filepath, true));
@@ -191,6 +195,7 @@ namespace KAOS { namespace Tiled
 		m_Orientation = *orientation;
 		m_RenderOrder = *renderOrder;
 		m_StaggerConfig = std::move(*stagger);
+		m_BackgroundColor = backgroundColor;
 		m_Properties = std::move(propertyBag);
 		m_Layers = move(layers);
 		m_Tilesets = move(tilesetReferences);
@@ -400,6 +405,21 @@ namespace KAOS { namespace Tiled
 		}
 
 		return renderOrder;
+	}
+
+
+
+
+	std::optional<KAOS::Imaging::Color> Map::ParseBackgroundColor(const pugi::xml_node& mapNode) const
+	{
+		std::optional<KAOS::Imaging::Color> color;
+		const auto backgroundColorAttr(mapNode.attribute("backgroundcolor"));
+		if (!backgroundColorAttr.empty())
+		{
+			color = KAOS::Imaging::ColorFromString(backgroundColorAttr.as_string());
+		}
+
+		return color;
 	}
 
 

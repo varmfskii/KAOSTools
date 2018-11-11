@@ -29,6 +29,7 @@ namespace KAOS { namespace Common
 		const std::string& toPath,
 		bool toIsDirectory);
 	bool CreateDirectory(const std::string& path);
+
 }}
 
 

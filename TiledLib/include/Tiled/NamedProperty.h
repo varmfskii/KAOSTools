@@ -5,7 +5,7 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Common/Color.h>
+#include <KAOS/Imaging/Color.h>
 #include <pugixml/pugixml.hpp>
 #include <string>
 #include <variant>
@@ -21,7 +21,7 @@ namespace KAOS { namespace Tiled
 		using bool_type = bool;
 		using int_type = int64_t;
 		using float_type = float_t;
-		using color_type = Common::Color;
+		using color_type = Imaging::Color;
 		using string_type = std::string;
 		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
 

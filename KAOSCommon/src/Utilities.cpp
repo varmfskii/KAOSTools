@@ -5,8 +5,9 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #include <KAOS/Common/Utilities.h>
-#include <iostream>
+#include <KAOS/Imaging/Color.h>
 #include <algorithm>
+#include <iostream>
 #define WIN32_LEAN_AND_MEAN
 #include <shlwapi.h>
 
@@ -153,7 +154,7 @@ namespace KAOS { namespace Common
 		const auto absoluteToPath(EnsureAbsolutePath(filePath));
 		if (!PathRelativePathToA(buffer, absoluteFromPath.c_str(), fromAttrib, absoluteToPath.c_str(), toAttrib))
 		{
-			return nullptr;
+			return std::optional<std::string>();
 		}
 
 		return buffer;
@@ -181,7 +182,6 @@ namespace KAOS { namespace Common
 	{
 		return ::CreateDirectoryA(path.c_str(), nullptr) != FALSE;
 	}
-
 
 }}
 

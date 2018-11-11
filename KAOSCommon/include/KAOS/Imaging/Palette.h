@@ -4,40 +4,77 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include <Tiled/TilesetCache.h>
-#include <KAOS/Common/Utilities.h>
-#include <iostream>
+#pragma once
+#include <KAOS/Imaging/Color.h>
+#include <vector>
+#include <string>
+#include <optional>
 
 
-namespace KAOS { namespace Tiled
+namespace KAOS { namespace Imaging
 {
 
-	std::optional<TilesetCache::value_type> TilesetCache::Load(const std::string& filepath)
+	class Palette
 	{
-		//	FIXME: We should "clean" the path
-		if (!Common::IsAbsolutePath(filepath))
+	public:
+
+		using container_type = std::vector<Color>;
+		using value_type = container_type::value_type;
+		using iterator = container_type::iterator;
+		using const_iterator = container_type::const_iterator;
+		using size_type = container_type::size_type;
+
+
+		explicit Palette(size_t colorCount, Color initColor = Color());
+		explicit Palette(container_type colors);
+		Palette(const Palette&) = default;
+		Palette(Palette&&) = default;
+
+
+		size_type size() const
 		{
-			std::cerr << "Retrieving a cached tileset requires an absolute path\n";
-			return std::optional<TilesetCache::value_type>();
+			return m_ColorData.size();
+		}
+
+		iterator begin()
+		{
+			return m_ColorData.begin();
+		}
+
+		const_iterator begin() const
+		{
+			return m_ColorData.begin();
+		}
+
+		iterator end()
+		{
+			return m_ColorData.end();
+		}
+
+		const_iterator end() const
+		{
+			return m_ColorData.end();
 		}
 
 
-		auto cachedTileset(m_Cache.find(filepath));
-		if (cachedTileset != m_Cache.end())
+		value_type& front()
 		{
-			return cachedTileset->second;
+			return m_ColorData.front();
 		}
 
-		auto tileset(std::make_shared<Tileset>());
-		if (!tileset->Load(filepath))
+		const value_type& front() const
 		{
-			tileset.reset();
+			return m_ColorData.front();
 		}
 
-		m_Cache.emplace(filepath, tileset);
 
-		return tileset;
-	}
+	protected:
+
+		container_type	m_ColorData;
+	};
+
+
+	std::optional<Palette> LoadRawRGBPalette(const std::string& filename, size_t minColors);
 
 }}
 

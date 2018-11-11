@@ -4,40 +4,16 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include <Tiled/TilesetCache.h>
-#include <KAOS/Common/Utilities.h>
-#include <iostream>
+#pragma once
+#include <KAOS/Imaging/Color.h>
+#include <optional>
 
 
-namespace KAOS { namespace Tiled
+
+namespace KAOS { namespace Imaging
 {
 
-	std::optional<TilesetCache::value_type> TilesetCache::Load(const std::string& filepath)
-	{
-		//	FIXME: We should "clean" the path
-		if (!Common::IsAbsolutePath(filepath))
-		{
-			std::cerr << "Retrieving a cached tileset requires an absolute path\n";
-			return std::optional<TilesetCache::value_type>();
-		}
-
-
-		auto cachedTileset(m_Cache.find(filepath));
-		if (cachedTileset != m_Cache.end())
-		{
-			return cachedTileset->second;
-		}
-
-		auto tileset(std::make_shared<Tileset>());
-		if (!tileset->Load(filepath))
-		{
-			tileset.reset();
-		}
-
-		m_Cache.emplace(filepath, tileset);
-
-		return tileset;
-	}
+	std::optional<Color> ColorFromString(std::string str);
 
 }}
 

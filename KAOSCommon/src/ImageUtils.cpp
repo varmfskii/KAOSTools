@@ -4,39 +4,40 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include <Tiled/TilesetCache.h>
+#include <KAOS/Imaging/ImageUtils.h>
 #include <KAOS/Common/Utilities.h>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 
 
-namespace KAOS { namespace Tiled
+namespace KAOS { namespace Imaging
 {
 
-	std::optional<TilesetCache::value_type> TilesetCache::Load(const std::string& filepath)
+	std::optional<Color> ColorFromString(std::string str)
 	{
-		//	FIXME: We should "clean" the path
-		if (!Common::IsAbsolutePath(filepath))
+		str = Common::TrimString(str);
+		while (str.front() == '#')
 		{
-			std::cerr << "Retrieving a cached tileset requires an absolute path\n";
-			return std::optional<TilesetCache::value_type>();
+			str.erase(0, 1);
 		}
 
-
-		auto cachedTileset(m_Cache.find(filepath));
-		if (cachedTileset != m_Cache.end())
+		if (str.size() == 6 || str.size() == 8)
 		{
-			return cachedTileset->second;
+			uint32_t value;
+			std::stringstream(str) >> std::hex >> value;
+
+			const auto r((value >> 16) & 0xff);
+			const auto g((value >> 8) & 0xff);
+			const auto b(value & 0xff);
+			const auto a(str.size() == 8 ? (value >> 24) & 0xff : 0);
+
+			return Color(std::uint8_t(r), std::uint8_t(g), std::uint8_t(b), std::uint8_t(a));
 		}
 
-		auto tileset(std::make_shared<Tileset>());
-		if (!tileset->Load(filepath))
-		{
-			tileset.reset();
-		}
+		std::cerr << "Unable to convert `" << str << "` to color\n";
 
-		m_Cache.emplace(filepath, tileset);
-
-		return tileset;
+		return std::optional<Color>();
 	}
 
 }}

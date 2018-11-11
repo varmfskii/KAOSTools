@@ -88,6 +88,7 @@ namespace KAOS { namespace Tiled
 		std::optional<Size> ParseTileDimensions(const pugi::xml_node& mapNode) const;
 		std::optional<Orientation> ParseOrientation(const pugi::xml_node& mapNode) const;
 		std::optional<RenderOrder> ParseRenderOrder(const pugi::xml_node& mapNode) const;
+		std::optional<KAOS::Imaging::Color> ParseBackgroundColor(const pugi::xml_node& mapNode) const;
 		std::optional<Stagger> ParseStagger(const pugi::xml_node& node) const;
 		std::shared_ptr<TilesetLayer> ParseTilesetLayerNode(const pugi::xml_node& layerNode) const;
 		std::shared_ptr<ObjectGroupLayer> ParseObjectGroupNode(const pugi::xml_node& objectGroupNode) const;
@@ -103,6 +104,7 @@ namespace KAOS { namespace Tiled
 		Orientation				m_Orientation = Orientation::None;
 		RenderOrder				m_RenderOrder = RenderOrder::None;
 		Stagger					m_StaggerConfig;
+		std::optional<KAOS::Imaging::Color> m_BackgroundColor;
 		PropertyBag				m_Properties;
 		layer_container_type	m_Layers;
 		tileset_container_type	m_Tilesets;

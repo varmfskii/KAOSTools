@@ -4,21 +4,23 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include <string>
+#include <KAOS/Imaging/Palette.h>
+#include <KAOS/Common/Utilities.h>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 
-namespace KAOS { namespace Common
+namespace KAOS { namespace Imaging
 {
 
-	class Color
-	{
-	public:
-
-		//	FIXME: Needs implementation
-		explicit Color(const std::string&)
-		{}
-	};
+	Color::Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+		:
+		red(red),
+		green(green),
+		blue(blue),
+		alpha(alpha)
+	{}
 
 }}
 

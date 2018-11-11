@@ -5,7 +5,7 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #include <Tiled/NamedProperty.h>
-#include <KAOS/Common/Utilities.h>
+#include <KAOS/Imaging/ImageUtils.h>
 #include <iostream>
 
 
@@ -54,7 +54,14 @@ namespace KAOS { namespace Tiled
 		}
 		else if (type == "color")
 		{
-			value = color_type(valueAttr.as_string());
+			auto color(KAOS::Imaging::ColorFromString(valueAttr.as_string()));
+			if (!color.has_value())
+			{
+				std::cerr << "Unable to parse color string `" << valueAttr.as_string() << "`\n";
+				return false;
+			}
+
+			value = *color;
 		}
 		else
 		{
