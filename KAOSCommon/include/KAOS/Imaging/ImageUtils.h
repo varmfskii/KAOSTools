@@ -6,6 +6,7 @@
 //	of this file.
 #pragma once
 #include <KAOS/Imaging/Color.h>
+#include <KAOS/Imaging/Image.h>
 #include <optional>
 
 
@@ -14,6 +15,8 @@ namespace KAOS { namespace Imaging
 {
 
 	std::optional<Color> ColorFromString(std::string str);
+
+	std::optional<Image> LoadRawImage(const std::string& filename, size_t width, size_t height);
 
 }}
 

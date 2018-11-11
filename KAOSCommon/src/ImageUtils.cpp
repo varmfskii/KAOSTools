@@ -40,6 +40,31 @@ namespace KAOS { namespace Imaging
 		return std::optional<Color>();
 	}
 
+
+	std::optional<Image> LoadRawImage(const std::string& filename, size_t width, size_t height)
+	{
+		std::ifstream input(filename);
+		if (!input.is_open())
+		{
+			std::cerr << "Unable to open bitmap file `" << filename << "`\n";
+			return std::optional<Image>();
+		}
+
+
+		Image::row_list_type rows(height, Image::row_type(width));
+		for (auto& row : rows)
+		{
+			if (!input.read(reinterpret_cast<char*>(&row.front()), row.size()))
+			{
+				std::cerr << "Unable to load bitmap file `" << filename << "`\n";
+				return std::optional<Image>();
+			}
+		}
+
+		return Image(width, height, move(rows));
+	}
+
+
 }}
 
 

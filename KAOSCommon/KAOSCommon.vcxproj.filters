@@ -29,6 +29,9 @@
     <ClCompile Include="src\ImageUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\KAOS\Common\Utilities.h">
@@ -41,6 +44,9 @@
       <Filter>Header Files\Imaging</Filter>
     </ClInclude>
     <ClInclude Include="include\KAOS\Imaging\ImageUtils.h">
+      <Filter>Header Files\Imaging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KAOS\Imaging\Image.h">
       <Filter>Header Files\Imaging</Filter>
     </ClInclude>
   </ItemGroup>

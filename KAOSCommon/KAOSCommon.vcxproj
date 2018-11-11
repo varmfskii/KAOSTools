@@ -21,11 +21,13 @@
   <ItemGroup>
     <ClInclude Include="include\KAOS\Common\Utilities.h" />
     <ClInclude Include="include\KAOS\Imaging\Color.h" />
+    <ClInclude Include="include\KAOS\Imaging\Image.h" />
     <ClInclude Include="include\KAOS\Imaging\ImageUtils.h" />
     <ClInclude Include="include\KAOS\Imaging\Palette.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Color.cpp" />
+    <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\ImageUtils.cpp" />
     <ClCompile Include="src\Palette.cpp" />
     <ClCompile Include="src\Utilities.cpp" />
