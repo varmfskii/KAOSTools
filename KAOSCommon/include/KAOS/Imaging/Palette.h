@@ -24,11 +24,27 @@ namespace KAOS { namespace Imaging
 		using const_iterator = container_type::const_iterator;
 		using size_type = container_type::size_type;
 
-
+		Palette() = default;
 		explicit Palette(size_t colorCount, Color initColor = Color());
 		explicit Palette(container_type colors);
 		Palette(const Palette&) = default;
 		Palette(Palette&&) = default;
+
+		Palette& operator=(const Palette&) = default;
+
+
+		size_type add(const Color& color)
+		{
+			const auto currentColor(find(m_ColorData.begin(), m_ColorData.end(), color));
+			if (currentColor != m_ColorData.end())
+			{
+				return distance(m_ColorData.begin(), currentColor);
+			}
+
+			auto index(m_ColorData.size());
+			m_ColorData.emplace_back(color);
+			return index;
+		}
 
 
 		size_type size() const

@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 #include <optional>
+#include <sstream>
+#include <iomanip>
 
 
 namespace KAOS { namespace Common
@@ -19,6 +21,7 @@ namespace KAOS { namespace Common
 	std::string MakePath(const std::string& path, const std::string& filename);
 	std::string ConvertToForwardSlashes(std::string filePath);
 	std::string GetFilenameFromPath(std::string path, bool includeExtension);
+	std::string GetFileExtension(std::string path);
 	bool IsAbsolutePath(const std::string& path);
 	std::string EnsureAbsolutePath(const std::string& relativePath);
 	std::string GetDirectoryFromFilePath(std::string path);
@@ -29,6 +32,21 @@ namespace KAOS { namespace Common
 		const std::string& toPath,
 		bool toIsDirectory);
 	bool CreateDirectory(const std::string& path);
+
+	template<class Type_>
+	std::string to_hex_string(const Type_& value, size_t width = 0)
+	{
+		std::ostringstream str;
+		if (width)
+		{
+			str << std::setfill('0') << std::setw(width);
+		}
+		str << std::hex << value;
+
+		return str.str();
+	}
+
+
 
 }}
 

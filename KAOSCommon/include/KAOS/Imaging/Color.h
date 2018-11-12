@@ -19,6 +19,9 @@ namespace KAOS { namespace Imaging
 		Color(uint8_t red = 0, uint8_t green = 0, uint8_t blue = 0, uint8_t alpha = 255);
 
 
+		bool operator==(const Color& other) const;
+
+
 	public:
 
 		uint8_t red = 0;

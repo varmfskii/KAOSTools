@@ -22,6 +22,14 @@ namespace KAOS { namespace Imaging
 		alpha(alpha)
 	{}
 
+	bool Color::operator==(const Color& other) const
+	{
+		return red == other.red
+			&& blue == other.blue
+			&& green == other.green
+			&& alpha == other.alpha;
+	}
+
 }}
 
 

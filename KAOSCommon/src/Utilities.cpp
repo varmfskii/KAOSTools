@@ -4,11 +4,13 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
+#define WIN32_LEAN_AND_MEAN
+#define _CRT_SECURE_NO_WARNINGS
 #include <KAOS/Common/Utilities.h>
 #include <KAOS/Imaging/Color.h>
 #include <algorithm>
+#include <cctype>
 #include <iostream>
-#define WIN32_LEAN_AND_MEAN
 #include <shlwapi.h>
 
 
@@ -158,6 +160,18 @@ namespace KAOS { namespace Common
 		}
 
 		return buffer;
+	}
+
+	std::string GetFileExtension(std::string path)
+	{
+		char extBuffer[_MAX_PATH] = "";
+
+		_splitpath(path.c_str(), nullptr, nullptr, nullptr, extBuffer);
+
+		std::string extString(extBuffer);
+		std::transform(extString.begin(), extString.begin(), extString.end(), ::tolower);
+
+		return extBuffer;
 	}
 
 	bool IsAbsolutePath(const std::string& path)

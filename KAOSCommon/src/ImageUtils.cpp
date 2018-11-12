@@ -5,7 +5,9 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #include <KAOS/Imaging/ImageUtils.h>
+#include <KAOS/Imaging/Palette.h>
 #include <KAOS/Common/Utilities.h>
+#include <loadpng/lodepng.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -13,6 +15,43 @@
 
 namespace KAOS { namespace Imaging
 {
+
+	namespace
+	{
+		unsigned char GetColorBits(unsigned channelValue)
+		{
+			if (channelValue < 43)
+			{
+				return 0x00;
+			}
+
+			if (channelValue < 128)
+			{
+				return 0x01;
+			}
+
+			if (channelValue < 192)
+			{
+				return 0x08;
+			}
+
+			return 0x09;
+		}
+
+	}
+
+
+	uint8_t ConvertColorToRGBRGB(const KAOS::Imaging::Color& color) 
+	{
+		return (GetColorBits(color.red) << 2) | (GetColorBits(color.green) << 1) | GetColorBits(color.blue);
+	}
+
+
+	uint32_t MergePixels(uint32_t msb, uint32_t lsb)
+	{
+		return (msb & 0x0f) << 4 | (lsb & 0xff);
+	}
+
 
 	std::optional<Color> ColorFromString(std::string str)
 	{
@@ -64,6 +103,50 @@ namespace KAOS { namespace Imaging
 		return Image(width, height, move(rows));
 	}
 
+
+	std::optional<std::pair<Image, Palette>> LoadPNGImage(const std::string& filename)
+	{
+		std::vector<unsigned char> rawImage; //the raw pixels
+		unsigned width;
+		unsigned height;
+		const auto error(lodepng::decode(rawImage, width, height, filename));
+		if (error)
+		{
+			std::cerr << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+			return std::optional<std::pair<Image, Palette>>();
+		}
+
+		Palette palette;
+		Image::row_list_type imageRows; //the raw pixels
+		imageRows.reserve(height);
+		auto dataPtr(rawImage.begin());
+		for (auto y = 0; y < height; ++y)
+		{
+			Image::row_type row;
+			row.reserve(width);
+			for (auto x = 0; x < width; ++x)
+			{
+				const Color color(dataPtr[0], dataPtr[1], dataPtr[2], dataPtr[3]);	//	FIXME: Check bounds
+				advance(dataPtr, 4);
+
+				const auto index(palette.add(color));
+				if (index >= 256)
+				{
+					std::cerr << "Image `" << filename << "` exceeds 256 colors\n";
+					return std::optional<std::pair<Image, Palette>>();
+				}
+
+
+				row.emplace_back(static_cast<uint8_t>(index));
+			}
+
+			imageRows.emplace_back(move(row));
+
+		}
+
+
+		return std::make_pair(Image(width, height, move(imageRows)), std::move(palette));
+	}
 
 }}
 

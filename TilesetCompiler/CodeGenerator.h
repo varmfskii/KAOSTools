@@ -5,24 +5,47 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
 #include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <optional>
+#include <vector>
 
 
-
-namespace KAOS { namespace Imaging
+class CodeGenerator
 {
+public:
 
-	std::optional<Color> ColorFromString(std::string str);
-	uint8_t ConvertColorToRGBRGB(const KAOS::Imaging::Color& color);
-	uint32_t MergePixels(uint32_t msb, uint32_t lsb);
+	using BitmapRow = std::vector<unsigned char>;
+	using BitmapRows = std::vector<BitmapRow>;
 
-	std::optional<Image> LoadRawImage(const std::string& filename, size_t width, size_t height);
-	std::optional<std::pair<Image, Palette>> LoadPNGImage(const std::string& filename);
+	void GenerateTileCode(
+		std::ostream& output,
+		const KAOS::Imaging::Image& image,
+		unsigned int id,
+		bool optimize,
+		int64_t displayPitch) const;
 
-}}
+	void GenerateTileCode(
+		std::ostream& output,
+		unsigned int id,
+		unsigned int aliasId) const;
+
+protected:
+
+	void GenerateRowCode(
+		std::ostream& output,
+		const std::vector<int64_t>& offsets,
+		int64_t offsetMultiplier,
+		const BitmapRow& rowData) const;
+
+	void GenerateLeftHalfColumnCode(
+		std::ostream& output,
+		const std::vector<int64_t>& offsets,
+		const BitmapRow& rowData) const;
+
+	void GenerateRightHalfColumnCode(
+		std::ostream& output,
+		const std::vector<int64_t>& offsets,
+		const BitmapRow& rowData) const;
+};
 
 
 
