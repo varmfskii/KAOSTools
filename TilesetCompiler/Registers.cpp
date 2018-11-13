@@ -11,6 +11,15 @@
 
 namespace
 {
+
+	struct Constants
+	{
+		static const unsigned int	FillWidth = 4;
+		static const unsigned int	HiShift = 8;
+		static const WordAccRegister::subvalue_type	SubValueMask = 0xff;
+	};
+
+
 	template<class ValueType_>
 	std::string GenerateRegisterLoad(
 		ValueType_ oldValue,
@@ -80,8 +89,8 @@ WordAccRegister::WordAccRegister(
 	m_HiRegName(hiRegName),
 	m_LoRegName(loRegName),
 	m_Value(value),
-	m_LoHalf(value & traits_type::SubValueMask),
-	m_HiHalf((value >> traits_type::HiShift) & traits_type::SubValueMask)
+	m_LoHalf(value & Constants::SubValueMask),
+	m_HiHalf((value >> Constants::HiShift) & Constants::SubValueMask)
 {}
 
 
@@ -136,28 +145,28 @@ WordAccRegister::value_type WordAccRegister::GetValue() const
 
 std::string WordAccRegister::GenerateLoad(value_type newWord)
 {
-	std::ostringstream output;
+	std::string codeString;
 
-	const subvalue_type newLo(newWord & traits_type::SubValueMask);
-	const subvalue_type newHi((newWord >> traits_type::HiShift) & traits_type::SubValueMask);
+	const subvalue_type newHi((newWord >> Constants::HiShift) & Constants::SubValueMask);
+	const subvalue_type newLo(newWord & Constants::SubValueMask);
 
 	if (!m_Value.has_value())
 	{
-		output << "\tLD" << m_FullRegName << "\t#$" << KAOS::Common::to_hex_string(newWord, traits_type::FillWidth);
+		codeString = "\tLD" + m_FullRegName + "\t#$" + KAOS::Common::to_hex_string(newWord, Constants::FillWidth);
 	}
 	else if (newWord != m_Value)
 	{
 		if (newHi != m_HiHalf && newLo != m_LoHalf)
 		{
-			output << ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, traits_type::FillWidth);
+			codeString = ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, Constants::FillWidth);
 		}
 		else if (newLo != m_LoHalf)
 		{
-			output << ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, traits_type::FillWidth / 2);
+			codeString = ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, Constants::FillWidth / 2);
 		}
 		else if (newHi != m_HiHalf)
 		{
-			output << ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, traits_type::FillWidth / 2);
+			codeString = ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, Constants::FillWidth / 2);
 		}
 		else
 		{
@@ -170,7 +179,7 @@ std::string WordAccRegister::GenerateLoad(value_type newWord)
 	m_LoHalf = newLo;
 	m_Value = newWord;
 
-	return output.str();
+	return codeString;
 }
 
 

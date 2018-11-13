@@ -13,20 +13,8 @@ class WordAccRegister
 {
 public:
 
-	struct traits
-	{
-		using value_type = uint16_t;
-		using subvalue_type = uint8_t;
-
-		static const unsigned int	FillWidth = 4;
-		static const unsigned int	HiShift = 8;
-		static const subvalue_type	SubValueMask = 0xff;
-
-	};
-
-	using traits_type = traits;
-	using value_type = traits_type::value_type;
-	using subvalue_type = traits_type::subvalue_type;
+	using value_type = uint16_t;
+	using subvalue_type = uint8_t;
 
 
 public:

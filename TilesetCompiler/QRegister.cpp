@@ -12,28 +12,28 @@
 
 std::string QRegister::GenerateLoad(uint32_t newQuad)
 {
-	std::ostringstream output;
+	std::string output;
 
 	const WordAccRegister::value_type newAccw(newQuad & 0xffff);
 	const WordAccRegister::value_type newAccd((newQuad >> 16) & 0xffff);
 
 	if (!m_Value.has_value())
 	{
-		output << "\tLDQ\t#$" << KAOS::Common::to_hex_string(newQuad, 8);
+		output = "\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuad, 8);
 	}
 	else if (newQuad != m_Value)
 	{
 		if (newAccw != m_Accw && newAccd != m_Accd)
 		{
-			output << "\tLDQ\t#$" << KAOS::Common::to_hex_string(newQuad, 8);
+			output = "\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuad, 8);
 		}
 		else if (newAccd != m_Accd)
 		{
-			output << m_Accd.GenerateLoad(newAccd);
+			output = m_Accd.GenerateLoad(newAccd);
 		}
 		else if (newAccw != m_Accw)
 		{
-			output << m_Accw.GenerateLoad(newAccw);
+			output = m_Accw.GenerateLoad(newAccw);
 		}
 		else
 		{
@@ -45,7 +45,7 @@ std::string QRegister::GenerateLoad(uint32_t newQuad)
 	m_Accd = DRegister(newAccd);
 	m_Value = newQuad;
 
-	return output.str();
+	return output;
 }
 
 
