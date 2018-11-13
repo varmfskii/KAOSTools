@@ -20,6 +20,46 @@ bool IntermediateImageRow::ComparePixels(const IntermediateImageRow& other) cons
 }
 
 
+uint16_t IntermediateImageRow::GetPixelsAsWord(size_type offset) const
+{
+	if (offset + 2 > m_Data.size())
+	{
+		throw std::out_of_range("Cannot retrieve pixels as word. Offset too large.");
+	}
+
+	auto ptr(m_Data.begin());
+	advance(ptr, offset);
+
+	uint16_t value;
+	
+	value = uint16_t(*(ptr++)) << 8;
+	value |= *ptr;
+
+	return value;
+}
+
+
+uint32_t IntermediateImageRow::GetPixelsAsQuad(size_type offset) const
+{
+	if (offset + 4 > m_Data.size())
+	{
+		throw std::out_of_range("Cannot retrieve pixels as quad. Offset too large.");
+	}
+
+	auto ptr(m_Data.begin());
+	advance(ptr, offset);
+
+	uint32_t value;
+
+	value = uint32_t(*(ptr++)) << 24;
+	value |= uint32_t(*(ptr++)) << 16;
+	value |= uint32_t(*(ptr++)) << 8;
+	value |= *ptr;
+
+	return value;
+
+}
+
 const IntermediateImageRow::row_data_type& IntermediateImageRow::GetPixels() const
 {
 	return m_Data;

@@ -148,16 +148,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CodeGenerator.cpp" />
+    <ClCompile Include="DRegister.cpp" />
     <ClCompile Include="IntermediateImage.cpp" />
     <ClCompile Include="IntermediateImageRow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="QRegister.cpp" />
+    <ClCompile Include="Registers.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TilesetCompiler.cpp" />
+    <ClCompile Include="WRegister.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="IntermediateImage.h" />
     <ClInclude Include="IntermediateImageRow.h" />
+    <ClInclude Include="Registers.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TilesetCompiler.h" />
   </ItemGroup>

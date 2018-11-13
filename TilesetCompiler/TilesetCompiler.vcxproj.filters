@@ -29,6 +29,18 @@
     <ClCompile Include="IntermediateImageRow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Registers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TilesetCompiler.h">
@@ -44,6 +56,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IntermediateImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Registers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

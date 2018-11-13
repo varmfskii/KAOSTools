@@ -4,43 +4,49 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <vector>
+#include "Registers.h"
+#include <KAOS/Common/Utilities.h>
+#include <sstream>
 
 
-struct IntermediateImageRow
+
+std::string QRegister::GenerateLoad(uint32_t newQuad)
 {
-public:
+	std::ostringstream output;
 
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
+	const WordAccRegister::value_type newAccw(newQuad & 0xffff);
+	const WordAccRegister::value_type newAccd((newQuad >> 16) & 0xffff);
 
+	if (!m_Value.has_value())
+	{
+		output << "\tLDQ\t#$" << KAOS::Common::to_hex_string(newQuad, 8);
+	}
+	else if (newQuad != m_Value)
+	{
+		if (newAccw != m_Accw && newAccd != m_Accd)
+		{
+			output << "\tLDQ\t#$" << KAOS::Common::to_hex_string(newQuad, 8);
+		}
+		else if (newAccd != m_Accd)
+		{
+			output << m_Accd.GenerateLoad(newAccd);
+		}
+		else if (newAccw != m_Accw)
+		{
+			output << m_Accw.GenerateLoad(newAccw);
+		}
+		else
+		{
+			throw std::runtime_error("Encountered repeating row where a repeating row should not exist.");
+		}
+	}
 
-public:
+	m_Accw = WRegister(newAccw);
+	m_Accd = DRegister(newAccd);
+	m_Value = newQuad;
 
-	IntermediateImageRow(row_data_type data, int64_t offset);
-
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
-
-	size_type GetWidth() const;
-	size_type size() const;;
-
-
-private:
-
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
-};
+	return output.str();
+}
 
 
 

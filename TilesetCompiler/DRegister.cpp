@@ -4,43 +4,19 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <vector>
+#include "Registers.h"
+#include <KAOS/Common/Utilities.h>
+#include <sstream>
 
 
-struct IntermediateImageRow
-{
-public:
-
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
+DRegister::DRegister()
+	: WordAccRegister("D", "A", "B")
+{}
 
 
-public:
-
-	IntermediateImageRow(row_data_type data, int64_t offset);
-
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
-
-	size_type GetWidth() const;
-	size_type size() const;;
-
-
-private:
-
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
-};
+DRegister::DRegister(value_type value)
+	: WordAccRegister(value, "D", "A", "B")
+{}
 
 
 
