@@ -13,7 +13,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)TestData/Flic</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>--output=out PeeGull/PeeGull_Flying_FF00FF.flc PeeGull/PeeGull_Dead_FF00FF.flc</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>--output=out Shared/BadGuy_Explosion.flc</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)TestData/Flic</LocalDebuggerWorkingDirectory>

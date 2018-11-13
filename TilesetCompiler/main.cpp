@@ -14,11 +14,53 @@
 #include <optional>
 
 
+std::vector<Tile> ExtractTiles(const KAOS::Imaging::Image& image, size_t count)
+{
+	std::vector<Tile> tiles;
+
+	static const size_t Columns = 32;
+	static const size_t Rows = 32;
+	for (auto y(0U); count > 0 && y < Rows; ++y)
+	{
+		for (auto x(0U); count > 0 && x < Columns; ++x)
+		{
+			tiles.emplace_back(image.Extract(x * 8, y * 8, 8, 8), (y * Columns) + x);
+			--count;
+		}
+	}
+
+	return tiles;
+}
+
+
+
+void ConslidateDuplicates(std::vector<Tile>& textureList)
+{
+	for (auto texturePtr(textureList.begin()); texturePtr != textureList.end(); ++texturePtr)
+	{
+		if (!texturePtr->HasIdAlias())
+		{
+			auto nextTexturePtr(texturePtr);
+			++nextTexturePtr;
+
+			for (; nextTexturePtr < textureList.end(); ++nextTexturePtr)
+			{
+				if (!nextTexturePtr->HasIdAlias() && *nextTexturePtr->GetImage() == *texturePtr->GetImage())
+				{
+					nextTexturePtr->SetAliasId(texturePtr->GetId());
+				}
+			}
+		}
+	}
+}
+
+
+
+
 int main(int argc, const char** argv)
 {
 	std::deque<std::string> args(argv + 1, argv + argc);
 
-	bool optimize = true;
 	std::optional<std::string> bitmapFilename;
 	std::optional<std::string> paletteFilename;
 	std::optional<std::string> outputDirectory;
@@ -214,14 +256,15 @@ int main(int argc, const char** argv)
 	}
 
 
+	auto tiles(ExtractTiles(*image, 256));
+	ConslidateDuplicates(tiles);
+
 	TilemapCompiler().Compile(
-		*image,
+		tiles,
 		*palette,
-		256,
 		*outputDirectory,
 		*outputDirectory + "/" + *outputName + ".inc",
 		*outputDirectory + "/" + *outputName + ".pal.inc",
-		optimize,
 		*pitch);
 }
 

@@ -148,11 +148,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CodeGenerator.cpp" />
+    <ClCompile Include="IntermediateImage.cpp" />
+    <ClCompile Include="IntermediateImageRow.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TilesetCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CodeGenerator.h" />
+    <ClInclude Include="IntermediateImage.h" />
+    <ClInclude Include="IntermediateImageRow.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="TilesetCompiler.h" />
   </ItemGroup>
   <ItemGroup>

@@ -23,11 +23,9 @@ namespace KAOS { namespace Imaging
 
 		bool operator==(const Image& other) const;
 
-		//	FIXME: UGH!
-		const row_list_type& GetRows() const
-		{
-			return m_Rows;
-		}
+		size_t GetWidth() const;
+		size_t GetHeight() const;
+		const row_list_type& GetRows() const;
 
 		std::shared_ptr<Image> Extract(size_t xPosition, size_t yPosition, size_t width, size_t height) const;
 

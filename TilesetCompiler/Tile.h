@@ -5,39 +5,31 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "CodeGenerator.h"
-#include "Tile.h"
 #include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
 #include <memory>
 
 
-class TilemapCompiler
+class Tile
 {
 public:
 
-	using tile_list_type = std::vector<Tile>;
+	Tile(std::shared_ptr<KAOS::Imaging::Image> image, size_t textureId);
+	Tile(size_t textureId);
 
-	bool Compile(
-		const tile_list_type& tiles,
-		const KAOS::Imaging::Palette& palette,
-		const std::string& tileDirectory,
-		const std::string& tilesetFilename,
-		const std::string& paletteFilename,
-		size_t displayPitch) const;
+	size_t GetId() const;
+	size_t GetAliasOrId() const;
+
+	bool HasIdAlias() const;
+	void SetAliasId(size_t newId);
+
+	std::shared_ptr<const KAOS::Imaging::Image> GetImage() const;
 
 
-protected:
+private:
 
-	tile_list_type ConslidateDuplicates(tile_list_type tileData) const;
-	void SaveTiles(const tile_list_type& tileData, const std::string& directory, size_t displayPitch) const;
-	void SaveTilemap(const tile_list_type& tileData, const std::string& filename, const std::string& tileDirectory) const;
-	bool SavePalette(const std::string& filename, const KAOS::Imaging::Palette& palette) const;
-
-protected:
-
-	CodeGenerator					m_CodeGen;
-
+	size_t									m_TextureId;
+	std::optional<size_t>					m_AliasTextureId;
+	std::shared_ptr<KAOS::Imaging::Image>	m_Image;
 };
 
 

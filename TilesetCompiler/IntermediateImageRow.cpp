@@ -4,41 +4,62 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "CodeGenerator.h"
-#include "Tile.h"
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <memory>
+#include "IntermediateImageRow.h"
 
 
-class TilemapCompiler
+IntermediateImageRow::IntermediateImageRow(row_data_type data, int64_t offset)
+	:
+	m_Data(move(data)),
+	m_Offsets(1, offset)
+{}
+
+
+bool IntermediateImageRow::ComparePixels(const IntermediateImageRow& other) const
 {
-public:
-
-	using tile_list_type = std::vector<Tile>;
-
-	bool Compile(
-		const tile_list_type& tiles,
-		const KAOS::Imaging::Palette& palette,
-		const std::string& tileDirectory,
-		const std::string& tilesetFilename,
-		const std::string& paletteFilename,
-		size_t displayPitch) const;
+	return m_Data == other.m_Data;
+}
 
 
-protected:
+const IntermediateImageRow::row_data_type& IntermediateImageRow::GetPixels() const
+{
+	return m_Data;
+}
 
-	tile_list_type ConslidateDuplicates(tile_list_type tileData) const;
-	void SaveTiles(const tile_list_type& tileData, const std::string& directory, size_t displayPitch) const;
-	void SaveTilemap(const tile_list_type& tileData, const std::string& filename, const std::string& tileDirectory) const;
-	bool SavePalette(const std::string& filename, const KAOS::Imaging::Palette& palette) const;
 
-protected:
+IntermediateImageRow::size_type IntermediateImageRow::GetOffsetCount() const
+{
+	return m_Offsets.size();
+}
 
-	CodeGenerator					m_CodeGen;
 
-};
+const IntermediateImageRow::offset_list_type& IntermediateImageRow::GetOffsets() const
+{
+	return m_Offsets;
+}
+
+
+void IntermediateImageRow::AddOffsets(const offset_list_type& offsets)
+{
+	m_Offsets.insert(m_Offsets.end(), offsets.begin(), offsets.end());
+}
+
+
+void IntermediateImageRow::ClearOffsets()
+{
+	m_Offsets.clear();
+}
+
+
+IntermediateImageRow::size_type IntermediateImageRow::GetWidth() const
+{
+	return size() * 2;
+}
+
+
+IntermediateImageRow::size_type IntermediateImageRow::size() const
+{
+	return m_Data.size();
+}
 
 
 

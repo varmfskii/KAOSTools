@@ -4,41 +4,48 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "CodeGenerator.h"
 #include "Tile.h"
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <memory>
 
 
-class TilemapCompiler
+
+Tile::Tile(std::shared_ptr<KAOS::Imaging::Image> image, size_t textureId)
+	:
+	m_Image(image),
+	m_TextureId(textureId)
+{}
+
+
+Tile::Tile(size_t textureId)
+	:
+	m_TextureId(0),
+	m_AliasTextureId(textureId)
+{}
+
+size_t Tile::GetId() const
 {
-public:
+	return m_TextureId;
+}
 
-	using tile_list_type = std::vector<Tile>;
+size_t Tile::GetAliasOrId() const
+{
+	return m_AliasTextureId.has_value() ? *m_AliasTextureId : m_TextureId;
+}
 
-	bool Compile(
-		const tile_list_type& tiles,
-		const KAOS::Imaging::Palette& palette,
-		const std::string& tileDirectory,
-		const std::string& tilesetFilename,
-		const std::string& paletteFilename,
-		size_t displayPitch) const;
+bool Tile::HasIdAlias() const
+{
+	return m_AliasTextureId.has_value();
+}
 
+void Tile::SetAliasId(size_t newId)
+{
+	m_AliasTextureId = newId;
+	m_Image = nullptr;
+}
 
-protected:
-
-	tile_list_type ConslidateDuplicates(tile_list_type tileData) const;
-	void SaveTiles(const tile_list_type& tileData, const std::string& directory, size_t displayPitch) const;
-	void SaveTilemap(const tile_list_type& tileData, const std::string& filename, const std::string& tileDirectory) const;
-	bool SavePalette(const std::string& filename, const KAOS::Imaging::Palette& palette) const;
-
-protected:
-
-	CodeGenerator					m_CodeGen;
-
-};
+std::shared_ptr<const KAOS::Imaging::Image> Tile::GetImage() const
+{
+	return m_Image;
+}
 
 
 

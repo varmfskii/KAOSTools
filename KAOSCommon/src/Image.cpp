@@ -21,6 +21,21 @@ namespace KAOS { namespace Imaging
 	}
 
 
+	size_t Image::GetWidth() const
+	{
+		return m_Width;
+	}
+
+	size_t Image::GetHeight() const
+	{
+		return m_Height;
+	}
+
+	//	FIXME: UGH!
+	const Image::row_list_type& Image::GetRows() const
+	{
+		return m_Rows;
+	}
 
 
 	std::shared_ptr<Image> Image::Extract(

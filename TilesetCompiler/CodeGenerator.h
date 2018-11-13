@@ -5,7 +5,9 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
+#include "IntermediateImage.h"
 #include <KAOS/Imaging/Image.h>
+#include <KAOS/Imaging/Palette.h>
 #include <vector>
 
 
@@ -16,35 +18,24 @@ public:
 	using BitmapRow = std::vector<unsigned char>;
 	using BitmapRows = std::vector<BitmapRow>;
 
-	void GenerateTileCode(
+	void GeneratePaletteCode(
 		std::ostream& output,
-		const KAOS::Imaging::Image& image,
-		unsigned int id,
-		bool optimize,
-		int64_t displayPitch) const;
+		const KAOS::Imaging::Palette& palette) const;
 
 	void GenerateTileCode(
+		std::ostream& output,
+		IntermediateImage image,
+		unsigned int id) const;
+
+	void GenerateTileAliasCode(
 		std::ostream& output,
 		unsigned int id,
 		unsigned int aliasId) const;
 
 protected:
 
-	void GenerateRowCode(
-		std::ostream& output,
-		const std::vector<int64_t>& offsets,
-		int64_t offsetMultiplier,
-		const BitmapRow& rowData) const;
+	std::string Generate4ByteRowCode(const IntermediateImage& image) const;
 
-	void GenerateLeftHalfColumnCode(
-		std::ostream& output,
-		const std::vector<int64_t>& offsets,
-		const BitmapRow& rowData) const;
-
-	void GenerateRightHalfColumnCode(
-		std::ostream& output,
-		const std::vector<int64_t>& offsets,
-		const BitmapRow& rowData) const;
 };
 
 

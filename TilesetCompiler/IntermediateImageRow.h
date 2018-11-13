@@ -5,39 +5,39 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "CodeGenerator.h"
-#include "Tile.h"
 #include <KAOS/Imaging/Image.h>
 #include <KAOS/Imaging/Palette.h>
-#include <memory>
+#include <vector>
 
 
-class TilemapCompiler
+struct IntermediateImageRow
 {
 public:
 
-	using tile_list_type = std::vector<Tile>;
-
-	bool Compile(
-		const tile_list_type& tiles,
-		const KAOS::Imaging::Palette& palette,
-		const std::string& tileDirectory,
-		const std::string& tilesetFilename,
-		const std::string& paletteFilename,
-		size_t displayPitch) const;
+	using row_data_type = std::vector<uint8_t>;
+	using size_type = row_data_type::size_type;
+	using offset_list_type = std::vector<int64_t>;
 
 
-protected:
+public:
 
-	tile_list_type ConslidateDuplicates(tile_list_type tileData) const;
-	void SaveTiles(const tile_list_type& tileData, const std::string& directory, size_t displayPitch) const;
-	void SaveTilemap(const tile_list_type& tileData, const std::string& filename, const std::string& tileDirectory) const;
-	bool SavePalette(const std::string& filename, const KAOS::Imaging::Palette& palette) const;
+	IntermediateImageRow(row_data_type data, int64_t offset);
 
-protected:
+	bool ComparePixels(const IntermediateImageRow& other) const;
+	const row_data_type& GetPixels() const;
+	size_type GetOffsetCount() const;
+	const offset_list_type& GetOffsets() const;
+	void AddOffsets(const offset_list_type& offsets);
+	void ClearOffsets();
 
-	CodeGenerator					m_CodeGen;
+	size_type GetWidth() const;
+	size_type size() const;;
 
+
+private:
+
+	row_data_type		m_Data;
+	offset_list_type	m_Offsets;
 };
 
 
