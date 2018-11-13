@@ -9,6 +9,52 @@
 #include <sstream>
 
 
+namespace
+{
+	template<class ValueType_>
+	std::string GenerateRegisterLoad(
+		ValueType_ oldValue,
+		ValueType_ newValue,
+		const std::string& registerName,
+		size_t fillWidth)
+	{
+		std::string output("\t");
+
+		if (newValue == 0)
+		{
+			output += "CLR" + registerName;
+		}
+		else if (~oldValue == newValue)
+		{
+			output += "COM" + registerName;
+		}
+		else if (oldValue + 1 == newValue)
+		{
+			output += "INC" + registerName;
+		}
+		else if (oldValue - 1 == newValue)
+		{
+			output += "DEC" + registerName;
+		}
+		else if (oldValue << 1 == newValue)
+		{
+			output += "LSL" + registerName;
+		}
+		else if (oldValue >> 1 == newValue)
+		{
+			output += "LSR" + registerName;
+		}
+		//	TODO: DAA, neg, sex, sexw
+		else
+		{
+			output += "LD" + registerName + "\t#$" + KAOS::Common::to_hex_string(uint64_t(newValue), fillWidth);
+		}
+
+		return output;
+	}
+
+}
+
 WordAccRegister::WordAccRegister(
 	std::string	fullRegName,
 	std::string	hiRegName,
@@ -103,15 +149,15 @@ std::string WordAccRegister::GenerateLoad(value_type newWord)
 	{
 		if (newHi != m_HiHalf && newLo != m_LoHalf)
 		{
-			output << "\tLD" << m_FullRegName << "\t#$" << KAOS::Common::to_hex_string(newWord, traits_type::FillWidth);
+			output << ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, traits_type::FillWidth);
 		}
 		else if (newLo != m_LoHalf)
 		{
-			output << "\tLD" << m_LoRegName << "\t#$" << KAOS::Common::to_hex_string(uint64_t(newLo), traits_type::FillWidth / 2);
+			output << ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, traits_type::FillWidth / 2);
 		}
 		else if (newHi != m_HiHalf)
 		{
-			output << "\tLD" << m_HiRegName << "\t#$" << KAOS::Common::to_hex_string(uint64_t(newHi), traits_type::FillWidth / 2);
+			output << ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, traits_type::FillWidth / 2);
 		}
 		else
 		{
