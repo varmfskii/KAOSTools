@@ -5,38 +5,33 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "IntermediateImage.h"
-#include "CodeSegment.h"
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
+#include <string>
 #include <vector>
 
 
-class CodeGenerator
+class CodeLine
 {
 public:
 
-	using BitmapRow = std::vector<unsigned char>;
-	using BitmapRows = std::vector<BitmapRow>;
+	CodeLine(const CodeLine&) = default;
+	CodeLine(CodeLine&&) = default;
+	CodeLine(std::string instruction, std::string operand, std::string comment, int cycleCount);
+	CodeLine(std::string instruction, std::string operand, int cycleCount);
+	CodeLine(std::string instruction, int cycleCount);
 
-	void GeneratePaletteCode(
-		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const;
+	CodeLine& operator=(const CodeLine&) = default;
+	CodeLine& operator=(CodeLine&&) = default;
 
-	void GenerateTileCode(
-		std::ostream& output,
-		IntermediateImage image,
-		unsigned int id) const;
+	std::string GetCode() const;
+	unsigned int GetCycleCount() const;
 
-	void GenerateTileAliasCode(
-		std::ostream& output,
-		unsigned int id,
-		unsigned int aliasId) const;
 
-protected:
+private:
 
-	CodeSegment Generate4ByteRowCode(const IntermediateImage& image) const;
-
+	std::string		m_Instruction;
+	std::string		m_Operand;
+	std::string		m_Comment;
+	unsigned int	m_CycleCount = 0;
 };
 
 

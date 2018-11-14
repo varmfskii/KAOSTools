@@ -5,44 +5,9 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
+#include "CodeSegment.h"
 #include <string>
 #include <optional>
-
-
-class MeasuredCode
-{
-public:
-
-	MeasuredCode() = default;
-	MeasuredCode(std::string code, unsigned int cycleCount)
-		:
-		m_Code(move(code)),
-		m_CycleCount(cycleCount)
-	{}
-
-	std::string GetCode() const
-	{
-		return m_Code;
-	}
-
-	unsigned int GetCycleCount() const
-	{
-		return m_CycleCount;
-	}
-
-	MeasuredCode operator+(const MeasuredCode& other) const
-	{
-		return MeasuredCode(m_Code + "\n" + other.m_Code, m_CycleCount + other.m_CycleCount);
-	}
-
-
-private:
-
-	std::string		m_Code;
-	unsigned int	m_CycleCount = 0;
-};
-
-
 
 
 class WordAccRegister
@@ -65,8 +30,9 @@ public:
 	value_type GetValue() const;
 	subvalue_type GetHiByte() const;
 	subvalue_type GetLoByte() const;
+	std::string GetName() const;
 
-	MeasuredCode GenerateLoad(value_type newWord);
+	CodeSegment GenerateLoad(value_type newWord);
 	
 
 protected:
@@ -132,11 +98,13 @@ public:
 
 	using value_type = uint32_t;
 
-	std::string GenerateLoad(value_type newQuad);
+	value_type GetValue() const;
+
+	CodeSegment GenerateLoad(value_type newQuad);
 
 protected:
 
-	MeasuredCode GenerateRegisterLoad(
+	CodeSegment GenerateRegisterLoad(
 		value_type newQuadValue,
 		const DRegister& newAccd,
 		const WRegister& newAccw);

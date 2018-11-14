@@ -23,66 +23,53 @@ namespace
 
 
 	template<class ValueType_>
-	MeasuredCode GenerateRegisterMutation(
+	CodeSegment GenerateRegisterMutation(
 		ValueType_ oldValue,
 		ValueType_ newValue,
 		const std::string& registerName,
 		unsigned int cycleCountAdjust,
 		bool hasShiftInstruction)
 	{
-		std::string output("\t");
-		unsigned int cycleCount = 0;
+		CodeSegment	codeSegment;
 
 		if (newValue == 0)
 		{
 			//	a,b,d,e,f,w
-			output += "CLR" + registerName;
-			cycleCount = 1;
+			codeSegment.Append("CLR" + registerName, 1 + cycleCountAdjust);
 		}
 		else if (~oldValue == newValue)
 		{
 			//	a,b,d,e,f,w
-			output += "COM" + registerName;
-			cycleCount = 1;
+			codeSegment.Append("COM" + registerName, 1 + cycleCountAdjust);
 		}
 		else if (oldValue + 1 == newValue)
 		{
 			//	a,b,d,e,f,w
-			output += "INC" + registerName;
-			cycleCount = 1;
+			codeSegment.Append("INC" + registerName, 1 + cycleCountAdjust);
 		}
 		else if (oldValue - 1 == newValue)
 		{
 			//	a,b,d,e,f,w
-			output += "DEC" + registerName;
-			cycleCount = 1;
+			codeSegment.Append("DEC" + registerName, 1 + cycleCountAdjust);
 		}
 		else if (hasShiftInstruction && oldValue << 1 == newValue)
 		{
 			//	a,b,d
-			output += "LSL" + registerName;
-			cycleCount = 1;
+			codeSegment.Append("LSL" + registerName, 1 + cycleCountAdjust);
 		}
 		else if (hasShiftInstruction && oldValue >> 1 == newValue)
 		{
 			//	a,b,d
-			output += "LSR" + registerName;
-			cycleCount = 1;
+			codeSegment.Append("LSR" + registerName, 1 + cycleCountAdjust);
 		}
 		//	TODO: neg
 
-		//	No cycles used - no instruction
-		if (!cycleCount)
-		{
-			return MeasuredCode();
-		}
-
-		output += "\t\t*\t" + std::to_string(cycleCount + cycleCountAdjust);
-		return MeasuredCode(output, cycleCount + cycleCountAdjust);
+		return codeSegment;
 	}
 
+
 	template<class ValueType_>
-	MeasuredCode GenerateRegisterLoad(
+	CodeSegment GenerateRegisterLoad(
 		ValueType_ oldValue,
 		ValueType_ newValue,
 		const std::string& registerName,
@@ -102,12 +89,14 @@ namespace
 		}
 
 		//	a,b,d,e,f,w
-		const auto cycleCount = 2;
-		const auto output =
-			"\tLD" + registerName + "\t#$" + KAOS::Common::to_hex_string(uint64_t(newValue), fillWidth)
-			+ "\t*\t" + std::to_string(cycleCount + cycleCountAdjust);
+		CodeSegment codeSegment;
 
-		return MeasuredCode(output, cycleCount + cycleCountAdjust);
+		codeSegment.Append(
+			"LD" + registerName,
+			"#$" + KAOS::Common::to_hex_string(uint64_t(newValue), fillWidth),
+			2 + cycleCountAdjust);
+
+		return codeSegment;
 	}
 
 }
@@ -209,33 +198,41 @@ WordAccRegister::subvalue_type WordAccRegister::GetLoByte() const
 }
 
 
-
-
-MeasuredCode WordAccRegister::GenerateLoad(value_type newWord)
+std::string WordAccRegister::GetName() const
 {
-	MeasuredCode code;
+	return m_FullRegName;
+}
+
+
+
+
+CodeSegment WordAccRegister::GenerateLoad(value_type newWord)
+{
+	CodeSegment codeSegment;
 
 	const subvalue_type newHi((newWord >> Constants::HiShift) & Constants::SubValueMask);
 	const subvalue_type newLo(newWord & Constants::SubValueMask);
 
 	if (!m_Value.has_value())
 	{
-		const auto codeString("\tLD" + m_FullRegName + "\t#$" + KAOS::Common::to_hex_string(newWord, Constants::FillWidth));
-		code = MeasuredCode(codeString, 3 + m_CycleCountAdjust);
+		codeSegment.Append(
+			"LD" + m_FullRegName,
+			"#$" + KAOS::Common::to_hex_string(newWord, Constants::FillWidth),
+			3 + m_CycleCountAdjust);
 	}
 	else if (newWord != m_Value)
 	{
 		if (newHi != m_HiHalf && newLo != m_LoHalf)
 		{
-			code = ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, Constants::FillWidth, m_CycleCountAdjust + 1, true);
+			codeSegment = ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, Constants::FillWidth, m_CycleCountAdjust + 1, true);
 		}
 		else if (newLo != m_LoHalf)
 		{
-			code = ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
+			codeSegment = ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
 		}
 		else if (newHi != m_HiHalf)
 		{
-			code = ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
+			codeSegment = ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
 		}
 		else
 		{
@@ -248,9 +245,8 @@ MeasuredCode WordAccRegister::GenerateLoad(value_type newWord)
 	m_LoHalf = newLo;
 	m_Value = newWord;
 
-	return code;
+	return codeSegment;
 }
-
 
 
 

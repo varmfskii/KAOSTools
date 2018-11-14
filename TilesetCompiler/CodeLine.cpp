@@ -4,40 +4,65 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "IntermediateImage.h"
 #include "CodeSegment.h"
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <vector>
+#include <sstream>
+#include <iomanip>
 
 
-class CodeGenerator
+CodeLine::CodeLine(
+	std::string instruction,
+	int cycleCount)
+	:
+	m_Instruction(move(instruction)),
+	m_CycleCount(cycleCount)
+{}
+
+
+CodeLine::CodeLine(
+	std::string instruction,
+	std::string operand,
+	int cycleCount)
+	:
+	m_Instruction(move(instruction)),
+	m_Operand(move(operand)),
+	m_CycleCount(cycleCount)
+{}
+
+
+CodeLine::CodeLine(
+	std::string instruction,
+	std::string operand,
+	std::string comment,
+	int cycleCount)
+	:
+	m_Instruction(move(instruction)),
+	m_Operand(move(operand)),
+	m_Comment(move(comment)),
+	m_CycleCount(cycleCount)
+{}
+
+
+
+
+std::string CodeLine::GetCode() const
 {
-public:
+	std::ostringstream output;
 
-	using BitmapRow = std::vector<unsigned char>;
-	using BitmapRows = std::vector<BitmapRow>;
+	output << 
+		"\t"
+		<< std::left << std::setw(8) << m_Instruction
+		<< std::left << std::setw(14) << m_Operand
+		<< std::left << std::setw(12) << ("*\t(" + std::to_string(m_CycleCount) + ")")
+		<< m_Comment;
 
-	void GeneratePaletteCode(
-		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const;
+	return output.str();
+}
 
-	void GenerateTileCode(
-		std::ostream& output,
-		IntermediateImage image,
-		unsigned int id) const;
 
-	void GenerateTileAliasCode(
-		std::ostream& output,
-		unsigned int id,
-		unsigned int aliasId) const;
-
-protected:
-
-	CodeSegment Generate4ByteRowCode(const IntermediateImage& image) const;
-
-};
+unsigned int CodeLine::GetCycleCount() const
+{
+	return m_CycleCount;
+}
 
 
 

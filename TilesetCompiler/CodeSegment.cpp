@@ -4,40 +4,74 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include "IntermediateImage.h"
 #include "CodeSegment.h"
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <vector>
 
 
-class CodeGenerator
+CodeSegment CodeSegment::operator+(const CodeSegment& other) const
 {
-public:
+	auto codeSegment(*this);
 
-	using BitmapRow = std::vector<unsigned char>;
-	using BitmapRows = std::vector<BitmapRow>;
+	for (const auto& line : other.m_CodeLines)
+	{
+		codeSegment.Append(line);
+	}
 
-	void GeneratePaletteCode(
-		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const;
+	return codeSegment;
+}
 
-	void GenerateTileCode(
-		std::ostream& output,
-		IntermediateImage image,
-		unsigned int id) const;
 
-	void GenerateTileAliasCode(
-		std::ostream& output,
-		unsigned int id,
-		unsigned int aliasId) const;
+CodeSegment& CodeSegment::operator+=(const CodeSegment& other)
+{
+	m_CodeLines.insert(m_CodeLines.end(), other.m_CodeLines.begin(), other.m_CodeLines.end());
+	m_CycleCount += other.m_CycleCount;
+	return *this;
+}
 
-protected:
 
-	CodeSegment Generate4ByteRowCode(const IntermediateImage& image) const;
 
-};
+void CodeSegment::Append(CodeLine codeLine)
+{
+	m_CodeLines.push_back(codeLine);
+	m_CycleCount += codeLine.GetCycleCount();
+}
+
+
+void CodeSegment::Append(std::string instruction, std::string operand, std::string comment, int cycleCount)
+{
+	Append(CodeLine(instruction, operand, comment, cycleCount));
+}
+
+
+void CodeSegment::Append(std::string instruction, std::string operand, int cycleCount)
+{
+	Append(CodeLine(instruction, operand, cycleCount));
+}
+
+
+void CodeSegment::Append(std::string instruction, int cycleCount)
+{
+	Append(CodeLine(instruction, cycleCount));
+}
+
+
+
+
+std::string CodeSegment::GetCode() const
+{
+	std::string output;
+
+	for (const auto& line : m_CodeLines)
+	{
+		output += line.GetCode() + "\n";
+	}
+	return output;
+}
+
+
+unsigned int CodeSegment::GetCycleCount() const
+{
+	return m_CycleCount;
+}
 
 
 
