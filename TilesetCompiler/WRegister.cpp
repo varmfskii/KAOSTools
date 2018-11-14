@@ -8,12 +8,12 @@
 
 
 WRegister::WRegister()
-	: WordAccRegister("W", "E", "F")
+	: WordAccRegister("W", "E", "F", 1, false)
 {}
 
 
 WRegister::WRegister(value_type value)
-	: WordAccRegister(value, "W", "E", "F")
+	: WordAccRegister(value, "W", "E", "F", 1, false)
 {}
 
 

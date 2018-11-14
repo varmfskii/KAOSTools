@@ -20,46 +20,94 @@ namespace
 	};
 
 
+
+
 	template<class ValueType_>
-	std::string GenerateRegisterLoad(
+	MeasuredCode GenerateRegisterMutation(
 		ValueType_ oldValue,
 		ValueType_ newValue,
 		const std::string& registerName,
-		size_t fillWidth)
+		unsigned int cycleCountAdjust,
+		bool hasShiftInstruction)
 	{
 		std::string output("\t");
+		unsigned int cycleCount = 0;
 
 		if (newValue == 0)
 		{
+			//	a,b,d,e,f,w
 			output += "CLR" + registerName;
+			cycleCount = 1;
 		}
 		else if (~oldValue == newValue)
 		{
+			//	a,b,d,e,f,w
 			output += "COM" + registerName;
+			cycleCount = 1;
 		}
 		else if (oldValue + 1 == newValue)
 		{
+			//	a,b,d,e,f,w
 			output += "INC" + registerName;
+			cycleCount = 1;
 		}
 		else if (oldValue - 1 == newValue)
 		{
+			//	a,b,d,e,f,w
 			output += "DEC" + registerName;
+			cycleCount = 1;
 		}
-		else if (oldValue << 1 == newValue)
+		else if (hasShiftInstruction && oldValue << 1 == newValue)
 		{
+			//	a,b,d
 			output += "LSL" + registerName;
+			cycleCount = 1;
 		}
-		else if (oldValue >> 1 == newValue)
+		else if (hasShiftInstruction && oldValue >> 1 == newValue)
 		{
+			//	a,b,d
 			output += "LSR" + registerName;
+			cycleCount = 1;
 		}
-		//	TODO: DAA, neg, sex, sexw
-		else
+		//	TODO: neg
+
+		//	No cycles used - no instruction
+		if (!cycleCount)
 		{
-			output += "LD" + registerName + "\t#$" + KAOS::Common::to_hex_string(uint64_t(newValue), fillWidth);
+			return MeasuredCode();
 		}
 
-		return output;
+		output += "\t\t*\t" + std::to_string(cycleCount + cycleCountAdjust);
+		return MeasuredCode(output, cycleCount + cycleCountAdjust);
+	}
+
+	template<class ValueType_>
+	MeasuredCode GenerateRegisterLoad(
+		ValueType_ oldValue,
+		ValueType_ newValue,
+		const std::string& registerName,
+		size_t fillWidth,
+		unsigned int cycleCountAdjust,
+		bool hasShiftInstruction)
+	{
+		auto mutation(GenerateRegisterMutation(
+			oldValue,
+			newValue,
+			registerName,
+			cycleCountAdjust,
+			hasShiftInstruction));
+		if (mutation.GetCycleCount())
+		{
+			return mutation;
+		}
+
+		//	a,b,d,e,f,w
+		const auto cycleCount = 2;
+		const auto output =
+			"\tLD" + registerName + "\t#$" + KAOS::Common::to_hex_string(uint64_t(newValue), fillWidth)
+			+ "\t*\t" + std::to_string(cycleCount + cycleCountAdjust);
+
+		return MeasuredCode(output, cycleCount + cycleCountAdjust);
 	}
 
 }
@@ -67,11 +115,15 @@ namespace
 WordAccRegister::WordAccRegister(
 	std::string	fullRegName,
 	std::string	hiRegName,
-	std::string	loRegName)
+	std::string	loRegName,
+	unsigned int cycleCountAdjust,
+	bool hasSubShiftInstruction)
 	:
 	m_FullRegName(fullRegName),
 	m_HiRegName(hiRegName),
 	m_LoRegName(loRegName),
+	m_CycleCountAdjust(cycleCountAdjust),
+	m_HasSubShiftInstruction(hasSubShiftInstruction),
 	m_Value(),
 	m_LoHalf(),
 	m_HiHalf()
@@ -83,11 +135,15 @@ WordAccRegister::WordAccRegister(
 	value_type value,
 	std::string	fullRegName,
 	std::string	hiRegName,
-	std::string	loRegName)
+	std::string	loRegName,
+	unsigned int cycleCountAdjust,
+	bool hasSubShiftInstruction)
 	:
 	m_FullRegName(fullRegName),
 	m_HiRegName(hiRegName),
 	m_LoRegName(loRegName),
+	m_CycleCountAdjust(cycleCountAdjust),
+	m_HasSubShiftInstruction(hasSubShiftInstruction),
 	m_Value(value),
 	m_LoHalf(value & Constants::SubValueMask),
 	m_HiHalf((value >> Constants::HiShift) & Constants::SubValueMask)
@@ -141,32 +197,45 @@ WordAccRegister::value_type WordAccRegister::GetValue() const
 }
 
 
-
-
-std::string WordAccRegister::GenerateLoad(value_type newWord)
+WordAccRegister::subvalue_type WordAccRegister::GetHiByte() const
 {
-	std::string codeString;
+	return m_HiHalf;
+}
+
+
+WordAccRegister::subvalue_type WordAccRegister::GetLoByte() const
+{
+	return m_LoHalf;
+}
+
+
+
+
+MeasuredCode WordAccRegister::GenerateLoad(value_type newWord)
+{
+	MeasuredCode code;
 
 	const subvalue_type newHi((newWord >> Constants::HiShift) & Constants::SubValueMask);
 	const subvalue_type newLo(newWord & Constants::SubValueMask);
 
 	if (!m_Value.has_value())
 	{
-		codeString = "\tLD" + m_FullRegName + "\t#$" + KAOS::Common::to_hex_string(newWord, Constants::FillWidth);
+		const auto codeString("\tLD" + m_FullRegName + "\t#$" + KAOS::Common::to_hex_string(newWord, Constants::FillWidth));
+		code = MeasuredCode(codeString, 3 + m_CycleCountAdjust);
 	}
 	else if (newWord != m_Value)
 	{
 		if (newHi != m_HiHalf && newLo != m_LoHalf)
 		{
-			codeString = ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, Constants::FillWidth);
+			code = ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, Constants::FillWidth, m_CycleCountAdjust + 1, true);
 		}
 		else if (newLo != m_LoHalf)
 		{
-			codeString = ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, Constants::FillWidth / 2);
+			code = ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
 		}
 		else if (newHi != m_HiHalf)
 		{
-			codeString = ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, Constants::FillWidth / 2);
+			code = ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
 		}
 		else
 		{
@@ -179,7 +248,7 @@ std::string WordAccRegister::GenerateLoad(value_type newWord)
 	m_LoHalf = newLo;
 	m_Value = newWord;
 
-	return codeString;
+	return code;
 }
 
 

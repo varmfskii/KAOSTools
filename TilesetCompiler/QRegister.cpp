@@ -9,31 +9,30 @@
 #include <sstream>
 
 
-
-std::string QRegister::GenerateLoad(uint32_t newQuad)
+std::string QRegister::GenerateLoad(value_type newQuad)
 {
-	std::string output;
+	MeasuredCode code;
 
-	const WordAccRegister::value_type newAccw(newQuad & 0xffff);
 	const WordAccRegister::value_type newAccd((newQuad >> 16) & 0xffff);
+	const WordAccRegister::value_type newAccw(newQuad & 0xffff);
 
 	if (!m_Value.has_value())
 	{
-		output = "\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuad, 8);
+		code = MeasuredCode("\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuad, 8), 5);
 	}
 	else if (newQuad != m_Value)
 	{
 		if (newAccw != m_Accw && newAccd != m_Accd)
 		{
-			output = "\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuad, 8);
+			code = GenerateRegisterLoad(newQuad, DRegister(newAccd), WRegister(newAccw));
 		}
 		else if (newAccd != m_Accd)
 		{
-			output = m_Accd.GenerateLoad(newAccd);
+			code = m_Accd.GenerateLoad(newAccd);
 		}
 		else if (newAccw != m_Accw)
 		{
-			output = m_Accw.GenerateLoad(newAccw);
+			code = m_Accw.GenerateLoad(newAccw);
 		}
 		else
 		{
@@ -45,7 +44,51 @@ std::string QRegister::GenerateLoad(uint32_t newQuad)
 	m_Accd = DRegister(newAccd);
 	m_Value = newQuad;
 
-	return output;
+	return code.GetCode();
+}
+
+
+
+
+MeasuredCode QRegister::GenerateRegisterLoad(
+	value_type newQuadValue,
+	const DRegister& newAccd,
+	const WRegister& newAccw)
+{
+	MeasuredCode code;
+
+	//	Check for same outer bytes but different inner bytes
+	if (newAccd.GetHiByte() == m_Accd.GetHiByte() && newAccw.GetLoByte() == m_Accw.GetLoByte())
+	{
+		DRegister tmpAccd(m_Accd);
+		WRegister tmpAccw(m_Accw);
+		const auto accdCode(tmpAccd.GenerateLoad(newAccd.GetValue()));
+		const auto accdCycleCount(accdCode.GetCycleCount());
+		const auto accwCode(tmpAccw.GenerateLoad(newAccw.GetValue()));
+		const auto accwCycleCount(accwCode.GetCycleCount());
+
+		if (accdCycleCount && accwCycleCount && accdCycleCount + accwCycleCount < 5)
+		{
+			code = accdCode + accwCode;
+		}
+		else
+		{
+			code = MeasuredCode("\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuadValue, 8) + " * TODO: Optimize inner bytes only", 5);
+		}
+	}
+	//	Check for same inner bytes but different outer bytes
+	else if (newAccd.GetLoByte() == m_Accd.GetLoByte() && newAccw.GetHiByte() == m_Accw.GetHiByte())
+	{
+		code = MeasuredCode("\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuadValue, 8) + " * TODO: Optimize outer bytes only", 5);
+	}
+	//	Load whole register
+	else
+	{
+		code = MeasuredCode("\tLDQ\t#$" + KAOS::Common::to_hex_string(newQuadValue, 8), 5);
+	}
+
+
+	return code;
 }
 
 

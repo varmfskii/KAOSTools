@@ -10,12 +10,12 @@
 
 
 DRegister::DRegister()
-	: WordAccRegister("D", "A", "B")
+	: WordAccRegister("D", "A", "B", 0, true)
 {}
 
 
 DRegister::DRegister(value_type value)
-	: WordAccRegister(value, "D", "A", "B")
+	: WordAccRegister(value, "D", "A", "B", 0, true)
 {}
 
 

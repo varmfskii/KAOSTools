@@ -9,6 +9,42 @@
 #include <optional>
 
 
+class MeasuredCode
+{
+public:
+
+	MeasuredCode() = default;
+	MeasuredCode(std::string code, unsigned int cycleCount)
+		:
+		m_Code(move(code)),
+		m_CycleCount(cycleCount)
+	{}
+
+	std::string GetCode() const
+	{
+		return m_Code;
+	}
+
+	unsigned int GetCycleCount() const
+	{
+		return m_CycleCount;
+	}
+
+	MeasuredCode operator+(const MeasuredCode& other) const
+	{
+		return MeasuredCode(m_Code + "\n" + other.m_Code, m_CycleCount + other.m_CycleCount);
+	}
+
+
+private:
+
+	std::string		m_Code;
+	unsigned int	m_CycleCount = 0;
+};
+
+
+
+
 class WordAccRegister
 {
 public:
@@ -27,22 +63,28 @@ public:
 
 	bool HasValue() const;
 	value_type GetValue() const;
+	subvalue_type GetHiByte() const;
+	subvalue_type GetLoByte() const;
 
-	std::string GenerateLoad(value_type newWord);
-
+	MeasuredCode GenerateLoad(value_type newWord);
+	
 
 protected:
 
 	WordAccRegister(
 		std::string	fullRegName,
 		std::string	hiRegName,
-		std::string	loRegName);
+		std::string	loRegName,
+		unsigned int cycleCountAdjust,
+		bool hasSubShiftInstruction);
 
 	WordAccRegister(
 		value_type value,
 		std::string	fullRegName,
 		std::string	hiRegName,
-		std::string	loRegName);
+		std::string	loRegName,
+		unsigned int cycleCountAdjust,
+		bool hasSubShiftInstruction);
 
 
 private:
@@ -50,6 +92,8 @@ private:
 	const std::string			m_FullRegName;
 	const std::string			m_HiRegName;
 	const std::string			m_LoRegName;
+	const unsigned int			m_CycleCountAdjust;
+	const bool					m_HasSubShiftInstruction;
 	std::optional<value_type>	m_Value;
 	subvalue_type				m_LoHalf = 0;
 	subvalue_type				m_HiHalf = 0;
@@ -88,7 +132,14 @@ public:
 
 	using value_type = uint32_t;
 
-	std::string GenerateLoad(uint32_t newQuad);
+	std::string GenerateLoad(value_type newQuad);
+
+protected:
+
+	MeasuredCode GenerateRegisterLoad(
+		value_type newQuadValue,
+		const DRegister& newAccd,
+		const WRegister& newAccw);
 
 
 private:
