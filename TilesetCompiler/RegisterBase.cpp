@@ -4,23 +4,52 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Registers.h"
-
-const RegisterConfig accwRegister(RegisterId::W, 4, 2, false);
-const RegisterConfig acceRegister(RegisterId::E, 3, 1, false);
-const RegisterConfig accfRegister(RegisterId::F, 3, 1, false);
+#include "RegisterBase.h"
 
 
-WRegister::WRegister()
-	: WordAccumulatorRegister(accwRegister, acceRegister, accfRegister)
-{}
+std::string GetRegisterName(RegisterId id)
+{
+	switch(id)
+	{
+	case RegisterId::Zero:
+		return "Z";
+	case RegisterId::DP:
+		return "DP";
+	case RegisterId::CC:
+		return "CC";
 
+	case RegisterId::A:
+		return "A";
+	case RegisterId::B:
+		return "B";
+	case RegisterId::D:
+		return "D";
 
-WRegister::WRegister(value_type value)
-	: WordAccumulatorRegister(accwRegister, acceRegister, accfRegister, value)
-{}
+	case RegisterId::E:
+		return "E";
+	case RegisterId::F:
+		return "F";
+	case RegisterId::W:
+		return "W";
 
+	case RegisterId::X:
+		return "X";
+	case RegisterId::Y:
+		return "Y";
 
+	case RegisterId::S:
+		return "S";
+	case RegisterId::U:
+		return "U";
+
+	case RegisterId::PC:
+		return "PC";
+	case RegisterId::V:
+		return "V";
+	}
+
+	throw std::runtime_error("Unsupported register id. Oops!");
+}
 
 
 

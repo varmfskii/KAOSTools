@@ -8,14 +8,18 @@
 #include <KAOS/Common/Utilities.h>
 #include <sstream>
 
+const RegisterConfig accdRegister(RegisterId::D, 3, 2, true);
+const RegisterConfig accaRegister(RegisterId::A, 2, 1, true);
+const RegisterConfig accbRegister(RegisterId::B, 2, 1, true);
+
 
 DRegister::DRegister()
-	: WordAccRegister("D", "A", "B", 0, true)
+	: WordAccumulatorRegister(accdRegister, accaRegister, accbRegister)
 {}
 
 
 DRegister::DRegister(value_type value)
-	: WordAccRegister(value, "D", "A", "B", 0, true)
+	: WordAccumulatorRegister(accdRegister, accaRegister, accbRegister, value)
 {}
 
 

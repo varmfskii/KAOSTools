@@ -5,6 +5,7 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #include "Registers.h"
+#include "ByteAccumulatorRegister.h"
 #include <KAOS/Common/Utilities.h>
 #include <sstream>
 
@@ -16,197 +17,57 @@ namespace
 	{
 		static const unsigned int	FillWidth = 4;
 		static const unsigned int	HiShift = 8;
-		static const WordAccRegister::subvalue_type	SubValueMask = 0xff;
+		static const WordAccumulatorRegister::subvalue_type	SubValueMask = 0xff;
 	};
-
-
-
-
-	template<class ValueType_>
-	CodeSegment GenerateRegisterMutation(
-		ValueType_ oldValue,
-		ValueType_ newValue,
-		const std::string& registerName,
-		unsigned int cycleCountAdjust,
-		bool hasShiftInstruction)
-	{
-		CodeSegment	codeSegment;
-
-		if (newValue == 0)
-		{
-			//	a,b,d,e,f,w
-			codeSegment.Append("CLR" + registerName, 1 + cycleCountAdjust);
-		}
-		else if (~oldValue == newValue)
-		{
-			//	a,b,d,e,f,w
-			codeSegment.Append("COM" + registerName, 1 + cycleCountAdjust);
-		}
-		else if (oldValue + 1 == newValue)
-		{
-			//	a,b,d,e,f,w
-			codeSegment.Append("INC" + registerName, 1 + cycleCountAdjust);
-		}
-		else if (oldValue - 1 == newValue)
-		{
-			//	a,b,d,e,f,w
-			codeSegment.Append("DEC" + registerName, 1 + cycleCountAdjust);
-		}
-		else if (hasShiftInstruction && oldValue << 1 == newValue)
-		{
-			//	a,b,d
-			codeSegment.Append("LSL" + registerName, 1 + cycleCountAdjust);
-		}
-		else if (hasShiftInstruction && oldValue >> 1 == newValue)
-		{
-			//	a,b,d
-			codeSegment.Append("LSR" + registerName, 1 + cycleCountAdjust);
-		}
-		//	TODO: neg
-
-		return codeSegment;
-	}
-
-
-	template<class ValueType_>
-	CodeSegment GenerateRegisterLoad(
-		ValueType_ oldValue,
-		ValueType_ newValue,
-		const std::string& registerName,
-		size_t fillWidth,
-		unsigned int cycleCountAdjust,
-		bool hasShiftInstruction)
-	{
-		auto mutation(GenerateRegisterMutation(
-			oldValue,
-			newValue,
-			registerName,
-			cycleCountAdjust,
-			hasShiftInstruction));
-		if (mutation.GetCycleCount())
-		{
-			return mutation;
-		}
-
-		//	a,b,d,e,f,w
-		CodeSegment codeSegment;
-
-		codeSegment.Append(
-			"LD" + registerName,
-			"#$" + KAOS::Common::to_hex_string(uint64_t(newValue), fillWidth),
-			2 + cycleCountAdjust);
-
-		return codeSegment;
-	}
 
 }
 
-WordAccRegister::WordAccRegister(
-	std::string	fullRegName,
-	std::string	hiRegName,
-	std::string	loRegName,
-	unsigned int cycleCountAdjust,
-	bool hasSubShiftInstruction)
+
+
+WordAccumulatorRegister::WordAccumulatorRegister(
+	const RegisterConfig& config,
+	const RegisterConfig& hiRegConfig,
+	const RegisterConfig& loRegConfig)
 	:
-	m_FullRegName(fullRegName),
-	m_HiRegName(hiRegName),
-	m_LoRegName(loRegName),
-	m_CycleCountAdjust(cycleCountAdjust),
-	m_HasSubShiftInstruction(hasSubShiftInstruction),
-	m_Value(),
-	m_LoHalf(),
-	m_HiHalf()
+	Register(config),
+	m_HiByte(hiRegConfig),
+	m_LoByte(loRegConfig)
 {}
 
 
 
-WordAccRegister::WordAccRegister(
-	value_type value,
-	std::string	fullRegName,
-	std::string	hiRegName,
-	std::string	loRegName,
-	unsigned int cycleCountAdjust,
-	bool hasSubShiftInstruction)
+WordAccumulatorRegister::WordAccumulatorRegister(
+	const RegisterConfig& config,
+	const RegisterConfig& hiRegConfig,
+	const RegisterConfig& loRegConfig,
+	value_type value)
 	:
-	m_FullRegName(fullRegName),
-	m_HiRegName(hiRegName),
-	m_LoRegName(loRegName),
-	m_CycleCountAdjust(cycleCountAdjust),
-	m_HasSubShiftInstruction(hasSubShiftInstruction),
-	m_Value(value),
-	m_LoHalf(value & Constants::SubValueMask),
-	m_HiHalf((value >> Constants::HiShift) & Constants::SubValueMask)
+	Register(config, value),
+	m_HiByte(hiRegConfig, (value >> Constants::HiShift) & Constants::SubValueMask),
+	m_LoByte(loRegConfig, value & Constants::SubValueMask)
 {}
 
 
 
 
 
-WordAccRegister& WordAccRegister::operator=(const WordAccRegister& other)
+WordAccumulatorRegister& WordAccumulatorRegister::operator=(const WordAccumulatorRegister& other)
 {
 	if (this != &other)
 	{
-		m_Value = other.m_Value;
-		m_LoHalf = other.m_LoHalf;
-		m_HiHalf = other.m_HiHalf;
+		//	FIXME: should be copy/swap
+		Register::operator=(other);
+		m_LoByte = other.m_LoByte;
+		m_HiByte = other.m_HiByte;
 	}
 
 	return *this;
 }
 
 
-bool WordAccRegister::operator!=(const WordAccRegister& other) const
-{
-	return m_Value.has_value() != other.m_Value.has_value() || m_Value != other.m_Value;
-}
 
 
-
-//bool operator==(const WordAccRegister& other) const
-//{
-//	if (m_HasValue != other.m_HasValue)
-//	{
-//		return false;
-//	}
-//	return m_HasValue == other.m_HasValue && m_Value == other.m_Value;
-//}
-
-
-
-
-bool WordAccRegister::HasValue() const
-{
-	return m_Value.has_value();
-}
-
-
-WordAccRegister::value_type WordAccRegister::GetValue() const
-{
-	return *m_Value;
-}
-
-
-WordAccRegister::subvalue_type WordAccRegister::GetHiByte() const
-{
-	return m_HiHalf;
-}
-
-
-WordAccRegister::subvalue_type WordAccRegister::GetLoByte() const
-{
-	return m_LoHalf;
-}
-
-
-std::string WordAccRegister::GetName() const
-{
-	return m_FullRegName;
-}
-
-
-
-
-CodeSegment WordAccRegister::GenerateLoad(value_type newWord)
+CodeSegment WordAccumulatorRegister::GenerateLoad(value_type newWord)
 {
 	CodeSegment codeSegment;
 
@@ -215,34 +76,37 @@ CodeSegment WordAccRegister::GenerateLoad(value_type newWord)
 
 	if (!m_Value.has_value())
 	{
-		codeSegment.Append(
-			"LD" + m_FullRegName,
-			"#$" + KAOS::Common::to_hex_string(newWord, Constants::FillWidth),
-			3 + m_CycleCountAdjust);
+		codeSegment = Register<uint16_t>::GenerateLoad(newWord);
 	}
 	else if (newWord != m_Value)
 	{
-		if (newHi != m_HiHalf && newLo != m_LoHalf)
+		//	Meh dump this and just perform the loads on each and compare the cycle count and size
+		if (newHi != m_HiByte && newLo != m_LoByte)
 		{
-			codeSegment = ::GenerateRegisterLoad(*m_Value, newWord, m_FullRegName, Constants::FillWidth, m_CycleCountAdjust + 1, true);
+			codeSegment = Register<uint16_t>::GenerateLoad(newWord);
 		}
-		else if (newLo != m_LoHalf)
+		else if (newLo != m_LoByte)
 		{
-			codeSegment = ::GenerateRegisterLoad(m_LoHalf, newLo, m_LoRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
+			codeSegment = m_LoByte.GenerateLoad(newLo);
 		}
-		else if (newHi != m_HiHalf)
+		else if (newHi != m_HiByte)
 		{
-			codeSegment = ::GenerateRegisterLoad(m_HiHalf, newHi, m_HiRegName, Constants::FillWidth / 2, m_CycleCountAdjust, m_HasSubShiftInstruction);
+			codeSegment = m_HiByte.GenerateLoad(newHi);
 		}
 		else
 		{
 			throw std::runtime_error("Encountered repeating row where a repeating row should not exist.");
 		}
 
+		//	We expect a load to have been performed here
+		if (codeSegment.GetCycleCount() == 0)
+		{
+			throw std::runtime_error("Code expected but none generated for lobyte load");
+		}
 	}
 
-	m_HiHalf = newHi;
-	m_LoHalf = newLo;
+	m_HiByte.LoadValue(newHi);
+	m_LoByte.LoadValue(newLo);
 	m_Value = newWord;
 
 	return codeSegment;

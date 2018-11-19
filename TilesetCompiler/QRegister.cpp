@@ -19,12 +19,12 @@ CodeSegment QRegister::GenerateLoad(value_type newQuad)
 {
 	CodeSegment codeSegment;
 
-	const WordAccRegister::value_type newAccd((newQuad >> 16) & 0xffff);
-	const WordAccRegister::value_type newAccw(newQuad & 0xffff);
+	const DRegister::value_type newAccd((newQuad >> 16) & 0xffff);
+	const WRegister::value_type newAccw(newQuad & 0xffff);
 
 	if (!m_Value.has_value())
 	{
-		codeSegment.Append("LDQ", "#$" + KAOS::Common::to_hex_string(newQuad, 8), 5);
+		codeSegment = GenerateRegisterLoad(newQuad, DRegister(newAccd), WRegister(newAccw));
 	}
 	else if (newQuad != m_Value)
 	{

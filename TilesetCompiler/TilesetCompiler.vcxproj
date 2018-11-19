@@ -155,20 +155,24 @@
     <ClCompile Include="IntermediateImageRow.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="QRegister.cpp" />
+    <ClCompile Include="RegisterBase.cpp" />
     <ClCompile Include="Registers.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TilesetCompiler.cpp" />
     <ClCompile Include="WRegister.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ByteAccumulatorRegister.h" />
     <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="CodeLine.h" />
     <ClInclude Include="CodeSegment.h" />
     <ClInclude Include="IntermediateImage.h" />
     <ClInclude Include="IntermediateImageRow.h" />
+    <ClInclude Include="RegisterBase.h" />
     <ClInclude Include="Registers.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TilesetCompiler.h" />
+    <ClInclude Include="WordAccumulatorRegister.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\LoadPNGLib\LoadPNGLib.vcxproj">

@@ -5,88 +5,31 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
+#include "RegisterBase.h"
+#include "ByteAccumulatorRegister.h"
+#include "WordAccumulatorRegister.h"
 #include "CodeSegment.h"
 #include <string>
 #include <optional>
 
 
-class WordAccRegister
-{
-public:
-
-	using value_type = uint16_t;
-	using subvalue_type = uint8_t;
 
 
-public:
-
-	WordAccRegister& operator=(const WordAccRegister& other);
-
-	bool operator!=(const WordAccRegister& other) const;
-
-	//bool operator==(const WordAccRegister& other) const;
-
-	bool HasValue() const;
-	value_type GetValue() const;
-	subvalue_type GetHiByte() const;
-	subvalue_type GetLoByte() const;
-	std::string GetName() const;
-
-	CodeSegment GenerateLoad(value_type newWord);
-	
-
-protected:
-
-	WordAccRegister(
-		std::string	fullRegName,
-		std::string	hiRegName,
-		std::string	loRegName,
-		unsigned int cycleCountAdjust,
-		bool hasSubShiftInstruction);
-
-	WordAccRegister(
-		value_type value,
-		std::string	fullRegName,
-		std::string	hiRegName,
-		std::string	loRegName,
-		unsigned int cycleCountAdjust,
-		bool hasSubShiftInstruction);
-
-
-private:
-
-	const std::string			m_FullRegName;
-	const std::string			m_HiRegName;
-	const std::string			m_LoRegName;
-	const unsigned int			m_CycleCountAdjust;
-	const bool					m_HasSubShiftInstruction;
-	std::optional<value_type>	m_Value;
-	subvalue_type				m_LoHalf = 0;
-	subvalue_type				m_HiHalf = 0;
-};
-
-
-
-
-class WRegister : public WordAccRegister
+class WRegister : public WordAccumulatorRegister
 {
 public:
 
 	WRegister();
 	explicit WRegister(value_type value);
-
-	using WordAccRegister::operator=;
 };
 
 
-class DRegister : public WordAccRegister
+class DRegister : public WordAccumulatorRegister
 {
 public:
 
 	DRegister();
 	explicit DRegister(value_type value);
-
-	using WordAccRegister::operator=;
 };
 
 
@@ -116,17 +59,6 @@ private:
 	WRegister	m_Accw;
 	std::optional<value_type>	m_Value;
 };
-
-
-
-
-inline bool operator!=(const WordAccRegister::value_type& value, const WordAccRegister& other)
-{
-	return !other.HasValue() || value != other.GetValue();
-}
-
-
-//bool operator==(const WordAccRegister::value_type& value, const WordAccRegister& other);
 
 
 

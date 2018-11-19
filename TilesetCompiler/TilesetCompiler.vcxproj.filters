@@ -47,6 +47,9 @@
     <ClCompile Include="CodeLine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RegisterBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TilesetCompiler.h">
@@ -71,6 +74,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CodeLine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegisterBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ByteAccumulatorRegister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WordAccumulatorRegister.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,22 +4,45 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Registers.h"
-
-const RegisterConfig accwRegister(RegisterId::W, 4, 2, false);
-const RegisterConfig acceRegister(RegisterId::E, 3, 1, false);
-const RegisterConfig accfRegister(RegisterId::F, 3, 1, false);
-
-
-WRegister::WRegister()
-	: WordAccumulatorRegister(accwRegister, acceRegister, accfRegister)
-{}
+#pragma once
+#include "RegisterBase.h"
+#include "CodeSegment.h"
+#include <KAOS/Common/Utilities.h>
+#include <string>
+#include <optional>
 
 
-WRegister::WRegister(value_type value)
-	: WordAccumulatorRegister(accwRegister, acceRegister, accfRegister, value)
-{}
+class ByteAccumulatorRegister : public Register<uint8_t>
+{
+public:
 
+	using register_id_type = Register::register_id_type;
+	using value_type = Register::value_type;
+
+
+public:
+
+	using Register::operator!=;
+	using Register::operator==;
+
+	ByteAccumulatorRegister& operator=(const ByteAccumulatorRegister& other) = default;
+
+	void LoadValue(value_type value)
+	{
+		m_Value = value;
+	}
+
+public:
+
+	ByteAccumulatorRegister(const RegisterConfig& config)
+		: Register(config)
+	{}
+
+	ByteAccumulatorRegister(const RegisterConfig& config, value_type value)
+		: Register(config, value)
+	{}
+
+};
 
 
 

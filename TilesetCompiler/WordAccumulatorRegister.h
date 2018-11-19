@@ -4,22 +4,52 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "Registers.h"
+#pragma once
+#include "RegisterBase.h"
+#include "ByteAccumulatorRegister.h"
+#include "CodeSegment.h"
+#include <string>
+#include <optional>
 
-const RegisterConfig accwRegister(RegisterId::W, 4, 2, false);
-const RegisterConfig acceRegister(RegisterId::E, 3, 1, false);
-const RegisterConfig accfRegister(RegisterId::F, 3, 1, false);
+//	FIXME: Templatize so it can be used with the Q register
+class WordAccumulatorRegister : public Register<uint16_t>
+{
+public:
+
+	using register_id_type = Register::register_id_type;
+	using value_type = Register::value_type;
+	using subvalue_type = uint8_t;
 
 
-WRegister::WRegister()
-	: WordAccumulatorRegister(accwRegister, acceRegister, accfRegister)
-{}
+public:
+
+	using Register::operator!=;
+	using Register::operator==;
+
+	CodeSegment GenerateLoad(value_type newWord) override;
+	
+
+protected:
+
+	WordAccumulatorRegister(
+		const RegisterConfig& config,
+		const RegisterConfig& hiRegConfig,
+		const RegisterConfig& loRegConfig);
+
+	WordAccumulatorRegister(
+		const RegisterConfig& config,
+		const RegisterConfig& hiRegTraits,
+		const RegisterConfig& loRegConfig,
+		value_type value);
+
+	WordAccumulatorRegister& operator=(const WordAccumulatorRegister& other);
 
 
-WRegister::WRegister(value_type value)
-	: WordAccumulatorRegister(accwRegister, acceRegister, accfRegister, value)
-{}
+private:
 
+	ByteAccumulatorRegister		m_HiByte;
+	ByteAccumulatorRegister		m_LoByte;
+};
 
 
 
