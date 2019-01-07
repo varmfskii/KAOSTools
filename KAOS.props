@@ -5,8 +5,9 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SolutionDir)KAOSCommon/include;$(SolutionDir)TiledLib/include;$(SolutionDir)3rdParty/PugiXML/include;$(SolutionDir)3rdParty/loadpnglib/include;$(SolutionDir)3rdParty/FlicLib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)KAOSCommon/include;$(SolutionDir)TiledLib/include;$(SolutionDir)3rdParty/PugiXML/include;$(SolutionDir)3rdParty/loadpnglib/include;$(SolutionDir)3rdParty/FlicLib/include;$(SolutionDir)3rdParty/zlib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>

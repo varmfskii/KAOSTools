@@ -5,7 +5,6 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #define WIN32_LEAN_AND_MEAN
-#define _CRT_SECURE_NO_WARNINGS
 #include <KAOS/Common/Utilities.h>
 #include <KAOS/Imaging/Color.h>
 #include <algorithm>

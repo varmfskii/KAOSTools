@@ -1,3 +1,6 @@
+# Project Files
+*.vcxproj.user
+
 # Prerequisites
 *.d
 
