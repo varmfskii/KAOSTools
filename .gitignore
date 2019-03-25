@@ -1,43 +1,33 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
 /.vs
 /MapConverter/MapConverter.vcxproj.user
+/TilesetCompiler/TilesetCompiler.vcxproj.user
 /x64
+/Debug
+/Release
 /3rdParty/FlicLib/x64
+/3rdParty/FlicLib/Debug
+/3rdParty/FlicLib/Release
 /3rdParty/LoadPNGLib/x64
-/KAOSCommon/x64
-/MapConverter/x64
+/3rdParty/LoadPNGLib/Debug
+/3rdParty/LoadPNGLib/Release
 /3rdParty/PugiXML/x64
-/TiledLib/x64
+/3rdParty/PugiXML/Debug
+/3rdParty/PugiXML/Release
+/3rdParty/zlib/contrib/vstudio/vc15/x64
+/3rdParty/zlib/contrib/vstudio/vc15/Debug
+/3rdParty/zlib/contrib/vstudio/vc15/Release
+/KAOSCommon/x64
+/KAOSCommon/Debug
+/KAOSCommon/Release
+/MapConverter/x64
+/MapConverter/Debug
+/MapConverter/Release
 /SpriteConverter/x64
+/SpriteConverter/Debug
+/SpriteConverter/Release
+/TiledLib/x64
+/TiledLib/Debug
+/TiledLib/Release
 /TilesetCompiler/x64
+/TilesetCompiler/Debug
+/TilesetCompiler/Release

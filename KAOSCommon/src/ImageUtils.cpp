@@ -120,11 +120,11 @@ namespace KAOS { namespace Imaging
 		Image::row_list_type imageRows; //the raw pixels
 		imageRows.reserve(height);
 		auto dataPtr(rawImage.begin());
-		for (auto y = 0; y < height; ++y)
+		for (auto y = 0U; y < height; ++y)
 		{
 			Image::row_type row;
 			row.reserve(width);
-			for (auto x = 0; x < width; ++x)
+			for (auto x = 0U; x < width; ++x)
 			{
 				const Color color(dataPtr[0], dataPtr[1], dataPtr[2], dataPtr[3]);	//	FIXME: Check bounds
 				advance(dataPtr, 4);

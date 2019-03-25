@@ -18,6 +18,7 @@ namespace KAOS { namespace Common
 	std::vector<std::string> SplitString(const std::string& text, const std::string& delim);
 	std::vector<unsigned int> ConvertToInteger(const std::vector<std::string>& values);
 	std::string TrimString(std::string str);
+	std::string ConvertToLower(std::string str);
 	std::string MakePath(const std::string& path, const std::string& filename);
 	std::string ConvertToForwardSlashes(std::string filePath);
 	std::string GetFilenameFromPath(std::string path, bool includeExtension);

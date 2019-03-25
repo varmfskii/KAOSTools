@@ -18,6 +18,8 @@ public:
 
 	using tile_list_type = std::vector<Tile>;
 
+	explicit TilemapCompiler(std::unique_ptr<CodeGenerator> generator);
+
 	bool Compile(
 		const tile_list_type& tiles,
 		const KAOS::Imaging::Palette& palette,
@@ -36,7 +38,7 @@ protected:
 
 protected:
 
-	CodeGenerator					m_CodeGen;
+	const std::unique_ptr<CodeGenerator>	m_CodeGen;
 
 };
 

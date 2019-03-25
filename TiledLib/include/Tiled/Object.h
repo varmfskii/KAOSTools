@@ -5,6 +5,7 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
+#include "PropertyBag.h"
 #include <pugixml/pugixml.hpp>
 #include <string>
 #include <memory>
@@ -29,6 +30,7 @@ namespace KAOS { namespace Tiled
 		int GetXPos() const;
 		int GetYPos() const;
 
+		virtual std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
 
 	private:
 
@@ -36,6 +38,7 @@ namespace KAOS { namespace Tiled
 		std::string		m_Type;
 		int				m_XPos = 0;
 		int				m_YPos = 0;
+		PropertyBag		m_PropertyBag;
 	};
 
 }}

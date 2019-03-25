@@ -5,7 +5,6 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #define WIN32_LEAN_AND_MEAN
-#define _CRT_SECURE_NO_WARNINGS
 #include <KAOS/Common/Utilities.h>
 #include <KAOS/Imaging/Color.h>
 #include <algorithm>
@@ -33,6 +32,22 @@ namespace KAOS { namespace Common
 			str = str.substr( 0, endpos+1 );
 		}
 
+
+		return str;
+	}
+
+
+	std::string ConvertToLower(std::string str)
+	{
+		std::transform(
+			str.begin(),
+			str.end(),
+			str.begin(),
+			[](const std::string::value_type& value) -> std::string::value_type
+		{
+			return std::string::value_type(std::tolower(value));
+		}
+			);
 
 		return str;
 	}
@@ -168,10 +183,7 @@ namespace KAOS { namespace Common
 
 		_splitpath(path.c_str(), nullptr, nullptr, nullptr, extBuffer);
 
-		std::string extString(extBuffer);
-		std::transform(extString.begin(), extString.begin(), extString.end(), ::tolower);
-
-		return extBuffer;
+		return ConvertToLower(extBuffer);
 	}
 
 	bool IsAbsolutePath(const std::string& path)

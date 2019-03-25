@@ -5,53 +5,32 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
+#include <KAOS/Common/Property.h>
 #include <pugixml/pugixml.hpp>
-#include <string>
-#include <variant>
 
 
 namespace KAOS { namespace Tiled
 {
 
-	class NamedProperty
+	class NamedProperty : public KAOS::Common::Property
 	{
 	public:
 
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
-
-
-	public:
-
-		bool Parse(const pugi::xml_node& node);
-
+		NamedProperty() = default;
+		NamedProperty(std::string name, const bool_type& value);
+		NamedProperty(std::string name, const int_type& value);
+		NamedProperty(std::string name, const float_type& value);
+		NamedProperty(std::string name, const color_type& value);
+		NamedProperty(std::string name, string_type value);
 
 		std::string GetName() const;
 
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const
-		{
-			auto value(std::get_if<Type_>(&m_Value));
-			if (!value)
-			{
-				return false;
-			}
-
-			valueOut = *value;
-
-			return true;
-		}
+		bool Parse(const pugi::xml_node& node);
 
 
 	private:
 
 		std::string	m_Name;
-		value_type	m_Value;
 	};
 
 }}

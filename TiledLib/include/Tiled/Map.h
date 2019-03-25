@@ -68,9 +68,12 @@ namespace KAOS { namespace Tiled
 		RenderOrder GetRenderOrder() const;
 		Stagger GetStagger() const;
 
+		std::optional<NamedProperty::int_type> GetRightEdge() const;
+
 		std::vector<std::shared_ptr<const Layer>> GetLayers() const;
 		std::vector<TilesetDescriptor> GetTilesets() const;
 		std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
+		std::shared_ptr<ObjectGroupLayer> QueryObjectLayer(const std::string& name) const;
 
 
 	protected:

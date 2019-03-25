@@ -9,6 +9,24 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Header Files\DescriptorNodes">
+      <UniqueIdentifier>{03203d0a-b039-4851-b9c7-777c3a6766ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DescriptorNodes">
+      <UniqueIdentifier>{0c84ed5f-f333-46d4-855f-90a89ceff7b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\DefinitionNodes">
+      <UniqueIdentifier>{92ce6f82-336d-428e-bdb7-3418c4fde0fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\DefinitionNodes">
+      <UniqueIdentifier>{a5845870-6e92-4ba0-b9b8-a4cd41ec930d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Builder">
+      <UniqueIdentifier>{8c0e9ae9-4bf8-405e-89ad-37bf09069e25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Builder">
+      <UniqueIdentifier>{c0a678cc-e5f9-4b60-bd1f-22265d41dfb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapConverter.cpp">
@@ -17,5 +35,142 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DescriptorNodes\Option.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\TileDescriptor.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefinitionNodes\Node.cpp">
+      <Filter>Source Files\DefinitionNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefinitionNodes\Defintion.cpp">
+      <Filter>Source Files\DefinitionNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefinitionNodes\SymbolicValue.cpp">
+      <Filter>Source Files\DefinitionNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DefinitionNodes\Variable.cpp">
+      <Filter>Source Files\DefinitionNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\Object.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\CompositeNode.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\BitField.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\PackedValue.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\TypedNode.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\TypedValue.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\MapFile.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\Root.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\Objects.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\DefinitionBuilder.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\DataSource.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\DataBuilder.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\AsmFormatter.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\PropertyQuery.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\ObjectLayer.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="MapConverter_Legacy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DescriptorNodes\Option.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\TileDescriptor.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionNodes\Node.h">
+      <Filter>Header Files\DefinitionNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionNodes\Defintion.h">
+      <Filter>Header Files\DefinitionNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionNodes\SymbolicValue.h">
+      <Filter>Header Files\DefinitionNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DefinitionNodes\Variable.h">
+      <Filter>Header Files\DefinitionNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\Object.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\CompositeNode.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\BitField.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\PackedValue.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\TypedNode.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\TypedValue.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\MapFile.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\Root.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\Objects.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\AsmFormatter.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\DataBuilder.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\DataSource.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\DefinitionBuilder.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\PropertyQuery.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\ObjectLayer.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

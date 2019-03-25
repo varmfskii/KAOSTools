@@ -31,6 +31,7 @@ namespace KAOS { namespace Tiled
 		PropertyBag(PropertyBag&&) = default;
 
 		PropertyBag& operator=(PropertyBag&&) = default;
+		PropertyBag& operator=(const PropertyBag&) = default;
 
 
 		bool Parse(const pugi::xml_node& rootNode);

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Root>
+
+  <TileDescriptor symbol="TileDescriptor">
+    
+    <PackedByte symbol="Flags" >
+      <!-- 
+        When used in a bitfield property the symbol attribute generates the mask value.
+        When used in a struct property the symbol attribute generates a struct member
+      -->
+      <Field var="Solid"     vartype="bool"   value="true"     symbol="CS_SOLID"		      bits="1" />
+      <Field var="SolidTop"  vartype="bool"   value="false"    symbol="CS_SOLIDTOP"       bits="1" />
+      <Field var="FallThru"  vartype="bool"   value="false"    symbol="CS_FALLTHRU"       bits="1" />
+      <Field var="Climbable" vartype="bool"   value="false"    symbol="CS_CLIMBABLE"      bits="1" />
+      <Field var="Freeze"    vartype="bool"   value="false"    symbol="CS_FREEZE"	        bits="1" />
+      <Field var="Prize"     vartype="bool"   value="false"    symbol="CS_PRIZE"		      bits="1" />
+      <Field var="Suspend"   vartype="bool"   value="false"    symbol="CS_SUSPEND"	      bits="1" />
+      <Field var="Diggable"  vartype="bool"   value="false"    symbol="CS_DIGGABLE"	      bits="1" />
+    </PackedByte>
+
+    <PackedByte symbol="FlagsEx" >
+      <Field var="Death"     vartype="bool"   value="false"    symbol="CSX_DEATH"		      bits="1" />
+      <Field var="ExtraLife" vartype="bool"   value="false"    symbol="CSX_EXTRALIFE"     bits="1" />
+      <Field var="Exit"      vartype="bool"   value="false"    symbol="CSX_EXIT"		      bits="1" />
+      <Field var="Function"  vartype="string" value="None"     symbol="CSX_FUNCTION_MASK" bits="4" >
+        <Option symbol="CSX_FUNCTION_NULL"  key="None"  value="0" />
+        <Option symbol="CSX_FUNCTION_SHOCK" key="Shock" value="1" />
+        <Option symbol="CSX_FUNCTION_DEATH" key="Death" value="2" />
+      </Field>
+    </PackedByte>
+
+    <!--<Word symbol="Reserved" vartype="int" value="0" />-->
+
+  </TileDescriptor>
+
+
+  <!-- 
+
+  Object
+
+      symbol    Symbol appearing in generated assembly code.
+      type      Data type used to declare the element or member in assembly code.
+      bits      Number of bits to use in the generated member.
+      var       Name of the custom Tiled variable holding the data to convert.
+      vartype   Type of the custom Tiled variable holding the data to convert (FIXME: This could be automatic)
+      value     Default value used if the variable is not defined in the object.
+    
+    key       Name of
+  -->
+  <Objects>
+    <Object type="Object">
+      <Word var="$(Id)"   vartype="int"                   symbol="TypeId"                                   />
+      <Word var="X"       vartype="int"                   symbol="XPosition"                 alignment="16" />
+      <Word var="Y"       vartype="int"                   symbol="YPosition"                 alignment="16" />
+      <Quad var="Unused"  vartype="int"                   symbol="Unused"         value="0"                 />
+    </Object>
+    
+
+    <Object type="Common"               extends="Object" >
+      <Byte symbol="Padding"     vartype="int"  value="0" />
+    </Object>
+    
+
+    <Object type="Start"         id="1" extends="Common" />
+    <Object type="Exit"          id="2" extends="Common" />
+    <Object type="Spawn"         id="3" extends="Common" />
+    
+  
+    <Object type="Guard"         id="4" extends="Object">
+      <PackedByte symbol="Flags">
+        <!--
+          Single property specific to a Gomer. A dsttype byte:1 works like bitfields in C and C++. A dsttype
+          of byte:1 works like bitfields in C and C++. The bit packing can be broken by following definitions
+          of the same type without a bit modifier (i.e. no :1) or by a different type (even if it is a
+          bitfield)
+        -->
+        <Field var="ClimbSpeed"  vartype="string" value="Normal" symbol="CLIMB_SPEED_MASK"  bits="1">
+          <Option key="Normal" symbol="CLIMB_SPEED_NORMAL" value="0" />
+          <Option key="Fast"   symbol="CLIMB_SPEED_FASE"   value="1" />
+        </Field>
+      </PackedByte>
+    </Object>
+
+    <Object type="Bat"           id="5" extends="Object">
+      <PackedByte symbol="Flags">
+        <Field var="Pattern"     vartype="string" value="Horiz"  symbol="PATTERN_MASK" bits="2"      >
+          <Option key="Horiz"     symbol="PATTERN_HORIZ"   value="0" />
+          <Option key="HorizWave" symbol="PATTERN_HWAVE"   value="1" />
+          <Option key="Custom1"   symbol="PATTERN_CUSTOM1" value="2" />
+          <Option key="Custom2"   symbol="PATTERN_CUSTOM2" value="3" />
+        </Field>
+
+        <Field var="Speed"       vartype="string" value="Normal" symbol="SPEED_MASK"   bits="1" >
+          <Option key="Normal" symbol="SPEED_NORMAL" value="0" />
+          <Option key="Fast"   symbol="SPEED_FASE"   value="1" />
+        </Field>
+      </PackedByte>
+    </Object>
+
+    <Object type="Overlay1Left"  id="6" extends="Common" />
+    <Object type="Overlay1Right" id="7" extends="Common" />
+
+  </Objects>
+
+  
+  <MapFile>
+    <Quad   symbol="Signature"                            vartype="int"     value="0" />
+    <Word   symbol="Width"          var="Width"           vartype="int"               />
+    <Word   symbol="Height"         var="Height"          vartype="int"               />
+    <Word   symbol="RightEdge"      var="RightEdge"       vartype="int"     value="0" />
+    <Byte   symbol="FrameDivider"   var="FrameDivider"    vartype="int"     value="2" />
+    <Byte   symbol="IsCompressed"   var="$(IsCompressed)" vartype="bool"              />
+    <String symbol="MapName"        var="Name"            vartype="string"            />
+    <ObjectLayer symbol="Objects"   src="Objects"  />
+    <ObjectLayer symbol="Overlays"  src="Overlays" />
+    <!--<TileLayer />-->
+  </MapFile>
+  
+  
+  <objectdefs>
+    <object id="0" name=""/>
+    <object id="1" name="Start"/>
+    <object id="2" name="Exit"/>
+    <object id="3" name="Spawn"/>
+    <object id="4" name="Guard"/>
+    <object id="5" name="Bat"/>
+    <object id="6" name="Overlay1Left" />
+    <object id="7" name="Overlay1Right" />
+  </objectdefs>
+
+
+</Root>

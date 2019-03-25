@@ -100,6 +100,7 @@ namespace KAOS { namespace Tiled
 		m_Spacing  = spacingAttr.as_uint(0);
 		m_Properties = std::move(properties);
 		m_TilesetImage = std::move(tilesetImage);
+		m_TileDefinitions = move(tileDefinitions);
 
 
 		return true;
@@ -222,7 +223,7 @@ namespace KAOS { namespace Tiled
 	}
 
 
-	Tileset::tile_collection_type Tileset::GetTilesetDefinitions() const
+	Tileset::tile_collection_type Tileset::GetTiles() const
 	{
 		return m_TileDefinitions;
 	}

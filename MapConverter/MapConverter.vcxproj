@@ -93,6 +93,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -106,6 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,6 +123,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +141,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,8 +151,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Builder\AsmFormatter.cpp" />
+    <ClCompile Include="Builder\DataBuilder.cpp" />
+    <ClCompile Include="Builder\DataSource.cpp" />
+    <ClCompile Include="Builder\DefinitionBuilder.cpp" />
+    <ClCompile Include="DefinitionNodes\Node.cpp" />
+    <ClCompile Include="DefinitionNodes\Defintion.cpp" />
+    <ClCompile Include="DefinitionNodes\SymbolicValue.cpp" />
+    <ClCompile Include="DefinitionNodes\Variable.cpp" />
+    <ClCompile Include="DescriptorNode.cpp" />
+    <ClCompile Include="DescriptorNodes\BitField.cpp" />
+    <ClCompile Include="DescriptorNodes\CompositeNode.cpp" />
+    <ClCompile Include="DescriptorNodes\MapFile.cpp" />
+    <ClCompile Include="DescriptorNodes\Object.cpp" />
+    <ClCompile Include="DescriptorNodes\ObjectLayer.cpp" />
+    <ClCompile Include="DescriptorNodes\Objects.cpp" />
+    <ClCompile Include="DescriptorNodes\Option.cpp" />
+    <ClCompile Include="DescriptorNodes\PackedValue.cpp" />
+    <ClCompile Include="DescriptorNodes\PropertyQuery.cpp" />
+    <ClCompile Include="DescriptorNodes\Root.cpp" />
+    <ClCompile Include="DescriptorNodes\TileDescriptor.cpp" />
+    <ClCompile Include="DescriptorNodes\TypedNode.cpp" />
+    <ClCompile Include="DescriptorNodes\TypedValue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapConverter.cpp" />
+    <ClCompile Include="MapConverter_Legacy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\3rdParty\LoadPNGLib\LoadPNGLib.vcxproj">
@@ -163,6 +190,30 @@
     <ProjectReference Include="..\TiledLib\TiledLib.vcxproj">
       <Project>{9be83644-31d0-4d87-ac06-38a7830855d1}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Builder\AsmFormatter.h" />
+    <ClInclude Include="Builder\DataBuilder.h" />
+    <ClInclude Include="Builder\DataSource.h" />
+    <ClInclude Include="Builder\DefinitionBuilder.h" />
+    <ClInclude Include="DefinitionNodes\Node.h" />
+    <ClInclude Include="DefinitionNodes\Defintion.h" />
+    <ClInclude Include="DefinitionNodes\SymbolicValue.h" />
+    <ClInclude Include="DefinitionNodes\Variable.h" />
+    <ClInclude Include="DescriptorNode.h" />
+    <ClInclude Include="DescriptorNodes\BitField.h" />
+    <ClInclude Include="DescriptorNodes\CompositeNode.h" />
+    <ClInclude Include="DescriptorNodes\MapFile.h" />
+    <ClInclude Include="DescriptorNodes\Object.h" />
+    <ClInclude Include="DescriptorNodes\ObjectLayer.h" />
+    <ClInclude Include="DescriptorNodes\Objects.h" />
+    <ClInclude Include="DescriptorNodes\Option.h" />
+    <ClInclude Include="DescriptorNodes\PackedValue.h" />
+    <ClInclude Include="DescriptorNodes\PropertyQuery.h" />
+    <ClInclude Include="DescriptorNodes\Root.h" />
+    <ClInclude Include="DescriptorNodes\TileDescriptor.h" />
+    <ClInclude Include="DescriptorNodes\TypedNode.h" />
+    <ClInclude Include="DescriptorNodes\TypedValue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

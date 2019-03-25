@@ -8,6 +8,7 @@
 #include <KAOS/Common/Utilities.h>
 #include <KAOS/Imaging/ImageUtils.h>
 #include <iostream>
+#include <algorithm>
 
 
 namespace KAOS { namespace Tiled
@@ -87,11 +88,35 @@ namespace KAOS { namespace Tiled
 	}
 
 
+	std::optional<NamedProperty::int_type> Map::GetRightEdge() const
+	{
+		auto value(QueryProperty("RightEdge"));
+		NamedProperty::int_type rightEdge(0);
+		if (!value.has_value() || !value->QueryValue<decltype(rightEdge)>(rightEdge))
+		{
+			return GetDimensions().GetWidth();
+		}
+
+		return rightEdge;
+	}
 
 
 	std::optional<PropertyBag::value_type> Map::QueryProperty(const std::string& name) const
 	{
 		return m_Properties.find(name);
+	}
+
+	std::shared_ptr<ObjectGroupLayer> Map::QueryObjectLayer(const std::string& name) const
+	{
+		auto layer(std::find_if(
+			m_Layers.begin(),
+			m_Layers.end(),
+			[&name](std::shared_ptr<Layer> layer) -> bool
+			{
+				return layer->GetName() == name;
+			}));
+		
+		return layer != m_Layers.end() ? std::dynamic_pointer_cast<ObjectGroupLayer>(*layer) : nullptr;
 	}
 
 

@@ -39,7 +39,7 @@ namespace KAOS { namespace Tiled
 		size_t GetMargin() const;
 		size_t GetSpacing() const;
 		TilesetImage GetImage() const;
-		tile_collection_type GetTilesetDefinitions() const;
+		tile_collection_type GetTiles() const;
 		std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
 
 

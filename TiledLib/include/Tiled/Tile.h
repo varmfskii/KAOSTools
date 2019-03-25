@@ -26,6 +26,8 @@ namespace KAOS { namespace Tiled
 
 	public:
 
+		Tile& operator=(const Tile&) = default;
+
 		bool Parse(const pugi::xml_node& node);
 
 		id_type GetId() const;

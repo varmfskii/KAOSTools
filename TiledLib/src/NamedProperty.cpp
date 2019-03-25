@@ -12,6 +12,43 @@
 namespace KAOS { namespace Tiled
 {
 
+	NamedProperty::NamedProperty(std::string name, const bool_type& value)
+		:
+		Property(value),
+		m_Name(move(name))
+	{}
+
+
+	NamedProperty::NamedProperty(std::string name, const int_type& value)
+		:
+		Property(value),
+		m_Name(move(name))
+	{}
+
+
+	NamedProperty::NamedProperty(std::string name, const float_type& value)
+		:
+		Property(value),
+		m_Name(move(name))
+	{}
+
+
+	NamedProperty::NamedProperty(std::string name, const color_type& value)
+		:
+		Property(value),
+		m_Name(move(name))
+	{}
+
+
+	NamedProperty::NamedProperty(std::string name, string_type value)
+		:
+		Property(move(value)),
+		m_Name(move(name))
+	{}
+
+
+
+
 	bool NamedProperty::Parse(const pugi::xml_node& node)
 	{
 		const auto& nameAttr(node.attribute("name"));
@@ -21,10 +58,10 @@ namespace KAOS { namespace Tiled
 			return false;
 		}
 
-		string_type type(node.attribute("type").as_string());
-		if (type.empty())
+		string_type typeString(node.attribute("type").as_string());
+		if (typeString.empty())
 		{
-			type = "string";
+			typeString = "string";
 		}
 
 		const auto& valueAttr(node.attribute("value"));
@@ -35,24 +72,23 @@ namespace KAOS { namespace Tiled
 		}
 	
 	
-		value_type value;
-		if (type == "bool")
+		if (typeString == "bool")
 		{
-			value = bool_type(valueAttr.as_bool());
+			Set(bool_type(valueAttr.as_bool()));
 		}
-		else if (type == "int")
+		else if (typeString == "int")
 		{
-			value = int_type(valueAttr.as_int());
+			Set(int_type(valueAttr.as_int()));
 		}
-		else if (type == "float")
+		else if (typeString == "float")
 		{
-			value = float_type(valueAttr.as_float());
+			Set(float_type(valueAttr.as_float()));
 		}
-		else if (type == "string")
+		else if (typeString == "string")
 		{
-			value = string_type(valueAttr.as_string());
+			Set(string_type(valueAttr.as_string()));
 		}
-		else if (type == "color")
+		else if (typeString == "color")
 		{
 			auto color(KAOS::Imaging::ColorFromString(valueAttr.as_string()));
 			if (!color.has_value())
@@ -61,16 +97,15 @@ namespace KAOS { namespace Tiled
 				return false;
 			}
 
-			value = *color;
+			Set(*color);
 		}
 		else
 		{
-			std::cerr << "Unknown type `" << type << "` for property value type attribute\n";
+			std::cerr << "Unknown type `" << typeString << "` for property value type attribute\n";
 			return false;
 		}
 
 		m_Name = nameAttr.as_string();
-		m_Value = move(value);
 
 		return true;
 	}
@@ -82,6 +117,7 @@ namespace KAOS { namespace Tiled
 	{
 		return m_Name;
 	}
+
 
 }}
 

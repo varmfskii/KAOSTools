@@ -25,7 +25,6 @@ namespace KAOS { namespace Tiled
 		if (nameAttr.empty())
 		{
 			std::cerr << "WARNING: Object does not have a name attribute\n";
-			return false;
 		}
 		const std::string name(nameAttr.empty() ? std::string() : nameAttr.as_string());
 
@@ -59,10 +58,23 @@ namespace KAOS { namespace Tiled
 		const auto yPos(yPosAttr.as_int());
 
 
+		PropertyBag propertyBag;
+
+		for (const auto& child : objectNode.children())
+		{
+			const std::string childName(child.name());
+
+			if (childName == "properties" && !propertyBag.Parse(child))
+			{
+				return false;
+			}
+		}
+
 		m_Name = move(name);
 		m_Type = move(type);
 		m_XPos = xPos;
 		m_YPos = yPos;
+		m_PropertyBag = std::move(propertyBag);
 
 		return true;
 	}
@@ -88,6 +100,11 @@ namespace KAOS { namespace Tiled
 	int Object::GetYPos() const
 	{
 		return m_YPos;
+	}
+
+	std::optional<PropertyBag::value_type> Object::QueryProperty(const std::string& name) const
+	{
+		return m_PropertyBag.find(name);
 	}
 
 }}

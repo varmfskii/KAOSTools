@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\KAOS\Common\EventConsole.h" />
+    <ClInclude Include="include\KAOS\Common\Logging.h" />
+    <ClInclude Include="include\KAOS\Common\NativeProperty.h" />
+    <ClInclude Include="include\KAOS\Common\Property.h" />
     <ClInclude Include="include\KAOS\Common\Utilities.h" />
     <ClInclude Include="include\KAOS\Imaging\Color.h" />
     <ClInclude Include="include\KAOS\Imaging\Image.h" />
@@ -27,9 +31,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Color.cpp" />
+    <ClCompile Include="src\EventConsole.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\ImageUtils.cpp" />
+    <ClCompile Include="src\Logging.cpp" />
+    <ClCompile Include="src\NativeProperty.cpp" />
     <ClCompile Include="src\Palette.cpp" />
+    <ClCompile Include="src\Property.cpp" />
     <ClCompile Include="src\Utilities.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

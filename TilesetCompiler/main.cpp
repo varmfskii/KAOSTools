@@ -259,7 +259,11 @@ int main(int argc, const char** argv)
 	auto tiles(ExtractTiles(*image, 256));
 	ConslidateDuplicates(tiles);
 
-	TilemapCompiler().Compile(
+	std::unique_ptr<CodeGenerator> codeGenerator;
+
+	codeGenerator = std::make_unique<CodeGenerator>();
+
+	TilemapCompiler(move(codeGenerator)).Compile(
 		tiles,
 		*palette,
 		*outputDirectory,
