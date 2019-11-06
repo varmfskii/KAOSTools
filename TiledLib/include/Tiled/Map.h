@@ -74,6 +74,8 @@ namespace KAOS { namespace Tiled
 		std::vector<TilesetDescriptor> GetTilesets() const;
 		std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
 		std::shared_ptr<ObjectGroupLayer> QueryObjectLayer(const std::string& name) const;
+		std::shared_ptr<TilesetLayer> QueryTilesetLayer(const std::string& name) const;
+		std::shared_ptr<TilesetLayer> QueryTilesetLayer(uint64_t index) const;
 
 
 	protected:

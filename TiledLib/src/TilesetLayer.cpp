@@ -85,6 +85,12 @@ namespace KAOS { namespace Tiled
 	}
 
 
+	TilesetLayer::size_type TilesetLayer::size() const
+	{
+		return m_Data.size();
+	}
+
+
 	TilesetLayer::const_iterator TilesetLayer::begin() const
 	{
 		return m_Data.cbegin();

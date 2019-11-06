@@ -12,6 +12,8 @@
 namespace KAOS { namespace Logging
 {
 
+	extern bool enabled;
+
 	void Warn(const std::string& message);
 	void Error(const std::string& message);
 	void NodeError(const pugi::xml_node& node, const std::string& message);

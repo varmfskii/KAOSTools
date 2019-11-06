@@ -17,7 +17,7 @@ namespace KAOS { namespace Tiled
 	{
 	public:
 
-		using container_type = std::vector<std::unique_ptr<Object>>;
+		using container_type = std::vector<std::shared_ptr<Object>>;
 		using value_type = container_type::value_type;
 		using const_iterator = container_type::const_iterator;
 

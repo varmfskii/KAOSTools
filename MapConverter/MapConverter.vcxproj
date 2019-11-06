@@ -59,18 +59,22 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -153,8 +157,14 @@
   <ItemGroup>
     <ClCompile Include="Builder\AsmFormatter.cpp" />
     <ClCompile Include="Builder\DataBuilder.cpp" />
+    <ClCompile Include="Builder\DataGenerator.cpp" />
     <ClCompile Include="Builder\DataSource.cpp" />
     <ClCompile Include="Builder\DefinitionBuilder.cpp" />
+    <ClCompile Include="Builder\MapDataSource.cpp" />
+    <ClCompile Include="Builder\ObjectDataSource.cpp" />
+    <ClCompile Include="Builder\SimpleDataBuilder.cpp" />
+    <ClCompile Include="Builder\TileDataSource.cpp" />
+    <ClCompile Include="Builder\ValueDataBuilder.cpp" />
     <ClCompile Include="DefinitionNodes\Node.cpp" />
     <ClCompile Include="DefinitionNodes\Defintion.cpp" />
     <ClCompile Include="DefinitionNodes\SymbolicValue.cpp" />
@@ -162,16 +172,21 @@
     <ClCompile Include="DescriptorNode.cpp" />
     <ClCompile Include="DescriptorNodes\BitField.cpp" />
     <ClCompile Include="DescriptorNodes\CompositeNode.cpp" />
+    <ClCompile Include="DescriptorNodes\Layer.cpp" />
     <ClCompile Include="DescriptorNodes\MapFile.cpp" />
     <ClCompile Include="DescriptorNodes\Object.cpp" />
     <ClCompile Include="DescriptorNodes\ObjectLayer.cpp" />
     <ClCompile Include="DescriptorNodes\Objects.cpp" />
     <ClCompile Include="DescriptorNodes\Option.cpp" />
+    <ClCompile Include="DescriptorNodes\OptionTable.cpp" />
     <ClCompile Include="DescriptorNodes\PackedValue.cpp" />
     <ClCompile Include="DescriptorNodes\PropertyQuery.cpp" />
     <ClCompile Include="DescriptorNodes\Root.cpp" />
     <ClCompile Include="DescriptorNodes\TileDescriptor.cpp" />
+    <ClCompile Include="DescriptorNodes\TiledLayer.cpp" />
+    <ClCompile Include="DescriptorNodes\TilesetDescriptor.cpp" />
     <ClCompile Include="DescriptorNodes\TypedNode.cpp" />
+    <ClCompile Include="DescriptorNodes\TypedPropertyQuery.cpp" />
     <ClCompile Include="DescriptorNodes\TypedValue.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapConverter.cpp" />
@@ -194,8 +209,14 @@
   <ItemGroup>
     <ClInclude Include="Builder\AsmFormatter.h" />
     <ClInclude Include="Builder\DataBuilder.h" />
+    <ClInclude Include="Builder\DataGenerator.h" />
     <ClInclude Include="Builder\DataSource.h" />
     <ClInclude Include="Builder\DefinitionBuilder.h" />
+    <ClInclude Include="Builder\MapDataSource.h" />
+    <ClInclude Include="Builder\ObjectDataSource.h" />
+    <ClInclude Include="Builder\SimpleDataBuilder.h" />
+    <ClInclude Include="Builder\TileDataSource.h" />
+    <ClInclude Include="Builder\ValueDataBuilder.h" />
     <ClInclude Include="DefinitionNodes\Node.h" />
     <ClInclude Include="DefinitionNodes\Defintion.h" />
     <ClInclude Include="DefinitionNodes\SymbolicValue.h" />
@@ -203,17 +224,34 @@
     <ClInclude Include="DescriptorNode.h" />
     <ClInclude Include="DescriptorNodes\BitField.h" />
     <ClInclude Include="DescriptorNodes\CompositeNode.h" />
+    <ClInclude Include="DescriptorNodes\Layer.h" />
     <ClInclude Include="DescriptorNodes\MapFile.h" />
     <ClInclude Include="DescriptorNodes\Object.h" />
     <ClInclude Include="DescriptorNodes\ObjectLayer.h" />
     <ClInclude Include="DescriptorNodes\Objects.h" />
     <ClInclude Include="DescriptorNodes\Option.h" />
+    <ClInclude Include="DescriptorNodes\OptionTable.h" />
     <ClInclude Include="DescriptorNodes\PackedValue.h" />
     <ClInclude Include="DescriptorNodes\PropertyQuery.h" />
     <ClInclude Include="DescriptorNodes\Root.h" />
     <ClInclude Include="DescriptorNodes\TileDescriptor.h" />
+    <ClInclude Include="DescriptorNodes\TiledLayer.h" />
+    <ClInclude Include="DescriptorNodes\TilesetDescriptor.h" />
     <ClInclude Include="DescriptorNodes\TypedNode.h" />
+    <ClInclude Include="DescriptorNodes\TypedPropertyQuery.h" />
     <ClInclude Include="DescriptorNodes\TypedValue.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\TestData\Maps\d3defs.inc" />
+    <None Include="..\TestData\Maps\Test1.tmx" />
+    <None Include="..\TestData\Maps\Test1_map.asm" />
+    <None Include="..\TestData\Maps\Tileset1Test.tsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\TestData\Maps\d3defs.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\TestData\Maps\Main.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -59,18 +59,22 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -155,6 +159,9 @@
     </ProjectReference>
     <ProjectReference Include="..\3rdParty\LoadPNGLib\LoadPNGLib.vcxproj">
       <Project>{fbfbdf81-d7a3-4fe9-a187-9d994acaf970}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\3rdParty\PugiXML\PugiXML.vcxproj">
+      <Project>{6c53a1f6-cdb5-4339-83f2-5ab7f50e4d86}</Project>
     </ProjectReference>
     <ProjectReference Include="..\KAOSCommon\KAOSCommon.vcxproj">
       <Project>{7a96b75b-5ac1-41bf-be65-4f99ca67bb2a}</Project>

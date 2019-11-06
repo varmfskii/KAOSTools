@@ -19,6 +19,7 @@ namespace KAOS { namespace Tiled
 	public:
 
 		using container_type = std::vector<unsigned int>;
+		using size_type = container_type::size_type;
 		using const_iterator = container_type::const_iterator;
 
 
@@ -33,6 +34,8 @@ namespace KAOS { namespace Tiled
 
 
 		Size GetDimensions() const;
+
+		size_type size() const;
 		const_iterator begin() const;
 		const_iterator end() const;
 

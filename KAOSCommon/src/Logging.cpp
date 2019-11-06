@@ -13,10 +13,14 @@
 
 namespace KAOS { namespace Logging
 {
+	bool enabled = true;
 
 	void Warn(const std::string& message)
 	{
-		std::cerr << "ERROR: " << message << "\n";
+		if (enabled)
+		{
+			std::cerr << "WARNING: " << message << "\n";
+		}
 	}
 
 	void Error(const std::string& message)

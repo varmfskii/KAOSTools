@@ -24,6 +24,7 @@
     <ClInclude Include="include\KAOS\Common\NativeProperty.h" />
     <ClInclude Include="include\KAOS\Common\Property.h" />
     <ClInclude Include="include\KAOS\Common\Utilities.h" />
+    <ClInclude Include="include\KAOS\Common\xml.h" />
     <ClInclude Include="include\KAOS\Imaging\Color.h" />
     <ClInclude Include="include\KAOS\Imaging\Image.h" />
     <ClInclude Include="include\KAOS\Imaging\ImageUtils.h" />
@@ -39,6 +40,7 @@
     <ClCompile Include="src\Palette.cpp" />
     <ClCompile Include="src\Property.cpp" />
     <ClCompile Include="src\Utilities.cpp" />
+    <ClCompile Include="src\xml.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -81,18 +83,22 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\KAOSBase.props" />
     <Import Project="..\KAOS.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />

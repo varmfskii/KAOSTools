@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\PSG">
+      <UniqueIdentifier>{c0b99284-a36e-4462-88a4-5129ea8a47a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PSG">
+      <UniqueIdentifier>{018261a1-d5f1-4960-95f9-4ca005cdf4c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VGM">
+      <UniqueIdentifier>{4e9cf1f0-583f-4803-8cce-943fbf5942c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VGM">
+      <UniqueIdentifier>{9539f8a1-fd37-41e1-8f83-ca7c08efc7b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Visitors">
+      <UniqueIdentifier>{ac1f49a6-7a3e-44b4-a9f3-3541148af1d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Visitors">
+      <UniqueIdentifier>{000fe066-b225-4532-8229-7a2a265923a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPF">
+      <UniqueIdentifier>{59722f7c-685d-4fe8-bc80-e00b2eb4deab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CPF">
+      <UniqueIdentifier>{bddac8b1-5406-4a7a-9b64-44dd798317d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PSG\CommandData.cpp">
+      <Filter>Source Files\PSG</Filter>
+    </ClCompile>
+    <ClCompile Include="PSG\CommandSequence.cpp">
+      <Filter>Source Files\PSG</Filter>
+    </ClCompile>
+    <ClCompile Include="PSG\DelayCommand.cpp">
+      <Filter>Source Files\PSG</Filter>
+    </ClCompile>
+    <ClCompile Include="PSG\Packet.cpp">
+      <Filter>Source Files\PSG</Filter>
+    </ClCompile>
+    <ClCompile Include="VGM\Loader.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="PSG\PacketSequence.cpp">
+      <Filter>Source Files\PSG</Filter>
+    </ClCompile>
+    <ClCompile Include="PSG\WriteCommand.cpp">
+      <Filter>Source Files\PSG</Filter>
+    </ClCompile>
+    <ClCompile Include="VGM\WriterVisitor.cpp">
+      <Filter>Source Files\VGM</Filter>
+    </ClCompile>
+    <ClCompile Include="Visitors\BuildPacketVisitor.cpp">
+      <Filter>Source Files\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="Visitors\DumpVisitor.cpp">
+      <Filter>Source Files\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="Visitors\ProfilerVisitor.cpp">
+      <Filter>Source Files\Visitors</Filter>
+    </ClCompile>
+    <ClCompile Include="CostInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPF\PacketWriterVisitor.cpp">
+      <Filter>Source Files\CPF</Filter>
+    </ClCompile>
+    <ClCompile Include="HardwareConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PSG\Command.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\CommandData.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\CommandSequence.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\CommandVisitor.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\DelayCommand.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\Packet.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\PacketVisitor.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="VGM\Loader.h">
+      <Filter>Header Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\PacketSequence.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicSequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PSG\WriteCommand.h">
+      <Filter>Header Files\PSG</Filter>
+    </ClInclude>
+    <ClInclude Include="CostInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VGM\WriterVisitor.h">
+      <Filter>Header Files\VGM</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitors\BuildPacketVisitor.h">
+      <Filter>Header Files\Visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitors\DumpVisitor.h">
+      <Filter>Header Files\Visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="Visitors\ProfilerVisitor.h">
+      <Filter>Header Files\Visitors</Filter>
+    </ClInclude>
+    <ClInclude Include="CPF\PacketWriterVisitor.h">
+      <Filter>Header Files\CPF</Filter>
+    </ClInclude>
+    <ClInclude Include="HardwareConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

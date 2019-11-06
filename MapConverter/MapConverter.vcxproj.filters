@@ -27,6 +27,15 @@
     <Filter Include="Header Files\Builder">
       <UniqueIdentifier>{c0a678cc-e5f9-4b60-bd1f-22265d41dfb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="%40TestFiles">
+      <UniqueIdentifier>{9a6d2766-d7ea-43cf-9127-e0c6a4d0b26b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%40TestFiles\Maps">
+      <UniqueIdentifier>{9145faaa-59cf-45e2-a41f-0e5f775834a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="%40TestFiles\Maps\Generated">
+      <UniqueIdentifier>{53407048-d62c-4836-8b85-eeda92d98e52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MapConverter.cpp">
@@ -104,6 +113,39 @@
     <ClCompile Include="MapConverter_Legacy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DescriptorNodes\TiledLayer.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\DataGenerator.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\MapDataSource.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\ObjectDataSource.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\TileDataSource.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\SimpleDataBuilder.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder\ValueDataBuilder.cpp">
+      <Filter>Source Files\Builder</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\OptionTable.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\TypedPropertyQuery.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\Layer.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorNodes\TilesetDescriptor.cpp">
+      <Filter>Source Files\DescriptorNodes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DescriptorNodes\Option.h">
@@ -172,5 +214,62 @@
     <ClInclude Include="DescriptorNodes\ObjectLayer.h">
       <Filter>Header Files\DescriptorNodes</Filter>
     </ClInclude>
+    <ClInclude Include="DescriptorNodes\TiledLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\DataGenerator.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\MapDataSource.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\ObjectDataSource.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\TileDataSource.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\SimpleDataBuilder.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder\ValueDataBuilder.h">
+      <Filter>Header Files\Builder</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\OptionTable.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\TypedPropertyQuery.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\Layer.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\TilesetDescriptor.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\TestData\Maps\Test1.tmx">
+      <Filter>%40TestFiles\Maps</Filter>
+    </None>
+    <None Include="..\TestData\Maps\Tileset1Test.tsx">
+      <Filter>%40TestFiles\Maps</Filter>
+    </None>
+    <None Include="..\TestData\Maps\d3defs.inc">
+      <Filter>%40TestFiles\Maps\Generated</Filter>
+    </None>
+    <None Include="..\TestData\Maps\Test1_map.asm">
+      <Filter>%40TestFiles\Maps\Generated</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\TestData\Maps\d3defs.xml">
+      <Filter>%40TestFiles\Maps</Filter>
+    </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\TestData\Maps\Main.png">
+      <Filter>%40TestFiles\Maps</Filter>
+    </Image>
   </ItemGroup>
 </Project>

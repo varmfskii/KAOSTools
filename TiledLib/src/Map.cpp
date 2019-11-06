@@ -106,6 +106,7 @@ namespace KAOS { namespace Tiled
 		return m_Properties.find(name);
 	}
 
+
 	std::shared_ptr<ObjectGroupLayer> Map::QueryObjectLayer(const std::string& name) const
 	{
 		auto layer(std::find_if(
@@ -117,6 +118,45 @@ namespace KAOS { namespace Tiled
 			}));
 		
 		return layer != m_Layers.end() ? std::dynamic_pointer_cast<ObjectGroupLayer>(*layer) : nullptr;
+	}
+
+
+	std::shared_ptr<TilesetLayer> Map::QueryTilesetLayer(const std::string& name) const
+	{
+		auto layer(std::find_if(
+			m_Layers.begin(),
+			m_Layers.end(),
+			[&name](std::shared_ptr<Layer> layer) -> bool
+			{
+				return layer->GetName() == name;
+			}));
+		
+		return layer != m_Layers.end() ? std::dynamic_pointer_cast<TilesetLayer>(*layer) : nullptr;
+	}
+
+
+	std::shared_ptr<TilesetLayer> Map::QueryTilesetLayer(uint64_t index) const
+	{
+		auto count(index);
+		auto layer(std::find_if(
+			m_Layers.begin(),
+			m_Layers.end(),
+			[&count](std::shared_ptr<Layer> layer) -> bool
+			{
+				if (std::dynamic_pointer_cast<TilesetLayer>(layer))
+				{
+					if (!count)
+					{
+						return true;
+					}
+
+					--count;
+				}
+
+				return false;
+			}));
+		
+		return layer != m_Layers.end() ? std::dynamic_pointer_cast<TilesetLayer>(*layer) : nullptr;
 	}
 
 

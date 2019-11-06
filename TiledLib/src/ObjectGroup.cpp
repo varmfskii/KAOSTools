@@ -33,9 +33,7 @@ namespace KAOS { namespace Tiled
 
 	ObjectGroup::ObjectGroup(const ObjectGroup& other)
 		: m_Objects(CloneVector<value_type>(other.m_Objects))
-	{
-
-	}
+	{}
 
 	ObjectGroup& ObjectGroup::operator=(const ObjectGroup& other)
 	{
@@ -52,7 +50,7 @@ namespace KAOS { namespace Tiled
 		container_type objects;
 		for (const auto& objectNode : objectGroupNode.children("object"))
 		{
-			auto object(std::make_unique<Object>());
+			auto object(std::make_shared<Object>());
 			if (!object->Parse(objectNode))
 			{
 				return false;

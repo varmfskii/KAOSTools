@@ -2,7 +2,7 @@
 
 <Root>
 
-  <TileDescriptor symbol="TileDescriptor">
+  <TileDescriptor symbol="TileDescriptors">
     
     <PackedByte symbol="Flags" >
       <!-- 
@@ -50,21 +50,15 @@
   -->
   <Objects>
     <Object type="Object">
-      <Word var="$(Id)"   vartype="int"                   symbol="TypeId"                                   />
+      <Byte var="$(Id)"   vartype="int"                   symbol="TypeId"                                   />
       <Word var="X"       vartype="int"                   symbol="XPosition"                 alignment="16" />
       <Word var="Y"       vartype="int"                   symbol="YPosition"                 alignment="16" />
-      <Quad var="Unused"  vartype="int"                   symbol="Unused"         value="0"                 />
     </Object>
     
 
-    <Object type="Common"               extends="Object" >
-      <Byte symbol="Padding"     vartype="int"  value="0" />
-    </Object>
-    
-
-    <Object type="Start"         id="1" extends="Common" />
-    <Object type="Exit"          id="2" extends="Common" />
-    <Object type="Spawn"         id="3" extends="Common" />
+    <Object type="Start"         id="1" extends="Object" />
+    <Object type="Exit"          id="2" extends="Object" />
+    <Object type="Spawn"         id="3" extends="Object" />
     
   
     <Object type="Guard"         id="4" extends="Object">
@@ -98,36 +92,29 @@
       </PackedByte>
     </Object>
 
-    <Object type="Overlay1Left"  id="6" extends="Common" />
-    <Object type="Overlay1Right" id="7" extends="Common" />
+    <Object type="Overlay1Left"  id="6" extends="Object" />
+    <Object type="Overlay1Right" id="7" extends="Object" />
 
   </Objects>
 
   
   <MapFile>
-    <Quad   symbol="Signature"                            vartype="int"     value="0" />
-    <Word   symbol="Width"          var="Width"           vartype="int"               />
-    <Word   symbol="Height"         var="Height"          vartype="int"               />
-    <Word   symbol="RightEdge"      var="RightEdge"       vartype="int"     value="0" />
-    <Byte   symbol="FrameDivider"   var="FrameDivider"    vartype="int"     value="2" />
-    <Byte   symbol="IsCompressed"   var="$(IsCompressed)" vartype="bool"              />
-    <String symbol="MapName"        var="Name"            vartype="string"            />
-    <ObjectLayer symbol="Objects"   src="Objects"  />
-    <ObjectLayer symbol="Overlays"  src="Overlays" />
-    <!--<TileLayer />-->
+    <Quad        symbol="Signature"								                  vartype="int"     value="233684719" />
+    <Word        symbol="Width"								var="Width"           vartype="int"               />
+    <Word        symbol="Height"							var="Height"          vartype="int"               />
+    <Word        symbol="RightEdge"						var="RightEdge"       vartype="int"     value="0" />
+    <Byte        symbol="FrameDivider"				var="FrameDivider"    vartype="int"     value="2" />
+    <Byte        symbol="IsCompressed"				var="$(IsCompressed)" vartype="bool"              />
+    <String      symbol="MapName"							var="Name"            vartype="string"            />
+    <TilesetDesc symbol="TilesetDescriptors"	src="TileDescriptors"										signature="1"	/>
+    <TiledLayer  symbol="Layer_World"					src="Background"                        signature="2"	/>
+    <ObjectLayer symbol="Layer_Objects"				src="Objects"														signature="3"	/>
+    <ObjectLayer symbol="Layer_Overlays"			src="Overlays"                          signature="4"	/>
   </MapFile>
   
-  
-  <objectdefs>
-    <object id="0" name=""/>
-    <object id="1" name="Start"/>
-    <object id="2" name="Exit"/>
-    <object id="3" name="Spawn"/>
-    <object id="4" name="Guard"/>
-    <object id="5" name="Bat"/>
-    <object id="6" name="Overlay1Left" />
-    <object id="7" name="Overlay1Right" />
-  </objectdefs>
-
 
 </Root>
+
+
+
+
