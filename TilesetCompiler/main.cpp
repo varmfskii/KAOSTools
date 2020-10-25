@@ -4,7 +4,7 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#include "TilesetCompiler.h"
+#include "TilesetBuilder.h"
 #include "DataGenerator.h"
 #include "CodeGenerator.h"
 #include <KAOS/Imaging/Image.h>
@@ -287,7 +287,7 @@ int main(int argc, const char** argv)
 	}
 	//codeGenerator = (compileToCode ? std::make_unique<CodeGenerator>() : std::make_unique<DataGenerator>());
 
-	TilemapCompiler(move(codeGenerator)).Compile(
+	TilesetBuilder(move(codeGenerator)).Compile(
 		tiles,
 		*palette,
 		*outputDirectory,

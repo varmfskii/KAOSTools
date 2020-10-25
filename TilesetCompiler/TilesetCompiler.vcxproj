@@ -163,7 +163,7 @@
     <ClCompile Include="RegisterBase.cpp" />
     <ClCompile Include="Registers.cpp" />
     <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="TilesetCompiler.cpp" />
+    <ClCompile Include="TilesetBuilder.cpp" />
     <ClCompile Include="WRegister.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -178,7 +178,7 @@
     <ClInclude Include="RegisterBase.h" />
     <ClInclude Include="Registers.h" />
     <ClInclude Include="Tile.h" />
-    <ClInclude Include="TilesetCompiler.h" />
+    <ClInclude Include="TilesetBuilder.h" />
     <ClInclude Include="WordAccumulatorRegister.h" />
   </ItemGroup>
   <ItemGroup>

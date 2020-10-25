@@ -12,13 +12,13 @@
 #include <memory>
 
 
-class TilemapCompiler
+class TilesetBuilder
 {
 public:
 
 	using tile_list_type = std::vector<Tile>;
 
-	explicit TilemapCompiler(std::unique_ptr<Generator> generator);
+	explicit TilesetBuilder(std::unique_ptr<Generator> generator);
 
 	bool Compile(
 		const tile_list_type& tiles,
