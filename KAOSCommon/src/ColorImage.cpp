@@ -4,53 +4,84 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
-#pragma once
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
-#include <vector>
+#include <KAOS/Imaging/ColorImage.h>
+#include <fstream>
+#include <iostream>
 
 
-struct IntermediateImageRow
+namespace KAOS { namespace Imaging
 {
-public:
 
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
-	using const_iterator = row_data_type::const_iterator;
-
-public:
-
-	IntermediateImageRow(row_data_type data, int64_t offset);
-
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
-
-	size_type GetWidth() const;
-	size_type size() const;
-
-	const_iterator begin() const
+	ColorImage::ColorImage(size_t width, size_t height, row_list_type rows)
+		:
+		m_Width(width),
+		m_Height(height),
+		m_Rows(move(rows))
 	{
-		return m_Data.begin();
-	}
-
-	const_iterator end() const
-	{
-		return m_Data.end();
 	}
 
 
-private:
+	bool ColorImage::operator==(const ColorImage& other) const
+	{
+		return m_Rows == other.m_Rows;
+	}
 
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
-};
+
+	size_t ColorImage::GetWidth() const
+	{
+		return m_Width;
+	}
+
+	size_t ColorImage::GetHeight() const
+	{
+		return m_Height;
+	}
+
+	//	FIXME: UGH!
+	const ColorImage::row_list_type& ColorImage::GetRows() const
+	{
+		return m_Rows;
+	}
+
+	Palette ColorImage::GeneratePalette() const
+	{
+		Palette palette;
+		for (const auto& row : m_Rows)
+		{
+			for (const auto& pixel : row)
+			{
+				palette.add(pixel);
+			}
+		}
+
+		return move(palette);
+	}
+
+	std::shared_ptr<ColorImage> ColorImage::Extract(
+		size_t xPosition,
+		size_t yPosition,
+		size_t width,
+		size_t height) const
+	{
+		//	FIXME: Check bounds!
+
+
+		row_list_type tileData;
+		for (auto y(0U); y < height; ++y)
+		{
+			const auto& row(m_Rows[yPosition + y]);
+			auto start(row.begin());
+			advance(start, xPosition);
+			auto end(start);
+			advance(end, width);
+
+			tileData.emplace_back(start, end);
+		}
+
+		return std::make_shared<ColorImage>(width, height, tileData);
+	}
+
+}}
 
 
 

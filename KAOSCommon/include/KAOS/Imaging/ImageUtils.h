@@ -7,6 +7,7 @@
 #pragma once
 #include <KAOS/Imaging/Color.h>
 #include <KAOS/Imaging/Image.h>
+#include <KAOS/Imaging/colorImage.h>
 #include <KAOS/Imaging/Palette.h>
 #include <optional>
 
@@ -20,7 +21,17 @@ namespace KAOS { namespace Imaging
 	uint32_t MergePixels(uint32_t msb, uint32_t lsb);
 
 	std::optional<Image> LoadRawImage(const std::string& filename, size_t width, size_t height);
-	std::optional<std::pair<Image, Palette>> LoadPNGImage(const std::string& filename);
+	std::optional<std::pair<Image, Palette>> LoadTiledPNGImage(
+		const std::string& filename,
+		size_t tileWidth,
+		size_t tileHeight,
+		size_t horizontalMargin,
+		size_t verticalMargin,
+		size_t horizontalSpacing,
+		size_t verticalSpacing,
+		KAOS::Imaging::Palette palette);
+	std::optional<std::pair<Image, Palette>> LoadPNGImage(const std::string& filename, const Palette& palette, size_t transparentSlot);
+	std::optional<ColorImage> LoadPNGColorImage(const std::string& filename);
 
 }}
 

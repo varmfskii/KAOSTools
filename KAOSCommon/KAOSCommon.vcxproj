@@ -26,15 +26,21 @@
     <ClInclude Include="include\KAOS\Common\Utilities.h" />
     <ClInclude Include="include\KAOS\Common\xml.h" />
     <ClInclude Include="include\KAOS\Imaging\Color.h" />
+    <ClInclude Include="include\KAOS\Imaging\ColorImage.h" />
     <ClInclude Include="include\KAOS\Imaging\Image.h" />
     <ClInclude Include="include\KAOS\Imaging\ImageUtils.h" />
+    <ClInclude Include="include\KAOS\Imaging\PackedImage.h" />
+    <ClInclude Include="include\KAOS\Imaging\PackedImageRow.h" />
     <ClInclude Include="include\KAOS\Imaging\Palette.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Color.cpp" />
+    <ClCompile Include="src\ColorImage.cpp" />
     <ClCompile Include="src\EventConsole.cpp" />
     <ClCompile Include="src\Image.cpp" />
     <ClCompile Include="src\ImageUtils.cpp" />
+    <ClCompile Include="src\PackedImage.cpp" />
+    <ClCompile Include="src\PackedImageRow.cpp" />
     <ClCompile Include="src\Logging.cpp" />
     <ClCompile Include="src\NativeProperty.cpp" />
     <ClCompile Include="src\Palette.cpp" />

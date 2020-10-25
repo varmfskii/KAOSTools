@@ -5,33 +5,35 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "IntermediateImage.h"
+#include "Generator.h"
 #include "CodeSegment.h"
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
 #include <vector>
 
 
-class CodeGenerator
+class CodeGenerator: public Generator
 {
 public:
 
 	using BitmapRow = std::vector<unsigned char>;
 	using BitmapRows = std::vector<BitmapRow>;
 
-	void GeneratePaletteCode(
-		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const;
+	bool CanGenerateAlias() const override;
+	bool IsGeneratingFlat() const override;
 
-	void GenerateTileCode(
+	void GeneratePalette(
+		std::ostream& output,
+		const KAOS::Imaging::Palette& palette) const override;
+
+	void GenerateTile(
 		std::ostream& output,
 		IntermediateImage image,
-		unsigned int id) const;
+		unsigned int id) const override;
 
-	void GenerateTileAliasCode(
+	void GenerateTileAlias(
 		std::ostream& output,
 		unsigned int id,
-		unsigned int aliasId) const;
+		unsigned int aliasId) const override;
+
 
 protected:
 

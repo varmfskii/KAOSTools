@@ -18,7 +18,8 @@ namespace KAOS { namespace Tiled
 	{
 	public:
 
-		using container_type = std::vector<unsigned int>;
+		using cell_type = unsigned int;
+		using container_type = std::vector<cell_type>;
 		using size_type = container_type::size_type;
 		using const_iterator = container_type::const_iterator;
 

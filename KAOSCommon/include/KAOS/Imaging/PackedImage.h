@@ -5,52 +5,69 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Image.h>
+#include <KAOS/Imaging/PackedImageRow.h>
+#include <KAOS/Imaging/ColorImage.h>
 #include <KAOS/Imaging/Palette.h>
 #include <vector>
 
 
-struct IntermediateImageRow
+namespace KAOS { namespace Imaging
 {
-public:
-
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
-	using const_iterator = row_data_type::const_iterator;
-
-public:
-
-	IntermediateImageRow(row_data_type data, int64_t offset);
-
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
-
-	size_type GetWidth() const;
-	size_type size() const;
-
-	const_iterator begin() const
+	enum class PixelBlitOp
 	{
-		return m_Data.begin();
-	}
+		MixLeft,
+		MixRight,
+		Fill,
+		Skip = 255
+	};
 
-	const_iterator end() const
+	struct PackedImage
 	{
-		return m_Data.end();
-	}
+	public:
+
+		using PackedRow = PackedImageRow;
+		using container_type = std::vector<PackedImageRow>;
+		using value_type = container_type::value_type;
+		using size_type = container_type::size_type;
+		using iterator = container_type::iterator;
+		using const_iterator = container_type::const_iterator;
 
 
-private:
+	public:
 
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
-};
+		value_type& operator[](size_type index);
+		const value_type& operator[](size_type index) const;
+
+		static std::optional<std::pair<PackedImage, PackedImage>> CreateFromImage(
+			const KAOS::Imaging::ColorImage& image,
+			const KAOS::Imaging::Palette& palette);
+
+		size_type GetWidthInPixels() const;
+		size_type GetHeightInPixels() const;
+
+		size_type GetPackedRowSize() const;
+
+		size_type size() const;
+
+		iterator begin();
+		iterator end();
+		const_iterator begin() const;
+		const_iterator end() const;
+
+		void erase_at(size_type index);
+
+
+	protected:
+
+		explicit PackedImage(container_type bitmapRows);
+
+
+	private:
+
+		container_type	m_Rows;
+	};
+
+}}
 
 
 

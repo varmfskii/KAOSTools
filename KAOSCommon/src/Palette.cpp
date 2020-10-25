@@ -7,6 +7,9 @@
 #include <KAOS/Imaging/Palette.h>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <algorithm>
 
 
 namespace KAOS { namespace Imaging
@@ -77,6 +80,61 @@ namespace KAOS { namespace Imaging
 
 		return Palette(move(colorData));
 	}
+
+
+
+
+	std::optional<Palette> LoadGimpPalette(const std::string& filename, size_t minColors)
+	{
+		std::ifstream input(filename);
+		if (!input.is_open())
+		{
+			std::cerr << "Unable to open palette file `" << filename << "`\n";
+			return std::optional<Palette>();
+		}
+
+		std::string line;
+		getline(input, line);
+		getline(input, line);
+		if (!getline(input, line))
+		{
+			return std::optional<Palette>();
+		}
+		std::istringstream parser(line);
+		std::string scratch;
+		size_t count;
+		if (!(parser >> scratch >> count))
+		{
+			return std::optional<Palette>();
+		}
+
+		getline(input, line);
+		if (line.empty() || line[0] != '#')
+		{
+			return std::optional<Palette>();
+		}
+
+		Palette::container_type colorData(std::max(minColors, count));
+		for (auto i(0U); i < count; ++i)
+		{
+
+			getline(input, line);
+
+			int red, green, blue;
+			char ch;
+			int index;
+			std::istringstream colorParser(line);
+			if(!(colorParser >> red >> green >> blue >> ch >> index))
+			{
+				return std::optional<Palette>();
+			}
+
+			colorData[index] = Color(red, green, blue);;
+		}
+
+		return Palette(move(colorData));
+	}
+
 
 }}
 

@@ -42,7 +42,7 @@ namespace KAOS { namespace Common
 		{
 			str << std::setfill('0') << std::setw(width);
 		}
-		str << std::hex << value;
+		str << std::hex << static_cast<uint64_t>(value);
 
 		return str.str();
 	}

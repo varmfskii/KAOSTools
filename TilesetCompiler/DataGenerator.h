@@ -5,53 +5,44 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Image.h>
-#include <KAOS/Imaging/Palette.h>
+#include "Generator.h"
 #include <vector>
 
 
-struct IntermediateImageRow
+
+class DataGenerator : public Generator
 {
 public:
 
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
-	using const_iterator = row_data_type::const_iterator;
+	using BitmapRow = std::vector<unsigned char>;
+	using BitmapRows = std::vector<BitmapRow>;
 
-public:
+	explicit DataGenerator(bool generateFlatFile);
 
-	IntermediateImageRow(row_data_type data, int64_t offset);
+	virtual ~DataGenerator() = default;
 
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
+	bool CanGenerateAlias() const override;
+	bool IsGeneratingFlat() const override;
 
-	size_type GetWidth() const;
-	size_type size() const;
+	void GeneratePalette(
+		std::ostream& output,
+		const KAOS::Imaging::Palette& palette) const override;
 
-	const_iterator begin() const
-	{
-		return m_Data.begin();
-	}
+	void GenerateTile(
+		std::ostream& output,
+		IntermediateImage image,
+		unsigned int id) const override;
 
-	const_iterator end() const
-	{
-		return m_Data.end();
-	}
+	void GenerateTileAlias(
+		std::ostream& output,
+		unsigned int id,
+		unsigned int aliasId) const override;
 
 
-private:
+protected:
 
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
+	bool	generateFlatFile_;
 };
-
 
 
 

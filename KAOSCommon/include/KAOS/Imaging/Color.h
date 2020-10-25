@@ -21,6 +21,19 @@ namespace KAOS { namespace Imaging
 
 		bool operator==(const Color& other) const;
 
+		bool isFullOpaque() const
+		{
+			return alpha == 255;
+		}
+
+		std::string toString() const
+		{
+			return 
+				std::to_string(red)
+				+ "," + std::to_string(green)
+				+ "," + std::to_string(blue)
+				+ "," + std::to_string(alpha);
+		}
 
 	public:
 

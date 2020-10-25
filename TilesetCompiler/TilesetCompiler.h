@@ -5,7 +5,7 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include "CodeGenerator.h"
+#include "Generator.h"
 #include "Tile.h"
 #include <KAOS/Imaging/Image.h>
 #include <KAOS/Imaging/Palette.h>
@@ -18,7 +18,7 @@ public:
 
 	using tile_list_type = std::vector<Tile>;
 
-	explicit TilemapCompiler(std::unique_ptr<CodeGenerator> generator);
+	explicit TilemapCompiler(std::unique_ptr<Generator> generator);
 
 	bool Compile(
 		const tile_list_type& tiles,
@@ -38,7 +38,7 @@ protected:
 
 protected:
 
-	const std::unique_ptr<CodeGenerator>	m_CodeGen;
+	const std::unique_ptr<Generator>	m_CodeGen;
 
 };
 

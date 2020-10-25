@@ -33,7 +33,23 @@ namespace KAOS { namespace Imaging
 		Palette& operator=(const Palette&) = default;
 
 
-		size_type add(const Color& color)
+		size_type add(const Color& color, bool force = false)
+		{
+			if (!force)
+			{
+				const auto currentColor(find(m_ColorData.begin(), m_ColorData.end(), color));
+				if (currentColor != m_ColorData.end())
+				{
+					return distance(m_ColorData.begin(), currentColor);
+				}
+			}
+
+			auto index(m_ColorData.size());
+			m_ColorData.emplace_back(color);
+			return index;
+		}
+
+		std::optional<size_type> getIndex(const Color& color) const
 		{
 			const auto currentColor(find(m_ColorData.begin(), m_ColorData.end(), color));
 			if (currentColor != m_ColorData.end())
@@ -41,9 +57,16 @@ namespace KAOS { namespace Imaging
 				return distance(m_ColorData.begin(), currentColor);
 			}
 
-			auto index(m_ColorData.size());
-			m_ColorData.emplace_back(color);
-			return index;
+			return std::optional<size_type>();
+		}
+
+		container_type::value_type& operator[](size_type index)
+		{
+			return m_ColorData[index];
+		}
+		const container_type::value_type& operator[](size_type index) const
+		{
+			return m_ColorData[index];
 		}
 
 
@@ -91,7 +114,12 @@ namespace KAOS { namespace Imaging
 
 
 	std::optional<Palette> LoadRawRGBPalette(const std::string& filename, size_t minColors);
+	std::optional<Palette> LoadGimpPalette(const std::string& filename, size_t minColors);
 
+	inline Palette&& move(Palette& palette)
+	{
+		return static_cast<Palette&&>(palette);
+	}
 }}
 
 

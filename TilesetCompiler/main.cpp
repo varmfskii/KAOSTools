@@ -5,6 +5,8 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #include "TilesetCompiler.h"
+#include "DataGenerator.h"
+#include "CodeGenerator.h"
 #include <KAOS/Imaging/Image.h>
 #include <KAOS/Imaging/ImageUtils.h>
 #include <KAOS/Common/Utilities.h>
@@ -18,8 +20,8 @@ std::vector<Tile> ExtractTiles(const KAOS::Imaging::Image& image, size_t count)
 {
 	std::vector<Tile> tiles;
 
-	static const size_t Columns = 32;
-	static const size_t Rows = 32;
+	static const size_t Columns = image.GetWidth() / 8;
+	static const size_t Rows = image.GetHeight() / 8;
 	for (auto y(0U); count > 0 && y < Rows; ++y)
 	{
 		for (auto x(0U); count > 0 && x < Columns; ++x)
@@ -66,6 +68,7 @@ int main(int argc, const char** argv)
 	std::optional<std::string> outputDirectory;
 	std::optional<std::string> outputName;
 	std::optional<unsigned int> pitch;
+	bool compileToCode = false;
 
 	while (!args.empty())
 	{
@@ -214,7 +217,20 @@ int main(int argc, const char** argv)
 	std::optional<KAOS::Imaging::Image> image;
 	if (imageFileExtension == ".png")
 	{
-		auto loadedImage(KAOS::Imaging::LoadPNGImage(*bitmapFilename));
+		if (paletteFilename.has_value())
+		{
+			palette = KAOS::Imaging::LoadGimpPalette(*paletteFilename, 16);
+			if (!palette)
+			{
+				return EXIT_FAILURE;
+			}
+
+		}
+		if (!palette.has_value())
+		{
+			palette = KAOS::Imaging::Palette();
+		}
+		auto loadedImage(KAOS::Imaging::LoadTiledPNGImage(*bitmapFilename, 8, 8, 1, 1, 1, 1, *palette));
 		if (loadedImage.has_value())
 		{
 			image = std::move(loadedImage->first);
@@ -257,11 +273,19 @@ int main(int argc, const char** argv)
 
 
 	auto tiles(ExtractTiles(*image, 256));
-	ConslidateDuplicates(tiles);
 
-	std::unique_ptr<CodeGenerator> codeGenerator;
 
-	codeGenerator = std::make_unique<CodeGenerator>();
+	std::unique_ptr<Generator> codeGenerator;
+	if (compileToCode)
+	{
+		ConslidateDuplicates(tiles);
+		codeGenerator = std::make_unique<CodeGenerator>();
+	}
+	else
+	{
+		codeGenerator = std::make_unique<DataGenerator>(true);
+	}
+	//codeGenerator = (compileToCode ? std::make_unique<CodeGenerator>() : std::make_unique<DataGenerator>());
 
 	TilemapCompiler(move(codeGenerator)).Compile(
 		tiles,

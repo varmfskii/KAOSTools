@@ -5,53 +5,34 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Image.h>
+#include "IntermediateImage.h"
 #include <KAOS/Imaging/Palette.h>
-#include <vector>
 
 
-struct IntermediateImageRow
+//	FIXME: Needs better name
+class Generator
 {
 public:
 
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
-	using const_iterator = row_data_type::const_iterator;
+	virtual ~Generator() = default;
 
-public:
+	virtual  bool CanGenerateAlias() const = 0;
+	virtual bool IsGeneratingFlat() const = 0;
 
-	IntermediateImageRow(row_data_type data, int64_t offset);
+	virtual void GeneratePalette(
+		std::ostream& output,
+		const KAOS::Imaging::Palette& palette) const = 0;
 
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
+	virtual void GenerateTile(
+		std::ostream& output,
+		IntermediateImage image,
+		unsigned int id) const = 0;
 
-	size_type GetWidth() const;
-	size_type size() const;
-
-	const_iterator begin() const
-	{
-		return m_Data.begin();
-	}
-
-	const_iterator end() const
-	{
-		return m_Data.end();
-	}
-
-
-private:
-
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
+	virtual void GenerateTileAlias(
+		std::ostream& output,
+		unsigned int id,
+		unsigned int aliasId) const = 0;
 };
-
 
 
 

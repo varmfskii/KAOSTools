@@ -154,6 +154,7 @@
     <ClCompile Include="CodeGenerator.cpp" />
     <ClCompile Include="CodeLine.cpp" />
     <ClCompile Include="CodeSegment.cpp" />
+    <ClCompile Include="DataGenerator.cpp" />
     <ClCompile Include="DRegister.cpp" />
     <ClCompile Include="IntermediateImage.cpp" />
     <ClCompile Include="IntermediateImageRow.cpp" />
@@ -170,6 +171,8 @@
     <ClInclude Include="CodeGenerator.h" />
     <ClInclude Include="CodeLine.h" />
     <ClInclude Include="CodeSegment.h" />
+    <ClInclude Include="DataGenerator.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="IntermediateImage.h" />
     <ClInclude Include="IntermediateImageRow.h" />
     <ClInclude Include="RegisterBase.h" />

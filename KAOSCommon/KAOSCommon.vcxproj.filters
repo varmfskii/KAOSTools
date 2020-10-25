@@ -47,6 +47,15 @@
     <ClCompile Include="src\xml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\PackedImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PackedImageRow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\KAOS\Common\Utilities.h">
@@ -78,6 +87,15 @@
     </ClInclude>
     <ClInclude Include="include\KAOS\Common\xml.h">
       <Filter>Header Files\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KAOS\Imaging\PackedImage.h">
+      <Filter>Header Files\Imaging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KAOS\Imaging\PackedImageRow.h">
+      <Filter>Header Files\Imaging</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KAOS\Imaging\ColorImage.h">
+      <Filter>Header Files\Imaging</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

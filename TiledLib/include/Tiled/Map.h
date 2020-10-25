@@ -46,6 +46,7 @@ namespace KAOS { namespace Tiled
 		using layer_container_type = std::vector<std::shared_ptr<Layer>>;
 		using layer_const_iterator = layer_container_type::const_iterator;
 		using tileset_container_type = std::vector<TilesetDescriptor>;
+		using color_type = KAOS::Imaging::Color;
 
 
 	public:
@@ -101,18 +102,18 @@ namespace KAOS { namespace Tiled
 
 	private:
 
-		std::string				m_Filepath;
-		std::string				m_Filename;
-		std::string				m_Directory;
-		Size					m_MapDimensions;
-		Size					m_TileDimensions;
-		Orientation				m_Orientation = Orientation::None;
-		RenderOrder				m_RenderOrder = RenderOrder::None;
-		Stagger					m_StaggerConfig;
-		std::optional<KAOS::Imaging::Color> m_BackgroundColor;
-		PropertyBag				m_Properties;
-		layer_container_type	m_Layers;
-		tileset_container_type	m_Tilesets;
+		std::string					m_Filepath;
+		std::string					m_Filename;
+		std::string					m_Directory;
+		Size						m_MapDimensions;
+		Size						m_TileDimensions;
+		Orientation					m_Orientation = Orientation::None;
+		RenderOrder					m_RenderOrder = RenderOrder::None;
+		Stagger						m_StaggerConfig;
+		std::optional<color_type>	m_BackgroundColor;
+		PropertyBag					m_Properties;
+		layer_container_type		m_Layers;
+		tileset_container_type		m_Tilesets;
 	};
 
 }}

@@ -5,52 +5,47 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Image.h>
+#include <KAOS/Imaging/Color.h>
 #include <KAOS/Imaging/Palette.h>
 #include <vector>
+#include <memory>
 
 
-struct IntermediateImageRow
+namespace KAOS { namespace Imaging
 {
-public:
 
-	using row_data_type = std::vector<uint8_t>;
-	using size_type = row_data_type::size_type;
-	using offset_list_type = std::vector<int64_t>;
-	using const_iterator = row_data_type::const_iterator;
-
-public:
-
-	IntermediateImageRow(row_data_type data, int64_t offset);
-
-	bool ComparePixels(const IntermediateImageRow& other) const;
-	const row_data_type& GetPixels() const;
-	uint16_t GetPixelsAsWord(size_type offset) const;
-	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
-
-	size_type GetWidth() const;
-	size_type size() const;
-
-	const_iterator begin() const
+	class ColorImage
 	{
-		return m_Data.begin();
-	}
+	public:
 
-	const_iterator end() const
-	{
-		return m_Data.end();
-	}
+		using row_type = std::vector<Color>;
+		using row_list_type = std::vector<row_type>;
 
 
-private:
+	public:
 
-	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
-};
+		ColorImage() = default;
+		ColorImage(size_t width, size_t height, row_list_type rows);
+
+		bool operator==(const ColorImage& other) const;
+
+		size_t GetWidth() const;
+		size_t GetHeight() const;
+		const row_list_type& GetRows() const;
+		Palette GeneratePalette() const;
+
+		std::shared_ptr<ColorImage> Extract(size_t xPosition, size_t yPosition, size_t width, size_t height) const;
+
+
+	protected:
+
+		size_t			m_Width;	//	FIXME: Superfluous, can be pulled from first element of m_Rows
+		size_t			m_Height;	//	FIXME: Superfluous, can be pulled from size of m_Rows
+		row_list_type	m_Rows;
+	};
+
+
+}}
 
 
 

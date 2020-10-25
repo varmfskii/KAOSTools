@@ -214,9 +214,6 @@
     <ClInclude Include="DescriptorNodes\ObjectLayer.h">
       <Filter>Header Files\DescriptorNodes</Filter>
     </ClInclude>
-    <ClInclude Include="DescriptorNodes\TiledLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Builder\DataGenerator.h">
       <Filter>Header Files\Builder</Filter>
     </ClInclude>
@@ -245,6 +242,9 @@
       <Filter>Header Files\DescriptorNodes</Filter>
     </ClInclude>
     <ClInclude Include="DescriptorNodes\TilesetDescriptor.h">
+      <Filter>Header Files\DescriptorNodes</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorNodes\TiledLayer.h">
       <Filter>Header Files\DescriptorNodes</Filter>
     </ClInclude>
   </ItemGroup>

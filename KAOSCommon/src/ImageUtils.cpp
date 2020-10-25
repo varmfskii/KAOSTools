@@ -104,7 +104,15 @@ namespace KAOS { namespace Imaging
 	}
 
 
-	std::optional<std::pair<Image, Palette>> LoadPNGImage(const std::string& filename)
+	std::optional<std::pair<Image, Palette>> LoadTiledPNGImage(
+		const std::string& filename,
+		size_t tileWidth,
+		size_t tileHeight,
+		size_t horizontalMargin,
+		size_t verticalMargin,
+		size_t horizontalSpacing,
+		size_t verticalSpacing,
+		KAOS::Imaging::Palette palette)
 	{
 		std::vector<unsigned char> rawImage; //the raw pixels
 		unsigned width;
@@ -116,7 +124,74 @@ namespace KAOS { namespace Imaging
 			return std::optional<std::pair<Image, Palette>>();
 		}
 
-		Palette palette;
+		Image::row_list_type imageRows; //the raw pixels
+		imageRows.reserve(height);
+		auto dataPtr(rawImage.begin());
+		advance(dataPtr, verticalMargin * width * 4);
+		for (auto imageY = verticalMargin; imageY < height - verticalMargin; imageY += tileWidth + verticalSpacing)
+		{
+			for (auto tileY = imageY; tileY < imageY + tileHeight; ++tileY)
+			{
+				auto savedDataPtr(dataPtr);
+
+				Image::row_type row;
+				row.reserve(width);
+
+				//
+				advance(dataPtr, horizontalMargin * 4);
+				for (auto imageX = horizontalMargin; imageX < width - horizontalMargin; imageX += tileWidth + horizontalSpacing)
+				{
+					for (auto tileX = imageX; tileX < imageX + tileWidth; ++tileX)
+					{
+						const Color color(dataPtr[0], dataPtr[1], dataPtr[2], dataPtr[3]);	//	FIXME: Check bounds
+						advance(dataPtr, 4);
+
+						const auto index(palette.add(color));
+						if (index >= 256)
+						{
+							std::cerr << "Image `" << filename << "` exceeds 256 colors\n";
+							return std::optional<std::pair<Image, Palette>>();
+						}
+
+						row.emplace_back(static_cast<uint8_t>(index));
+					}
+
+					advance(dataPtr, horizontalSpacing * 4);
+				}
+
+				dataPtr = savedDataPtr;
+				advance(dataPtr, width * 4);
+
+				imageRows.emplace_back(move(row));
+			}
+
+			advance(dataPtr, verticalSpacing * width * 4);
+		}
+
+		if (imageRows.empty())
+		{
+			return {};
+		}
+
+		width = imageRows[0].size();
+		height = imageRows.size();
+
+		return std::make_pair(Image(width, height, move(imageRows)), std::move(palette));
+	}
+
+
+	std::optional<std::pair<Image, Palette>> LoadPNGImage(const std::string& filename, const Palette& palette, size_t transparentSlot)
+	{
+		std::vector<unsigned char> rawImage; //the raw pixels
+		unsigned width;
+		unsigned height;
+		const auto error(lodepng::decode(rawImage, width, height, filename));
+		if (error)
+		{
+			std::cerr << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+			return std::optional<std::pair<Image, Palette>>();
+		}
+
 		Image::row_list_type imageRows; //the raw pixels
 		imageRows.reserve(height);
 		auto dataPtr(rawImage.begin());
@@ -129,23 +204,62 @@ namespace KAOS { namespace Imaging
 				const Color color(dataPtr[0], dataPtr[1], dataPtr[2], dataPtr[3]);	//	FIXME: Check bounds
 				advance(dataPtr, 4);
 
-				const auto index(palette.add(color));
-				if (index >= 256)
+				std::optional<size_t> index;
+				if(color.alpha != 0xff)
 				{
-					std::cerr << "Image `" << filename << "` exceeds 256 colors\n";
+					index = transparentSlot;
+				}
+				else
+				{
+					index = palette.getIndex(color);
+
+				}
+				if (!index.has_value())
+				{
+					std::cerr << "Image `" << filename << "` contains color not in palette\n";
 					return std::optional<std::pair<Image, Palette>>();
 				}
 
-
-				row.emplace_back(static_cast<uint8_t>(index));
+				row.emplace_back(static_cast<uint8_t>(*index));
 			}
 
 			imageRows.emplace_back(move(row));
-
 		}
 
 
 		return std::make_pair(Image(width, height, move(imageRows)), std::move(palette));
+	}
+
+	std::optional<ColorImage> LoadPNGColorImage(const std::string& filename)
+	{
+		std::vector<unsigned char> rawImage; //the raw pixels
+		unsigned width;
+		unsigned height;
+		const auto error(lodepng::decode(rawImage, width, height, filename));
+		if (error)
+		{
+			std::cerr << "decoder error " << error << ": " << lodepng_error_text(error) << std::endl;
+			return std::optional<ColorImage>();
+		}
+
+		ColorImage::row_list_type imageRows; //the raw pixels
+		imageRows.reserve(height);
+		auto dataPtr(rawImage.begin());
+		for (auto y = 0U; y < height; ++y)
+		{
+			ColorImage::row_type row;
+			row.reserve(width);
+			for (auto x = 0U; x < width; ++x)
+			{
+				row.emplace_back(Color(dataPtr[0], dataPtr[1], dataPtr[2], dataPtr[3]));
+				advance(dataPtr, 4);
+			}
+
+			imageRows.emplace_back(move(row));
+		}
+
+
+		return ColorImage(width, height, move(imageRows));
 	}
 
 }}
