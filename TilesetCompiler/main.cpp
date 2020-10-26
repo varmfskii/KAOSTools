@@ -278,14 +278,17 @@ int main(int argc, const char** argv)
 	std::unique_ptr<Generator> codeGenerator;
 	if (compileToCode)
 	{
-		ConslidateDuplicates(tiles);
 		codeGenerator = std::make_unique<CodeGenerator>();
 	}
 	else
 	{
 		codeGenerator = std::make_unique<DataGenerator>(true);
 	}
-	//codeGenerator = (compileToCode ? std::make_unique<CodeGenerator>() : std::make_unique<DataGenerator>());
+
+	if (codeGenerator->CanGenerateAlias())
+	{
+		ConslidateDuplicates(tiles);
+	}
 
 	TilesetBuilder(move(codeGenerator)).Compile(
 		tiles,

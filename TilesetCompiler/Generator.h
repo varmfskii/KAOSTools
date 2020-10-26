@@ -14,14 +14,17 @@ class Generator
 {
 public:
 
+	explicit Generator(bool canGenerateAliases);
+
+
 	virtual ~Generator() = default;
 
-	virtual  bool CanGenerateAlias() const = 0;
 	virtual bool IsGeneratingFlat() const = 0;
+	virtual bool CanGenerateAlias() const;
 
 	virtual void GeneratePalette(
 		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const = 0;
+		const KAOS::Imaging::Palette& palette) const;
 
 	virtual void GenerateTile(
 		std::ostream& output,
@@ -31,7 +34,12 @@ public:
 	virtual void GenerateTileAlias(
 		std::ostream& output,
 		unsigned int id,
-		unsigned int aliasId) const = 0;
+		unsigned int aliasId) const;
+
+
+private:
+
+	const bool canGenerateAliases_;
 };
 
 

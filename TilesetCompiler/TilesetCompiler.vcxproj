@@ -156,6 +156,7 @@
     <ClCompile Include="CodeSegment.cpp" />
     <ClCompile Include="DataGenerator.cpp" />
     <ClCompile Include="DRegister.cpp" />
+    <ClCompile Include="Generator.cpp" />
     <ClCompile Include="IntermediateImage.cpp" />
     <ClCompile Include="IntermediateImageRow.cpp" />
     <ClCompile Include="main.cpp" />

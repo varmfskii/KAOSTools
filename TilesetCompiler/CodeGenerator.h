@@ -10,29 +10,21 @@
 #include <vector>
 
 
-class CodeGenerator: public Generator
+class CodeGenerator : public Generator
 {
 public:
 
 	using BitmapRow = std::vector<unsigned char>;
 	using BitmapRows = std::vector<BitmapRow>;
 
-	bool CanGenerateAlias() const override;
-	bool IsGeneratingFlat() const override;
+	CodeGenerator();
 
-	void GeneratePalette(
-		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const override;
+	bool IsGeneratingFlat() const override;
 
 	void GenerateTile(
 		std::ostream& output,
 		IntermediateImage image,
 		unsigned int id) const override;
-
-	void GenerateTileAlias(
-		std::ostream& output,
-		unsigned int id,
-		unsigned int aliasId) const override;
 
 
 protected:

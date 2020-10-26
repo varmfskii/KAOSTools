@@ -21,22 +21,12 @@ public:
 
 	virtual ~DataGenerator() = default;
 
-	bool CanGenerateAlias() const override;
 	bool IsGeneratingFlat() const override;
-
-	void GeneratePalette(
-		std::ostream& output,
-		const KAOS::Imaging::Palette& palette) const override;
 
 	void GenerateTile(
 		std::ostream& output,
 		IntermediateImage image,
 		unsigned int id) const override;
-
-	void GenerateTileAlias(
-		std::ostream& output,
-		unsigned int id,
-		unsigned int aliasId) const override;
 
 
 protected:
