@@ -7,10 +7,8 @@
 #include "IntermediateImageRow.h"
 
 
-IntermediateImageRow::IntermediateImageRow(row_data_type data, int64_t offset)
-	:
-	m_Data(move(data)),
-	m_Offsets(1, offset)
+IntermediateImageRow::IntermediateImageRow(row_data_type data)
+	: m_Data(move(data))
 {}
 
 
@@ -63,30 +61,6 @@ uint32_t IntermediateImageRow::GetPixelsAsQuad(size_type offset) const
 const IntermediateImageRow::row_data_type& IntermediateImageRow::GetPixels() const
 {
 	return m_Data;
-}
-
-
-IntermediateImageRow::size_type IntermediateImageRow::GetOffsetCount() const
-{
-	return m_Offsets.size();
-}
-
-
-const IntermediateImageRow::offset_list_type& IntermediateImageRow::GetOffsets() const
-{
-	return m_Offsets;
-}
-
-
-void IntermediateImageRow::AddOffsets(const offset_list_type& offsets)
-{
-	m_Offsets.insert(m_Offsets.end(), offsets.begin(), offsets.end());
-}
-
-
-void IntermediateImageRow::ClearOffsets()
-{
-	m_Offsets.clear();
 }
 
 

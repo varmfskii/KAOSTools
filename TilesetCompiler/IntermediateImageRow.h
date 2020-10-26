@@ -21,16 +21,13 @@ public:
 
 public:
 
-	IntermediateImageRow(row_data_type data, int64_t offset);
+	IntermediateImageRow() = default;
+	explicit IntermediateImageRow(row_data_type data);
 
 	bool ComparePixels(const IntermediateImageRow& other) const;
 	const row_data_type& GetPixels() const;
 	uint16_t GetPixelsAsWord(size_type offset) const;
 	uint32_t GetPixelsAsQuad(size_type offset) const;
-	size_type GetOffsetCount() const;
-	const offset_list_type& GetOffsets() const;
-	void AddOffsets(const offset_list_type& offsets);
-	void ClearOffsets();
 
 	size_type GetWidth() const;
 	size_type size() const;
@@ -49,7 +46,6 @@ public:
 private:
 
 	row_data_type		m_Data;
-	offset_list_type	m_Offsets;
 };
 
 

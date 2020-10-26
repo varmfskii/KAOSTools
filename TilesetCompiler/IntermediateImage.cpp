@@ -9,7 +9,7 @@
 
 namespace
 {
-	IntermediateImage::row_list_type GenerateRows(const KAOS::Imaging::Image& image, int64_t renderStride)
+	IntermediateImage::row_list_type GenerateRows(const KAOS::Imaging::Image& image)
 	{
 		if (image.GetWidth() & 1)
 		{
@@ -36,7 +36,7 @@ namespace
 				rowData.push_back(high << 4 | low);
 			}
 
-			intermediateRows.emplace_back(rowData, i * renderStride);
+			intermediateRows.emplace_back(rowData);
 		}
 
 		return intermediateRows;
@@ -44,10 +44,8 @@ namespace
 }
 
 
-IntermediateImage::IntermediateImage(const KAOS::Imaging::Image& image, int64_t renderStride)
-	:
-	m_Rows(GenerateRows(image, renderStride)),
-	m_RenderStride(renderStride)
+IntermediateImage::IntermediateImage(const KAOS::Imaging::Image& image)
+	: m_Rows(GenerateRows(image))
 {}
 
 

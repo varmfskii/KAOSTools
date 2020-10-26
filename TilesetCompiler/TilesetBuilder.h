@@ -25,14 +25,13 @@ public:
 		const KAOS::Imaging::Palette& palette,
 		const std::string& tileDirectory,
 		const std::string& tilesetFilename,
-		const std::string& paletteFilename,
-		size_t displayPitch) const;
+		const std::string& paletteFilename) const;
 
 
 protected:
 
 	tile_list_type ConslidateDuplicates(tile_list_type tileData) const;
-	void SaveTiles(const tile_list_type& tileData, const std::string& directory, size_t displayPitch) const;
+	void SaveTiles(const tile_list_type& tileData, const std::string& directory) const;
 	void SaveTilemap(const tile_list_type& tileData, const std::string& filename, const std::string& tileDirectory) const;
 	bool SavePalette(const std::string& filename, const KAOS::Imaging::Palette& palette) const;
 

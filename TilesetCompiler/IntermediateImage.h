@@ -24,7 +24,7 @@ public:
 
 public:
 
-	IntermediateImage(const KAOS::Imaging::Image& image, int64_t renderStride);
+	IntermediateImage(const KAOS::Imaging::Image& image);
 
 	row_list_type::value_type& operator[](size_type index);
 	const row_list_type::value_type& operator[](size_type index) const;
@@ -46,7 +46,6 @@ public:
 private:
 
 	row_list_type	m_Rows;
-	int64_t			m_RenderStride;
 };
 
 

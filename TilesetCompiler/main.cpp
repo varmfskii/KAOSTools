@@ -278,7 +278,7 @@ int main(int argc, const char** argv)
 	std::unique_ptr<Generator> codeGenerator;
 	if (compileToCode)
 	{
-		codeGenerator = std::make_unique<CodeGenerator>();
+		codeGenerator = std::make_unique<CodeGenerator>(*pitch);
 	}
 	else
 	{
@@ -295,8 +295,7 @@ int main(int argc, const char** argv)
 		*palette,
 		*outputDirectory,
 		*outputDirectory + "/" + *outputName + ".inc",
-		*outputDirectory + "/" + *outputName + ".pal.inc",
-		*pitch);
+		*outputDirectory + "/" + *outputName + ".pal.inc");
 }
 
 

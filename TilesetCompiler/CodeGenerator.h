@@ -17,7 +17,7 @@ public:
 	using BitmapRow = std::vector<unsigned char>;
 	using BitmapRows = std::vector<BitmapRow>;
 
-	CodeGenerator();
+	explicit CodeGenerator(int64_t renderStride);
 
 	bool IsGeneratingFlat() const override;
 
@@ -29,8 +29,37 @@ public:
 
 protected:
 
-	CodeSegment Generate4ByteRowCode(const IntermediateImage& image) const;
+	struct RowInfo
+	{
+		using offset_type = int64_t;
+		using offsetlist_type = std::vector<int64_t>;
+		using size_type = offsetlist_type::size_type;
+		using row_type = IntermediateImageRow;
 
+		RowInfo(row_type row, offset_type offset);
+
+		size_type GetOffsetCount() const;
+		const offsetlist_type& GetOffsets() const;
+		void AddOffsets(const offsetlist_type& offsets);
+		void ClearOffsets();
+
+		row_type		row;
+		offsetlist_type	m_Offsets;
+	};
+
+	using imagerowlist_type = std::vector<RowInfo>;
+
+
+private:
+
+
+	CodeSegment Generate4ByteRowCode(const imagerowlist_type& imageRows) const;
+
+
+private:
+
+
+	const int64_t renderStride_;
 };
 
 
