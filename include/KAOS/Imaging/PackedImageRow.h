@@ -5,89 +5,60 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
-#include <string>
-#include <variant>
-#include <cmath>
+#include <KAOS/Imaging/Image.h>
+#include <KAOS/Imaging/Palette.h>
+#include <vector>
 
-namespace KAOS { namespace Common
+
+namespace KAOS { namespace Imaging
 {
 
-	class Property
+	struct PackedImageRow
 	{
-	private:
+	public:
 
-		enum class IdType
-		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
-			String
-		};
-
+		using row_data_type = std::vector<uint8_t>;
+		using value_type = row_data_type::value_type;
+		using size_type = row_data_type::size_type;
+		using offset_list_type = std::vector<int64_t>;
+		using const_iterator = row_data_type::const_iterator;
 
 	public:
 
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
+		explicit PackedImageRow(row_data_type data);
+		PackedImageRow(const PackedImageRow&) = default;
+		PackedImageRow(PackedImageRow&&) = default;
+		PackedImageRow& operator=(const PackedImageRow&) = default;
+		PackedImageRow& operator=(PackedImageRow&&) = default;
 
+		size_type GetWidthInPixels() const;
+		size_type GetPackedSize() const;
 
-	public:
+		uint8_t GetPixelsAsByte(size_type offset) const;
+		uint16_t GetPixelsAsWord(size_type offset) const;
+		uint32_t GetPixelsAsQuad(size_type offset) const;
 
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
-
-
-		id_type GetType() const;
-
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
-
-		bool IsStringType() const;
-		string_type ToString() const;
-
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
-		void Set(string_type value);
-
-
-	private:
-
-		id_type		m_Type;
-		value_type	m_Value;
-	};
-
-
-	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
-	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
+		const_iterator begin() const
 		{
-			return false;
+			return m_Data.begin();
 		}
 
-		valueOut = *value;
+		const_iterator end() const
+		{
+			return m_Data.end();
+		}
 
-		return true;
-	}
 
+		bool operator==(const PackedImageRow& other) const;
+
+		value_type& operator[](size_type index);
+		const value_type& operator[](size_type index) const;
+
+
+	private:
+
+		row_data_type		m_Data;
+	};
 
 }}
 

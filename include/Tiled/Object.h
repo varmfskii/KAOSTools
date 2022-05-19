@@ -5,89 +5,41 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
+#include "PropertyBag.h"
+#include <pugixml/pugixml.hpp>
 #include <string>
-#include <variant>
-#include <cmath>
+#include <memory>
 
-namespace KAOS { namespace Common
+
+namespace KAOS { namespace Tiled
 {
 
-	class Property
+	class Object
 	{
-	private:
-
-		enum class IdType
-		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
-			String
-		};
-
-
 	public:
 
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
+		virtual ~Object() = default;
+
+		virtual std::unique_ptr<Object> Clone() const;
+
+		virtual bool Parse(const pugi::xml_node& objectNode);
 
 
-	public:
+		std::string GetName() const;
+		std::string GetType() const;
+		int GetXPos() const;
+		int GetYPos() const;
 
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
-
-
-		id_type GetType() const;
-
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
-
-		bool IsStringType() const;
-		string_type ToString() const;
-
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
-		void Set(string_type value);
-
+		virtual std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
 
 	private:
 
-		id_type		m_Type;
-		value_type	m_Value;
+		std::string		m_Name;
+		std::string		m_Type;
+		int				m_XPos = 0;
+		int				m_YPos = 0;
+		PropertyBag		m_PropertyBag;
 	};
-
-
-	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
-	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
-		{
-			return false;
-		}
-
-		valueOut = *value;
-
-		return true;
-	}
-
 
 }}
 

@@ -1,5 +1,7 @@
 # KAOSTools
 
+Transformation for linux currently incomplete!!
+
 Tools for KAOS based games on the Color Computer 3
 
 * MapConverter - Converts Tiled .tmx and generates 6809 assembler code compatible with LWTools.

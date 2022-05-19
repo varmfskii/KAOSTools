@@ -5,89 +5,68 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
+#include "Tile.h"
+#include "TilesetImage.h"
+#include "PropertyBag.h"
+#include "Size.h"
 #include <string>
-#include <variant>
-#include <cmath>
+#include <map>
 
-namespace KAOS { namespace Common
+
+namespace KAOS { namespace Tiled
 {
 
-	class Property
+	class Tileset
 	{
-	private:
+	public:
 
-		enum class IdType
-		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
-			String
-		};
+		using tile_collection_type = std::map<size_t, Tile>;
 
 
 	public:
 
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
+		bool Load(std::string filepath);
+
+		bool Parse(const pugi::xml_node& node, std::string filepath);
+
+		std::string GetFilePath() const;
+		std::string GetFilename() const;
+		std::string GetDirectory() const;
+		std::string GetName() const;
+		Size GetTileDimensions() const;
+		size_t GetTileCount() const;
+		size_t GetColumns() const;
+		size_t GetMargin() const;
+		size_t GetSpacing() const;
+		TilesetImage GetImage() const;
+		tile_collection_type GetTiles() const;
+		std::optional<PropertyBag::value_type> QueryProperty(const std::string& name) const;
 
 
-	public:
+	protected:
 
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
-
-
-		id_type GetType() const;
-
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
-
-		bool IsStringType() const;
-		string_type ToString() const;
-
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
-		void Set(string_type value);
+		bool ParseChildren(
+			const pugi::xml_node& rootNode,
+			tile_collection_type& tileDefinitionsOut,
+			TilesetImage& tilesetImageOut,
+			PropertyBag& propertyBagOut) const;
 
 
 	private:
 
-		id_type		m_Type;
-		value_type	m_Value;
+		std::string				m_Filepath;
+		std::string				m_Filename;
+		std::string				m_Directory;
+		std::string				m_Name;
+		Size					m_TileDimensions;
+		size_t					m_TileCount = 0;
+		size_t					m_Columns = 0;
+		size_t					m_Margin = 0;
+		size_t					m_Spacing = 0;
+		TilesetImage			m_TilesetImage;
+		tile_collection_type	m_TileDefinitions;
+		PropertyBag				m_Properties;
 	};
-
-
-	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
-	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
-		{
-			return false;
-		}
-
-		valueOut = *value;
-
-		return true;
-	}
-
 
 }}
 

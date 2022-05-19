@@ -5,89 +5,19 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
 #include <string>
-#include <variant>
-#include <cmath>
+#include <pugixml/pugixml.hpp>
 
-namespace KAOS { namespace Common
+
+namespace KAOS { namespace Logging
 {
 
-	class Property
-	{
-	private:
+	extern bool enabled;
 
-		enum class IdType
-		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
-			String
-		};
-
-
-	public:
-
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
-
-
-	public:
-
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
-
-
-		id_type GetType() const;
-
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
-
-		bool IsStringType() const;
-		string_type ToString() const;
-
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
-		void Set(string_type value);
-
-
-	private:
-
-		id_type		m_Type;
-		value_type	m_Value;
-	};
-
-
-	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
-	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
-		{
-			return false;
-		}
-
-		valueOut = *value;
-
-		return true;
-	}
-
+	void Warn(const std::string& message);
+	void Error(const std::string& message);
+	void NodeError(const pugi::xml_node& node, const std::string& message);
+	void MissingAttributeError(const pugi::xml_node& node, const std::string& attributeName);
 
 }}
 

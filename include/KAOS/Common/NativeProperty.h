@@ -8,86 +8,67 @@
 #include <KAOS/Imaging/Color.h>
 #include <string>
 #include <variant>
-#include <cmath>
+
 
 namespace KAOS { namespace Common
 {
 
-	class Property
+	class NativeProperty
 	{
 	private:
 
 		enum class IdType
 		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
+			Empty,
+			Byte,
+			Word,
+			Quad,
 			String
 		};
 
-
 	public:
 
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
+		using typeid_type = IdType;
+		using byte_type = int8_t;
+		using word_type = int16_t;
+		using quad_type = int32_t;
 		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
+		using value_type = std::variant<byte_type, word_type, quad_type, string_type>;
 
 
 	public:
 
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
+		NativeProperty() = default;
+		NativeProperty(const byte_type& value);
+		NativeProperty(const word_type& value);
+		NativeProperty(const quad_type& value);
+		NativeProperty(string_type value);
 
 
-		id_type GetType() const;
+		bool IsEmpty() const
+		{
+			return GetType() == typeid_type::Empty;
+		}
 
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
+		typeid_type GetType() const;
 
-		bool IsStringType() const;
-		string_type ToString() const;
+		byte_type GetByteValue() const;
+		word_type GetWordValue() const;
+		quad_type GetQuadValue() const;
+		string_type GetStringValue() const;
+		string_type::size_type GetStringValueLength() const;
 
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
+		void Set(const byte_type& value);
+		void Set(const word_type& value);
+		void Set(const quad_type& value);
 		void Set(string_type value);
 
 
 	private:
 
-		id_type		m_Type;
+		typeid_type	m_Type = typeid_type::Empty;
 		value_type	m_Value;
 	};
-
-
-	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
-	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
-		{
-			return false;
-		}
-
-		valueOut = *value;
-
-		return true;
-	}
-
 
 }}
 

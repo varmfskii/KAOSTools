@@ -5,89 +5,60 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
+#include "NamedProperty.h"
 #include <string>
-#include <variant>
-#include <cmath>
+#include <vector>
+#include <optional>
+#include <map>
 
-namespace KAOS { namespace Common
+
+namespace KAOS { namespace Tiled
 {
 
-	class Property
+	class PropertyBag
 	{
-	private:
+	public:
 
-		enum class IdType
-		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
-			String
-		};
+		using value_type = NamedProperty;
+		using container_type = std::map<std::string, value_type>;
+		using const_iterator = container_type::const_iterator;
 
 
 	public:
 
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
+		PropertyBag() = default;
+		PropertyBag(const PropertyBag&) = default;
+		PropertyBag(PropertyBag&&) = default;
+
+		PropertyBag& operator=(PropertyBag&&) = default;
+		PropertyBag& operator=(const PropertyBag&) = default;
 
 
-	public:
-
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
+		bool Parse(const pugi::xml_node& rootNode);
 
 
-		id_type GetType() const;
-
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
-
-		bool IsStringType() const;
-		string_type ToString() const;
-
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
-		void Set(string_type value);
-
-
-	private:
-
-		id_type		m_Type;
-		value_type	m_Value;
-	};
-
-
-	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
-	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
+		const_iterator begin() const
 		{
-			return false;
+			return m_Properties.cbegin();
 		}
 
-		valueOut = *value;
+		const_iterator end() const
+		{
+			return m_Properties.cend();
+		}
 
-		return true;
-	}
+		std::optional<value_type> find(const std::string& name) const
+		{
+			const auto property(m_Properties.find(name));
 
+			return property == m_Properties.end() ? std::optional<value_type>() : property->second;
+		}
+
+
+	private:
+
+		container_type	m_Properties;
+	};
 
 }}
 

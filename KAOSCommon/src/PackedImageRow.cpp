@@ -5,7 +5,7 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #include <KAOS/Imaging/PackedImageRow.h>
-
+#include <stdexcept>
 
 namespace KAOS { namespace Imaging
 {

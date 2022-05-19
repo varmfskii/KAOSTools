@@ -4,14 +4,22 @@
 //	
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
+#endif
+#ifdef __unix__
+#include <limits.h>
+#include <sys/stat.h>
+#define _MAX_PATH PATH_MAX
+#define FILE_ATTRIBUTE_DIRECTORY S_IFDIR
+#define FALSE false
+#endif
 #include <KAOS/Common/Utilities.h>
 #include <KAOS/Imaging/Color.h>
 #include <algorithm>
 #include <cctype>
 #include <iostream>
 #include <shlwapi.h>
-
 
 namespace KAOS { namespace Common
 {

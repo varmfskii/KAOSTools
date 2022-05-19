@@ -5,88 +5,48 @@
 //	This file is distributed under the MIT License. See notice at the end
 //	of this file.
 #pragma once
-#include <KAOS/Imaging/Color.h>
+#include <vector>
 #include <string>
-#include <variant>
-#include <cmath>
+#include <optional>
+#include <sstream>
+#include <iomanip>
+
 
 namespace KAOS { namespace Common
 {
 
-	class Property
-	{
-	private:
-
-		enum class IdType
-		{
-			Boolean,
-			Integer,
-			Float,
-			Color,
-			String
-		};
-
-
-	public:
-
-		using id_type = IdType;
-		using bool_type = bool;
-		using int_type = int64_t;
-		using float_type = float_t;
-		using color_type = Imaging::Color;
-		using string_type = std::string;
-		using value_type = std::variant<bool_type, int_type, float_type, color_type, string_type>;
-
-
-	public:
-
-		Property() = default;
-		Property(const bool_type& value);
-		Property(const int_type& value);
-		Property(const float_type& value);
-		Property(const color_type& value);
-		Property(string_type value);
-
-
-		id_type GetType() const;
-
-		bool IsIntegerType() const;
-		int_type ToInteger() const;
-
-		bool IsStringType() const;
-		string_type ToString() const;
-
-		template<class Type_>
-		bool QueryValue(Type_ &valueOut) const;
-
-
-		void Set(const bool_type& value);
-		void Set(const int_type& value);
-		void Set(const float_type& value);
-		void Set(const color_type& value);
-		void Set(string_type value);
-
-
-	private:
-
-		id_type		m_Type;
-		value_type	m_Value;
-	};
-
+	std::vector<std::string> SplitString(const std::string& text, const std::string& delim);
+	std::vector<unsigned int> ConvertToInteger(const std::vector<std::string>& values);
+	std::string TrimString(std::string str);
+	std::string ConvertToLower(std::string str);
+	std::string MakePath(const std::string& path, const std::string& filename);
+	std::string ConvertToForwardSlashes(std::string filePath);
+	std::string GetFilenameFromPath(std::string path, bool includeExtension);
+	std::string GetFileExtension(std::string path);
+	bool IsAbsolutePath(const std::string& path);
+	std::string EnsureAbsolutePath(const std::string& relativePath);
+	std::string GetDirectoryFromFilePath(std::string path);
+	std::string GetAbsolutePathFromFilePath(const std::string& filePath);
+	std::optional<std::string> GetRelativePathFromFilePath(
+		const std::string& fromPath,
+		bool fromIsDirectory,
+		const std::string& toPath,
+		bool toIsDirectory);
+	bool CreateDirectory(const std::string& path);
 
 	template<class Type_>
-	inline bool Property::QueryValue(Type_ &valueOut) const
+	std::string to_hex_string(const Type_& value, size_t width = 0)
 	{
-		auto value(std::get_if<Type_>(&m_Value));
-		if (!value)
+		std::ostringstream str;
+		if (width)
 		{
-			return false;
+			str << std::setfill('0') << std::setw(width);
 		}
+		str << std::hex << static_cast<uint64_t>(value);
 
-		valueOut = *value;
-
-		return true;
+		return str.str();
 	}
+
 
 
 }}
