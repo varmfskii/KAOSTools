@@ -1,4 +1,4 @@
-CXXFLAGS+=-Iinclude
+CXXFLAGS+=-I../include
 SRC=AnimationFrame.cpp Layer.cpp Map.cpp NamedProperty.cpp Object.cpp	\
 	ObjectGroup.cpp ObjectGroupLayer.cpp PropertyBag.cpp Size.cpp	\
 	Stagger.cpp Tile.cpp TilesetCache.cpp Tileset.cpp		\

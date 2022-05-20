@@ -1,5 +1,5 @@
 LIBDIR=${PWD}/lib
-DIRS=3rdParty KAOSCommon
+DIRS=3rdParty KAOSCommon TiledLib
 
 export LIBDIR
 

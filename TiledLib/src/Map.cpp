@@ -45,7 +45,7 @@ namespace KAOS { namespace Tiled
 			if (!nameProperty->QueryValue(name))
 			{
 				std::cerr << "Unable to query value for name property.\n";
-				return false;
+				return nullptr;
 			}
 		}
 
